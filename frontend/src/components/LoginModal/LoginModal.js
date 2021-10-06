@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 // antd
-import { Modal, Form, Button, Input } from 'antd';
+import { Modal, Form, Button, Input, Divider } from 'antd';
+
+import GoogleLogin from 'react-google-login';
+import GoogleButton from 'react-google-button';
 
 function LoginModal({ buttonType }) {
   ///////////////////////////////////////////
@@ -34,8 +37,29 @@ function LoginModal({ buttonType }) {
       <Button onClick={showSignInModal} type={buttonType}>
         Sign In
       </Button>
-      <Modal visible={signInVisible} onCancel={handleSignInCancel} footer="">
-        <h2 style={{ marginBottom: '32px' }}>SIGN IN</h2>
+      <Modal
+        title="LOGO"
+        visible={signInVisible}
+        onCancel={handleSignInCancel}
+        footer=""
+      >
+        <div style={{ marginBottom: '32px', width: '100%' }}>
+          <Divider>소셜 계정으로 로그인</Divider>
+          <GoogleLogin
+            clientId="534707785395-1c3aq9gp00tfbib4rgg0eemp6ma0ddup.apps.googleusercontent.com"
+            render={(renderProps) => (
+              <GoogleButton
+                onClick={renderProps.onClick}
+                style={{ width: '100%' }}
+              >
+                Sign in with Google
+              </GoogleButton>
+            )}
+            theme="dark"
+          />
+        </div>
+
+        <Divider>이메일로 로그인</Divider>
         <div>
           <Form>
             <div>
@@ -67,17 +91,17 @@ function LoginModal({ buttonType }) {
             <br />
             <div style={{ textAlign: 'center', marginBottom: '7px' }}>
               <span>
-                <Link to="/findpassword" onClick={handleSignInCancel}>
+                <a href="/user/password" onClick={handleSignInCancel}>
                   Forgot a Password?
-                </Link>
+                </a>
               </span>
             </div>
             <div style={{ textAlign: 'center' }}>
               <span>Not a Member?&nbsp;&nbsp;</span>
               <span>
-                <Link to="/user/signup" onClick={handleSignInCancel}>
+                <a href="/user/signup" onClick={handleSignInCancel}>
                   Sign Up
-                </Link>
+                </a>
               </span>
             </div>
           </Form>
