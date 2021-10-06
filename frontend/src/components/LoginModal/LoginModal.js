@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  googleLoginAction,
+  loginAction,
+  logoutAction,
+} from 'redux/actions/user_actions';
+import { useDispatch, useSelector } from 'react-redux';
+import GoogleLogin from 'react-google-login';
+import GoogleButton from 'react-google-button';
 
 // antd
 import { Modal, Form, Button, Input, Divider } from 'antd';
-
-import GoogleLogin from 'react-google-login';
-import GoogleButton from 'react-google-button';
 
 function LoginModal({ buttonType }) {
   ///////////////////////////////////////////
@@ -19,11 +24,17 @@ function LoginModal({ buttonType }) {
     setSignInVisible(false);
   };
 
+  ///////////////////////////////////////////
+  // Login Setting
   // if modal closed, the values will be reset
   const [form, setValues] = useState({
     email: '',
     password: '',
   });
+
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch();
 
   const onChange = (e) => {
     setValues({
@@ -32,11 +43,56 @@ function LoginModal({ buttonType }) {
     });
   };
 
+  // 작동 안함
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      const { email, password } = form;
+      const user = { email, password };
+
+      dispatch(loginAction(user));
+    },
+    [form, dispatch, isAuthenticated],
+  );
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setSignInVisible(false);
+    }
+  }, [isAuthenticated]);
+
+  const onLogoutClick = () => {
+    if (window.confirm('로그아웃 하시겠습니까?') === true) {
+      dispatch(logoutAction());
+    } else {
+      return false;
+    }
+  };
+
+  // Google Login
+  const responseGoogle = (res) => {
+    const { email, name } = res.profileObj;
+    const { tokenId } = res;
+
+    const user = { email, name, tokenId };
+
+    dispatch(googleLoginAction(user));
+  };
+
+  const responseFail = (err) => {
+    console.log(err);
+  };
+
   return (
     <div>
-      <Button onClick={showSignInModal} type={buttonType}>
-        Sign In
-      </Button>
+      {isAuthenticated ? (
+        <Button onClick={onLogoutClick}>Logout</Button>
+      ) : (
+        <Button onClick={showSignInModal} type={buttonType}>
+          Sign In
+        </Button>
+      )}
       <Modal
         title="LOGO"
         visible={signInVisible}
@@ -55,13 +111,15 @@ function LoginModal({ buttonType }) {
                 Sign in with Google
               </GoogleButton>
             )}
+            onSuccess={responseGoogle}
+            onFailure={responseFail}
             theme="dark"
           />
         </div>
 
         <Divider>이메일로 로그인</Divider>
         <div>
-          <Form>
+          <Form onSubmit={onSubmit}>
             <div>
               <Form.Item label="EMAIL" style={{ marginBottom: '16px' }}>
                 <Input
@@ -84,16 +142,20 @@ function LoginModal({ buttonType }) {
                 />
               </Form.Item>
 
-              <Button type="primary" style={{ width: '100%' }}>
+              <Button
+                type="primary"
+                style={{ width: '100%' }}
+                onClick={onSubmit}
+              >
                 Sign In
               </Button>
             </div>
             <br />
             <div style={{ textAlign: 'center', marginBottom: '7px' }}>
               <span>
-                <a href="/user/password" onClick={handleSignInCancel}>
+                <Link to="/user/password" onClick={handleSignInCancel}>
                   Forgot a Password?
-                </a>
+                </Link>
               </span>
             </div>
             <div style={{ textAlign: 'center' }}>
