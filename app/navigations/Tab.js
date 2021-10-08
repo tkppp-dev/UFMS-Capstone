@@ -8,7 +8,7 @@ import SignIn from '../screens/SignIn';
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = function () {
-  const isLogin = true;
+  const isLogin = false;
   return (
     <Tab.Navigator>
       <Tab.Screen
