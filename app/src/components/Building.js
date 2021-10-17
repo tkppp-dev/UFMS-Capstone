@@ -122,7 +122,7 @@ const Building = function ({navigation, buildingData}) {
               </PickerItem>
             </PickerContainer>
             <View style={{alignItems: 'center'}}>
-              <SearchButton onPress={() => navigation.navigate('Facility Usage')}>
+              <SearchButton onPress={() => navigation.navigate('Facility Usage', {facilityName: buildingData.name})}>
                 <Text style={{color : 'white', fontSize: 16}}>사용 현황 조회</Text>
               </SearchButton>
             </View>
