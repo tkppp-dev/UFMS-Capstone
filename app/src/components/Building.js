@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import PropTypes from 'prop-types';
 import { Dimensions, Image, View, Text, StyleSheet } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
@@ -13,7 +13,9 @@ const Container = styled.View`
   width: 95%;
   align-items: center;
   margin: 10px;
-  border: 1px solid black;
+  border: 1px solid #D6DDE4;
+  border-radius: 4px;
+  background-color: white;
 `;
 
 const HeaderView = styled.View`
@@ -53,7 +55,7 @@ const SearchButton = styled.TouchableOpacity`
   width: 150px;
   height: 45px;
   background-color: #007AFF;
-  border-radius: 8px;
+  border-radius: 4px;
 `
 
 const Building = function ({navigation, buildingData}) {
@@ -142,7 +144,7 @@ const pickerStyles = StyleSheet.create({
     paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: 'gray',
-    borderRadius: 8,
+    borderRadius: 4,
     color: 'black',
   },
   inputAndroid: {
@@ -153,7 +155,7 @@ const pickerStyles = StyleSheet.create({
     paddingVertical: 8,
     borderWidth: 0.5,
     borderColor: 'purple',
-    borderRadius: 8,
+    borderRadius: 4,
     color: 'black',
   },
 });

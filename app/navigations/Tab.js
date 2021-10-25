@@ -1,14 +1,14 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
 import HomeStackNavigator from './HomeStackNavigator';
 import MyStackNavigator from './MyStackNavigator';
-import SignIn from '../screens/SignIn';
+import SignStackNavigator from './SignStackNavigator';
+import ReservationTabNavigator from './ReservationTabNavigator';
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = function () {
-  const isLogin = false;
+  const isLogin = true;
   return (
     <Tab.Navigator>
       <Tab.Screen
@@ -18,11 +18,15 @@ const TabNavigation = function () {
       />
       {isLogin ? (
         <>
-          <Tab.Screen name="Reservation" component={MyStackNavigator} />
-          <Tab.Screen name="My" component={MyStackNavigator} />
+          <Tab.Screen name="Reservation" component={ReservationTabNavigator} />
+          <Tab.Screen name="MY" component={MyStackNavigator} />
         </>
       ) : (
-        <Tab.Screen name="Sign In" component={SignIn} />
+        <Tab.Screen
+          options={{ headerShown: false }}
+          name="Sign"
+          component={SignStackNavigator}
+        />
       )}
     </Tab.Navigator>
   );

@@ -1,9 +1,10 @@
 import React, { useState, useLayoutEffect } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 import PropTypes from 'prop-types';
-import { Text, View } from 'react-native';
+import { Text, View, TouchableOpacity, Touchable } from 'react-native';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import localeConfig from '../src/CalendarLocaleConfig';
+import UsageDetail from '../src/components/UsageDetail'
 
 LocaleConfig.locales['kr'] = localeConfig;
 LocaleConfig.defaultLocale = 'kr';
@@ -53,59 +54,63 @@ const getItems = function (min, max) {
   const items = {};
 
   while (date <= endDate) {
-    items[getDateStr(date)] = [];
+    items[getDateStr(date)] = [{name : '123'}];
     date.setDate(date.getDate() + 1);
   }
   return items;
 };
 
-const FacilityUsage = function ({navigation, route}) {
+const FacilityUsage = function ({ navigation, route }) {
   const { min, now, max } = getCalendarRange();
-  const items = getItems(min, max);
   const [selectDate, setSelectDate] = useState(new Date());
+  const [items, setItems] = useState(getItems(min, max));
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitleVisible: false,
-      title: `${route.params.facilityName} 사용 현황`
-    })
-  })
+      headerTitleAlign: 'center',
+      title: `${route.params.facilityName} 사용 현황`,
+    });
+  });
 
-  console.log(navigation)
+  const _onDayPress = function(day){
+    setSelectDate(new Date(day.dateString))
+  }
+
+  const _onDayChange = function(day){
+    setSelectDate(new Date(day.dateString))
+  }
+
+  const _renderItem = function(item){
+    return (
+      <UsageDetail />
+    );
+  }
+
+  const _rowHasChanaged = function(r1, r2){
+    return r1.name !== r2.name
+  }
+
   return (
     <Container>
-       <CalendarHeader>
+      <CalendarHeader>
         {`${selectDate.getFullYear()} ${selectDate.getMonth() + 1}월`}
       </CalendarHeader>
       <Agenda
         items={items}
-        // Callback that gets called when items for a certain month should be loaded (month became visible)
-        loadItemsForMonth={(month) => {
-          console.log('trigger items loading');
-        }}
-        // Callback that gets called on day press
-        onDayPress={(day) => {
-          setSelectDate(new Date(day.dateString));
-        }}
         selected={now}
         minDate={min}
         maxDate={max}
         pastScrollRange={2}
         futureScrollRange={6}
-        // Specify how each item should be rendered in agenda
-        renderItem={(item, firstItemInDay) => {
-          return <View />;
-        }}
-        // Specify your item comparison function for increased performance
-        rowHasChanged={(r1, r2) => {
-          return r1.text !== r2.text;
-        }}
         showClosingKnob={true}
-        // Agenda theme
+        onDayPress={_onDayPress}
+        onDayChange={_onDayChange}
+        renderItem={_renderItem}
+        rowHasChanged={_rowHasChanaged}
         theme={{
           agendaKnobColor: 'gray',
         }}
-        // Agenda container style
         style={{}}
       />
     </Container>
