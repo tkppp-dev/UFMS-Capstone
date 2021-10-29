@@ -97,6 +97,28 @@ function SignUp() {
                 />
               </Form.Item>
 
+              <Form.Item label="휴대폰 인증">
+                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                  <Input
+                    type="text"
+                    placeholder="Phone Number"
+                    style={{ marginRight: '8px' }}
+                  />
+                  <Button type="primary">인증하기</Button>
+                </div>
+              </Form.Item>
+
+              <Form.Item label="관계자 인증">
+                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                  <Input
+                    type="text"
+                    placeholder="User Id"
+                    style={{ marginRight: '8px' }}
+                  />
+                  <Button type="primary">인증하기</Button>
+                </div>
+              </Form.Item>
+
               <Form.Item label="Role">
                 <Select defaultValue="student">
                   <Select.Option value="student">Student</Select.Option>
