@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 // antd
 import { Button } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 
 // style
 import { Logo, MenuContainer, MenuBox, NavbarContainer, Wrap } from './style';

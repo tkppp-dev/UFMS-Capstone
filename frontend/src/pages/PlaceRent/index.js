@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Table, Tooltip } from 'antd';
+import { Link } from 'react-router-dom';
 
 const columns = [
   {
@@ -60,27 +61,29 @@ const data = [
     title: 'London No. 2 Lake Park, London No. 2 Lake Park',
     register_date: '2021-10-29',
   },
-  {
-    key: '3',
-    answer: '답변 미완료',
-    name: 'Joe Black',
-    title: 'Sidney No. 1 Lake Park, Sidney No. 1 Lake Park',
-    register_date: '2021-10-29',
-  },
 ];
 
 function PlaceRent() {
   return (
-    <div style={{ width: '90%', marginLeft: '5%', marginTop: '64px' }}>
+    <div
+      style={{
+        width: '90%',
+        marginLeft: '5%',
+        marginTop: '64px',
+        minHeight: '500px',
+      }}
+    >
       <Table
         columns={columns}
         dataSource={data}
         style={{ width: '100%' }}
         pagination={{ position: ['none', 'bottomCenter'] }}
       />
-      <Button type="primary" style={{ float: 'right' }}>
-        글 작성
-      </Button>
+      <Link to="/rent/place/write">
+        <Button type="primary" style={{ float: 'right', marginTop: '-48px' }}>
+          글 작성
+        </Button>
+      </Link>
     </div>
   );
 }
