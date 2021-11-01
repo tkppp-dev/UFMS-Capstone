@@ -12,18 +12,17 @@ const StyledText = styled.Text`
   margin-bottom: 10px;
 `
 
-const Reservation = function({ navigation }){
+const ClassReservation = function({ navigation }){
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitleAlign: 'center',
     });
   });
-
   return(
     <Container>
-      <StyledText>Reservation Screen</StyledText>
+      <StyledText>Class Reservation Screen</StyledText>
     </Container>
   )
 }
 
-export default Reservation
+export default ClassReservation

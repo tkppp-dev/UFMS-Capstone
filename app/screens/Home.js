@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, ScrollView } from 'react-native';
-import styled from 'styled-components';
+import { StatusBar, ScrollView } from 'react-native';
+import styled from 'styled-components/native';
 import Header from '../src/components/Header';
 import Building from '../src/components/Building';
 
@@ -26,6 +26,7 @@ const Home = function ({ navigation }) {
 
   return (
     <Container>
+      <StatusBar barStyle="dark-content" backgroundColor="white" />
       <Header />
       <ScrollView
         showsVerticalScrollIndicator={false}

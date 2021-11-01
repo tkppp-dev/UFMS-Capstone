@@ -12,18 +12,18 @@ const StyledText = styled.Text`
   margin-bottom: 10px;
 `
 
-const Reservation = function({ navigation }){
+const Ask = function({ navigation }){
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitleAlign: 'center',
     });
   });
-
+  
   return(
     <Container>
-      <StyledText>Reservation Screen</StyledText>
+      <StyledText>Ask Screen</StyledText>
     </Container>
   )
 }
 
-export default Reservation
+export default Ask
