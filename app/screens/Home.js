@@ -26,7 +26,7 @@ const Home = function ({ navigation }) {
 
   return (
     <Container>
-      <StatusBar barStyle="dark-content" backgroundColor="white" />
+      <StatusBar barStyle="dark-content" />
       <Header />
       <ScrollView
         showsVerticalScrollIndicator={false}

@@ -12,6 +12,9 @@ const Container = styled.View`
   width: 100%;
   height: 50px;
   background-color: white;
+  border-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #D6DDE4;
 `
 
 const LogoText = styled.Text`

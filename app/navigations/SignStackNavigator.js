@@ -8,10 +8,10 @@ const SignStack = createStackNavigator();
 const SignStackNavigator = function () {
   return (
     <SignStack.Navigator
-      initialRouteName="Sign In"
+      initialRouteName="로그인"
     >
-      <SignStack.Screen name="Sign In" component={SignIn} />
-      <SignStack.Screen name="Sign Up" component={SignUp} />
+      <SignStack.Screen name="로그인" component={SignIn} />
+      <SignStack.Screen name="회원가입" component={SignUp} />
     </SignStack.Navigator>
   );
 };
