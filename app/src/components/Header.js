@@ -20,14 +20,14 @@ const Container = styled.View`
 const LogoText = styled.Text`
   margin-left: 10px;
   font-size: 30px;
-`
+`;
 
-const Header = function(){
-  return(
+const Header = function () {
+  return (
     <Container>
       <LogoText>LOGO</LogoText>
     </Container>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

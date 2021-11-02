@@ -127,9 +127,9 @@ function PlaceContainer() {
             borderBottom: '2px solid #1990ff',
           }}
         >
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>충무관 201호</p>
+          <p>충무관 202호</p>
+          <p>충무관 203호</p>
         </Card>
         <Card
           title="영실관"
@@ -147,9 +147,9 @@ function PlaceContainer() {
             borderBottom: '2px solid #1990ff',
           }}
         >
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>영실관 201호</p>
+          <p>영실관 202호</p>
+          <p>영실관 203호</p>
         </Card>
         <Card
           title="용덕관"
@@ -168,9 +168,9 @@ function PlaceContainer() {
             borderBottom: '2px solid #1990ff',
           }}
         >
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>용덕관 201호</p>
+          <p>용덕관 202호</p>
+          <p>용덕관 203호</p>
         </Card>
       </CardRow>
 
@@ -191,9 +191,9 @@ function PlaceContainer() {
             borderBottom: '2px solid #1990ff',
           }}
         >
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>광개토관 201호</p>
+          <p>광개토관 202호</p>
+          <p>광개토관 203호</p>
         </Card>
         <Card
           title="이당관"
@@ -211,9 +211,9 @@ function PlaceContainer() {
             borderBottom: '2px solid #1990ff',
           }}
         >
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>이당관 201호</p>
+          <p>이당관 202호</p>
+          <p>이당관 203호</p>
         </Card>
         <Card
           title="군자관"
@@ -232,9 +232,9 @@ function PlaceContainer() {
             borderBottom: '2px solid #1990ff',
           }}
         >
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>군자관 201호</p>
+          <p>군자관 202호</p>
+          <p>군자관 203호</p>
         </Card>
       </CardRow>
 
@@ -255,9 +255,9 @@ function PlaceContainer() {
             borderBottom: '2px solid #1990ff',
           }}
         >
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>집현관 201호</p>
+          <p>집현관 202호</p>
+          <p>집현관 203호</p>
         </Card>
         <Card
           title="세종관"
@@ -275,9 +275,9 @@ function PlaceContainer() {
             borderBottom: '2px solid #1990ff',
           }}
         >
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>세종관 201호</p>
+          <p>세종관 202호</p>
+          <p>세종관 203호</p>
         </Card>
         <Card
           title="율곡관"
@@ -296,9 +296,9 @@ function PlaceContainer() {
             borderBottom: '2px solid #1990FF',
           }}
         >
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>율곡관 201호</p>
+          <p>율곡관 202호</p>
+          <p>율곡관 203호</p>
         </Card>
       </CardRow>
 
@@ -319,9 +319,9 @@ function PlaceContainer() {
             borderBottom: '2px solid #1990ff',
           }}
         >
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>대양AI센터 201호</p>
+          <p>대양AI센터 202호</p>
+          <p>대양AI센터 203호</p>
         </Card>
         <Card
           title="다산관"
@@ -339,9 +339,9 @@ function PlaceContainer() {
             borderBottom: '2px solid #1990ff',
           }}
         >
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>다산관 201호</p>
+          <p>다산관 202호</p>
+          <p>다산관 203호</p>
         </Card>
         <Card
           title="학생회관"
@@ -359,9 +359,9 @@ function PlaceContainer() {
             borderBottom: '2px solid #1990ff',
           }}
         >
-          <p>Card content</p>
-          <p>Card content</p>
-          <p>Card content</p>
+          <p>학생회관 201호</p>
+          <p>학생회관 202호</p>
+          <p>학생회관 203호</p>
         </Card>
       </CardRow>
       <Modal

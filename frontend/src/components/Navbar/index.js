@@ -2,8 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 // antd
-import { Menu, Dropdown, Button } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 
 // style
 import { Logo, MenuContainer, MenuBox, NavbarContainer, Wrap } from './style';
@@ -12,39 +11,6 @@ import { Logo, MenuContainer, MenuBox, NavbarContainer, Wrap } from './style';
 import LoginModal from 'components/LoginModal/LoginModal';
 import SearchInput from 'components/SearchInput';
 
-const menu = (
-  <MenuBox style={{ paddingLeft: '32px' }}>
-    <Menu.Item style={{ marginTop: '32px' }}>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://www.antgroup.com"
-      >
-        1st menu item
-      </a>
-    </Menu.Item>
-    <Menu.Item icon={<DownOutlined />} disabled>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://www.aliyun.com"
-      >
-        2nd menu item (disabled)
-      </a>
-    </Menu.Item>
-    <Menu.Item disabled>
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://www.luohanacademy.com"
-      >
-        3rd menu item (disabled)
-      </a>
-    </Menu.Item>
-    <Menu.Item danger>a danger item</Menu.Item>
-  </MenuBox>
-);
-
 function Navbar() {
   return (
     <NavbarContainer>
@@ -52,47 +18,36 @@ function Navbar() {
         <Logo to="/">Logo Logo</Logo>
         <MenuContainer>
           <div>
-            <Dropdown overlay={menu}>
-              <a
-                className="ant-dropdown-link"
-                onClick={(e) => e.preventDefault()}
-              >
-                MENU <DownOutlined />
-              </a>
-            </Dropdown>
+            <Link className="ant-dropdown-link" to="/rent/place">
+              대관 문의
+            </Link>
           </div>
 
           <div>
-            <Dropdown overlay={menu}>
-              <a
-                className="ant-dropdown-link"
-                onClick={(e) => e.preventDefault()}
-              >
-                MENU <DownOutlined />
-              </a>
-            </Dropdown>
+            <a
+              className="ant-dropdown-link"
+              onClick={(e) => e.preventDefault()}
+            >
+              MENU
+            </a>
           </div>
 
           <div>
-            <Dropdown overlay={menu}>
-              <a
-                className="ant-dropdown-link"
-                onClick={(e) => e.preventDefault()}
-              >
-                MENU <DownOutlined />
-              </a>
-            </Dropdown>
+            <a
+              className="ant-dropdown-link"
+              onClick={(e) => e.preventDefault()}
+            >
+              MENU
+            </a>
           </div>
 
           <div>
-            <Dropdown overlay={menu}>
-              <a
-                className="ant-dropdown-link"
-                onClick={(e) => e.preventDefault()}
-              >
-                MENU <DownOutlined />
-              </a>
-            </Dropdown>
+            <a
+              className="ant-dropdown-link"
+              onClick={(e) => e.preventDefault()}
+            >
+              MENU
+            </a>
           </div>
         </MenuContainer>
         <SearchInput />

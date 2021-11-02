@@ -9,11 +9,13 @@ import Main from 'pages/Main/index';
 import SignUp from 'pages/SignUp/index';
 import PlaceDetail from 'pages/PlaceDetail';
 import MyPage from 'pages/MyPage';
+import FindPassword from 'pages/FindPassword';
+import PlaceRent from 'pages/PlaceRent';
+import PlaceRentWrite from 'pages/PlaceRentWrite';
 
 // components
 import Navbar from 'components/Navbar';
 import Footer from 'components/Footer/index';
-import FindPassword from 'pages/FindPassword';
 
 function App() {
   let Navigation =
@@ -44,6 +46,8 @@ function App() {
         <Route path="/user/mypage/:id" exact component={MyPage} />
 
         <Route path="/place/:id" exact component={PlaceDetail} />
+        <Route path="/rent/place" exact component={PlaceRent} />
+        <Route path="/rent/place/write" exact component={PlaceRentWrite} />
       </Switch>
       {FooterContainer}
     </Layout>
