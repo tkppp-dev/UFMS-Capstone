@@ -8,6 +8,7 @@ import {
   CollapseHeader,
   CollapseBody,
 } from 'accordion-collapse-react-native';
+import PlacePicker from './PlacePicker'
 
 const Container = styled.View`
   width: 95%;
@@ -33,38 +34,17 @@ const BodyView = styled.View`
   border-color: grey;
 `;
 
-const PickerContainer = styled.View`
-  flex-direction: row;
-  justify-content: space-evenly;
-  width: 100%;
-  padding: 10px 0 10px 0;
-`;
-
-const PickerItem = styled.View`
-  width: 40%;
-`;
-
-const PickerText = styled.Text`
-  font-size: 16px;
-  text-align: center;
-`;
-
 const SearchButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
-  width: 150px;
-  height: 45px;
+  width: 100%;
+  height: 40px;
   background-color: #007AFF;
   border-radius: 4px;
 `
 
 const Building = function ({navigation, buildingData}) {
   const width = Dimensions.get('window').width;
-  const placeholder = {
-    label: '',
-    value: null,
-    color: 'grey',
-  };
 
   return (
     <Container width={width}>
@@ -92,37 +72,7 @@ const Building = function ({navigation, buildingData}) {
               publishing software like Aldus PageMaker including versions of
               Lorem Ipsum.
             </Text>
-            <PickerContainer>
-              <PickerItem>
-                <PickerText>층 선택</PickerText>
-                <RNPickerSelect
-                  style={pickerStyles}
-                  placeholder={placeholder}
-                  onValueChange={(value) => console.log(value)}
-                  items={[
-                    { label: '지하 2층', value: -2 },
-                    { label: '지하 1층', value: -1 },
-                    { label: '1층', value: 1 },
-                    { label: '2층', value: 2 },
-                    { label: '3층', value: 3 },
-                  ]}
-                />
-              </PickerItem>
-              <PickerItem>
-                <PickerText>시설 선택</PickerText>
-                <RNPickerSelect
-                  style={pickerStyles}
-                  placeholder={placeholder}
-                  onValueChange={(value) => console.log(value)}
-                  items={[
-                    { label: 'XX1호', value: 'XX1' },
-                    { label: 'XX2호', value: 'XX2' },
-                    { label: 'XX3호', value: 'XX3' },
-                    { label: 'XX4호', value: 'XX4' },
-                  ]}
-                />
-              </PickerItem>
-            </PickerContainer>
+            <PlacePicker />
             <View style={{alignItems: 'center'}}>
               <SearchButton onPress={() => navigation.navigate('Facility Usage', {facilityName: buildingData.name})}>
                 <Text style={{color : 'white', fontSize: 16}}>사용 현황 조회</Text>
@@ -134,30 +84,5 @@ const Building = function ({navigation, buildingData}) {
     </Container>
   );
 };
-
-const pickerStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginVertical: 5,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
-    color: 'black',
-  },
-  inputAndroid: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginVertical: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'purple',
-    borderRadius: 4,
-    color: 'black',
-  },
-});
 
 export default Building;
