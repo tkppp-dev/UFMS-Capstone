@@ -1,8 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import RentReservation from '../screens/RentReservation';
-import RentNotice from '../screens/RentNotice';
-import RentApplication from '../screens/RentApplication'
+import RentReservation from '../screens/reservationScreens/RentReservation';
+import RentNotice from '../screens/reservationScreens/RentNotice';
+import RentApplication from '../screens/reservationScreens/RentApplication'
 
 const RentStack = createStackNavigator();
 

@@ -47,7 +47,7 @@ const RentReservation = function ({ navigation }) {
           }}>
             <Image
               style={{ width: 70, height: 70, marginLeft: 5 }}
-              source={require('../assets/dummy-image.jpeg')}
+              source={require('../../assets/dummy-image.jpeg')}
             />
             <Text style={{ marginLeft: 10, fontSize: 20 }}>{item.name}</Text>
           </BuildingTitle>

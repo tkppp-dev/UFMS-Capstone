@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useEffect, useState } from 'react';
 import { ScrollView, View, Text, Alert, Modal, StyleSheet } from 'react-native';
 import styled from 'styled-components';
-import Picker from '../src/components/Picker';
-import CustomInput from '../src/components/CustomInput';
+import Picker from '../../src/components/Picker';
+import CustomInput from '../../src/components/CustomInput';
 
 const Container = styled.View`
   width: 100%;
@@ -11,13 +11,14 @@ const Container = styled.View`
 
 const DatePicker = styled.View`
   width: 90%;
+  flex: 1;
   flex-direction: row;
   justify-content: space-between;
   margin: 10px 0 10px 0;
 `;
 
 const PickerContainer = styled.View`
-  width: 22%;
+  width: 30%;
 `;
 
 const Button = styled.TouchableOpacity`
@@ -66,13 +67,12 @@ const getDayList = function (year, month) {
   }
 };
 
-const RentApplication = function ({ navigation, route }) {
+const ClassRentApplication = function ({ navigation, route }) {
   const dt = new Date();
   const [year, setYear] = useState(dt.getFullYear());
   const [month, setMonth] = useState(dt.getMonth() + 1);
   const [day, setDay] = useState(dt.getDate());
-  const [period, setPeriod] = useState(1);
-  const [showApplication, setShowApplication] = useState(true);
+  const [showApplication, setShowApplication] = useState(false);
   const [dayList, setDayList] = useState(
     getDayList(year, month).map((el) => ({
       label: `${el}`,
@@ -83,17 +83,12 @@ const RentApplication = function ({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const yearList = [
-    { label: `${year}`, value: year },
-    { label: `${year}` + 1, value: year + 1 },
+    { label: `${dt.getFullYear()}`, value: dt.getFullYear() },
+    { label: `${dt.getFullYear() + 1}`, value: dt.getFullYear() + 1 },
   ];
 
   const monthList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((el) => ({
     label: `${el}`,
-    value: el,
-  }));
-
-  const periodList = [1, 2, 3, 4, 5, 6, 7].map((el) => ({
-    label: `${el}일`,
     value: el,
   }));
 
@@ -113,20 +108,7 @@ const RentApplication = function ({ navigation, route }) {
   });
 
   const _onPressSearchButton = function () {
-    const isAlreadyRented = false;
-    if (isAlreadyRented) {
-      Alert.alert('알림', '선택한 날짜는 대관이 불가합니다.');
-    } else {
-      Alert.alert(
-        '알림',
-        '선택한 날짜는 대관이 가능합니다. 신청서를 작성하시겠습니까?',
-        [
-          { text: '아니오', style: 'cancel' },
-          { text: '예', onPress: () => setShowApplication(true) },
-        ],
-        { cancelable: false }
-      );
-    }
+    setShowApplication(true)
   };
 
   const _onPressApplyButton = function () {
@@ -161,14 +143,6 @@ const RentApplication = function ({ navigation, route }) {
               onValueChange={(value) => setDay(value)}
             />
           </PickerContainer>
-          <PickerContainer>
-            <Picker
-              label="기간"
-              items={periodList}
-              value={period}
-              onValueChange={(value) => setPeriod(value)}
-            />
-          </PickerContainer>
         </DatePicker>
         <Content>
           <Button onPress={_onPressSearchButton}>
@@ -184,13 +158,11 @@ const RentApplication = function ({ navigation, route }) {
           >
             {showApplication === false ? null : (
               <>
-                <CustomInput label="대관자" />
-                <CustomInput label="대관 주체" />
-                <CustomInput label="대관 목적" type="textarea" />
-                <CustomInput label="연락처" notice="'-' 제외하고 입력" />
-                <CustomInput label="이메일" />
+                <CustomInput label="예약 이름" />
+                <CustomInput label="대상" />
+                <CustomInput label="예약 목적" type="textarea" />
                 <Button onPress={_onPressApplyButton}>
-                  <Text style={{ color: 'white' }}>대관 신청</Text>
+                  <Text style={{ color: 'white' }}>강의실 예약</Text>
                 </Button>
                 <CenteredView>
                   <Modal
@@ -209,20 +181,11 @@ const RentApplication = function ({ navigation, route }) {
                             fontSize: 20,
                             fontWeight: 'bold',
                             textAlign: 'center',
+                            marginBottom: 15,
                           }}
                         >
-                          신청이 완료되었습니다
+                          예약이 완료되었습니다.
                         </Text>
-                        <Text style={{ fontSize: 16, marginTop: 15 }}>
-                          입금 금액: 대관 일수 X 기본 요금
-                        </Text>
-                        <Text style={{ fontSize: 16, marginTop: 5 }}>
-                          입금 계좌: 신한 111-123-1231231
-                        </Text>
-                        <Text style={{ fontSize: 16, marginTop: 5 }}>
-                          입금 완료 후 영업일 기준 1~3일 내 신청이 승인됩니다.{' '}
-                        </Text>
-                        <Text></Text>
                         <Button
                           onPress={() => {
                             setModalVisible(false);
@@ -266,4 +229,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RentApplication;
+export default ClassRentApplication;

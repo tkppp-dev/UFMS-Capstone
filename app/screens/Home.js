@@ -21,12 +21,14 @@ const Home = function ({ navigation }) {
     { id: 3, name: '율곡관' },
     { id: 4, name: '영실관' },
     { id: 5, name: '우정당' },
-    { id: 6, name: '대양홀' },
+    { id: 6, name: '학술정보원' },
+    { id: 7, name: '군자관' },
+    { id: 8, name: '학생회관' }
   ];
 
   return (
     <Container>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar backgroundColor="white" barStyle="dark-content" />
       <Header />
       <ScrollView
         showsVerticalScrollIndicator={false}

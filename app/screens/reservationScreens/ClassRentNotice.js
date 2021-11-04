@@ -1,7 +1,7 @@
 import React, { useLayoutEffect } from 'react';
 import styled from 'styled-components/native';
 import { Dimensions, Image, ScrollView, Text, View } from 'react-native';
-import PlacePicker from '../src/components/PlacePicker';
+import PlacePicker from '../../src/components/PlacePicker';
 
 const Container = styled.View`
   width: 100%;
@@ -21,7 +21,7 @@ const Button = styled.TouchableOpacity`
   background-color: #007AFF;
 `
 
-const RentNotice = function ({ navigation, route }) {
+const ClassRentNotice = function ({ navigation, route }) {
   const name = route.params.name;
   const window = Dimensions.get('window');
 
@@ -40,12 +40,12 @@ const RentNotice = function ({ navigation, route }) {
             width: window.width * 0.9,
             height: window.height * 0.25,
           }}
-          source={require('../assets/dummy-image.jpeg')}
+          source={require('../../assets/dummy-image.jpeg')}
         />
         <Content>
           <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{name}</Text>
           <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>
-            대관 유의 사항
+            강의실 예약 유의 사항
           </Text>
           <Text style={{ marginTop: 10 }}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -61,9 +61,9 @@ const RentNotice = function ({ navigation, route }) {
           <PlacePicker />
           <View style={{ alignItems: 'center' }}>
             <Button onPress={() => {
-              navigation.navigate('Rent Application', { placeName : name })
+              navigation.navigate('Class Rent Application', { placeName : name })
             }}>
-              <Text style={{ color: 'white' }}>대관 신청</Text>
+              <Text style={{ color: 'white' }}>강의실 예약</Text>
             </Button>
           </View>
         </Content>
@@ -72,4 +72,4 @@ const RentNotice = function ({ navigation, route }) {
   );
 };
 
-export default RentNotice;
+export default ClassRentNotice;

@@ -73,7 +73,7 @@ const SignInScreen = function ({ navigation }) {
   });
 
   const onPressSignUp = function () {
-    navigation.navigate('Sign Up');
+    navigation.navigate('회원가입');
   };
 
   return (
