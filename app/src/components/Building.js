@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import PropTypes from 'prop-types';
 import { Dimensions, Image, View, Text, StyleSheet } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
 import {
   Collapse,
   CollapseHeader,

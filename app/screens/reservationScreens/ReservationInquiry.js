@@ -1,7 +1,8 @@
 import React, { useState, useLayoutEffect } from 'react';
 import styled from 'styled-components/native';
-import { FlatList, ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { FAB, Icon } from 'react-native-elements';
+import InquiryAnswer from '../../src/components/InquiryAnswer';
 
 const Container = styled.View`
   width: 100%;
@@ -20,8 +21,18 @@ const RentInquiry = function ({ navigation }) {
 
   return (
     <Container>
-      <ScrollView contentContainerStyle={{hbackgroundColor: 'white' }}>
-        <View style={{flex: 1, backgroundColor: 'white' }}>
+      <ScrollView contentContainerStyle={{ hbackgroundColor: 'white' }}>
+        <View style={{ flex: 1, paddingHorizontal: 10 }}>
+          <InquiryAnswer
+            onPress={() => {
+              navigation.navigate('Write Reservation Inquiry');
+            }}
+          />
+          <InquiryAnswer
+            onPress={() => {
+              navigation.navigate('Write Reservation Inquiry');
+            }}
+          />
         </View>
       </ScrollView>
       <FAB
@@ -30,7 +41,7 @@ const RentInquiry = function ({ navigation }) {
         buttonStyle={{ backgroundColor: '#007AFF' }}
         containterStyle={{ margin: 15 }}
         onPress={() => {
-          navigation.navigate('Write Rent Inquiry')
+          navigation.navigate('Write Reservation Inquiry');
         }}
       />
     </Container>

@@ -8,8 +8,8 @@ const RerservationInquiryStack = createStackNavigator();
 const ReservationInquiryStackNavigator = function () {
   return (
     <RerservationInquiryStack.Navigator>
-      <RerservationInquiryStack.Screen name="Rent Inquiry" component={ReservationInquiry} />
-      <RerservationInquiryStack.Screen name="Write Rent Inquiry" component={WriteReservationInquiry} />
+      <RerservationInquiryStack.Screen name="Reservation Inquiry" component={ReservationInquiry} />
+      <RerservationInquiryStack.Screen name="Write Reservation Inquiry" component={WriteReservationInquiry} />
     </RerservationInquiryStack.Navigator>
   );
 };

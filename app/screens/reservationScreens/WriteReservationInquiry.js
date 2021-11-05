@@ -1,6 +1,7 @@
 import React, { useState, useLayoutEffect } from 'react';
 import styled from 'styled-components/native';
 import { Text } from 'react-native';
+import CustomButton from '../../src/components/CustomButton';
 
 const Container = styled.View`
   flex: 1;
@@ -69,9 +70,7 @@ const RentInquiry = function ({ navigation }) {
           style={{ flex: 1, marginBottom: 16 }}
           multiline={true}
         />
-        <Button>
-          <Text style={{ color: 'white' }}>완료</Text>
-        </Button>
+        <CustomButton label="완료" />
       </InquiryContainer>
     </Container>
   );
