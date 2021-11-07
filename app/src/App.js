@@ -1,13 +1,15 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-//import StackNavigation from '../navigations/Stack';
 import TabNavigation from '../navigations/Tab';
+import { Provider } from './context/index';
 
 function App() {
   return (
-    <NavigationContainer>
-      <TabNavigation />
-    </NavigationContainer>
+    <Provider>
+      <NavigationContainer>
+        <TabNavigation />
+      </NavigationContainer>
+    </Provider>
   );
 }
 

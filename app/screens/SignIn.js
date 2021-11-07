@@ -1,7 +1,10 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useContext } from 'react';
 import styled from 'styled-components/native';
 import { Dimensions, Image } from 'react-native';
 import { images } from '../src/images';
+import axios from 'axios'
+import { Context } from '../src/context/index'
+import { CommonActions } from '@react-navigation/native';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -42,7 +45,7 @@ const Button = styled.TouchableOpacity`
   border-radius: 4px;
 `
 
-const SubmitButton = styled(Button)`
+const LoginButton = styled(Button)`
   justify-content: center;
 `;
 
@@ -61,6 +64,7 @@ const StyledText = styled.Text`
 `;
 
 const SignInScreen = function ({ navigation }) {
+  const { state, dispatch } = useContext(Context)
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const width = Dimensions.get('window').width;
@@ -72,36 +76,48 @@ const SignInScreen = function ({ navigation }) {
     });
   });
 
-  const onPressSignUp = function () {
+  const _onPressSignUp = function () {
     navigation.navigate('회원가입');
   };
+
+  const _onPressLogin = async function(){
+    // const res = await axios.post('/login', {id, password})
+    const res = 'success'
+
+    if(res === 'success'){
+      dispatch({ type : 'LOGIN' })
+      navigation.dispatch(CommonActions.navigate('Home'))
+    }else{
+      alert('아이디가 존재하지 않거나 비밀번호가 일치하지 않습니다.')
+    }
+  }
 
   return (
     <Container>
       <StyledInput
         width={width}
-        placeholder={'Enter ID'}
+        placeholder={'아이디 입력'}
         value={id}
         onChangeText={(text) => setId(text)}
       />
       <StyledInput
         width={width}
-        placeholder={'Enter Password'}
+        placeholder={'비밀번호 입력'}
         value={password}
         onChangeText={(text) => setPassword(text)}
         secureTextEntry={true}
         style={{marginBottom: 10}}
       />
-      <SubmitButton width={width}>
+      <LoginButton width={width} onPress={_onPressLogin}>
         <StyledText color="white">Sign In</StyledText>
-      </SubmitButton>
+      </LoginButton>
       <SocialLoginButton width={width}>
         <Image source={images.google} style={{ width: 45, height: 45 }} />
         <StyledText style={{ flex: 1, textAlign: 'center' }} color="white">
           Sign In with Google
         </StyledText>
       </SocialLoginButton>
-      <SignUpButton onPress={onPressSignUp}>
+      <SignUpButton onPress={_onPressSignUp}>
         <StyledText color="#007AFF" fontSize="18">
           Sign Up
         </StyledText>
