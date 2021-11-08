@@ -25,8 +25,5 @@ public class FacilitySchedule {
 
     private String purpose;
 
-    @ManyToMany
-    @JoinColumn(name = "id")
-    private Member user;
 
 }

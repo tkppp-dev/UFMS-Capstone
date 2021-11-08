@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,13 +17,24 @@ public class Subject {
     @Column(name = "subject_id")
     private Long id;
 
-    private String room;
+    private String major;
     @Column(name = "class")
-    private String Classroom;
+    private String classroom;
     private String subjectName;
+    private String completionType;
+    private String semester;
     private String professor;
-
     private String lectureDate;
-    private String lectureStartTime;
-    private String lectureEndTime;
+    private String room;
+
+    public Subject(String major, String classroom, String subjectName, String completionType, String semester, String professor, String lectureDate, String room) {
+        this.major = major;
+        this.classroom = classroom;
+        this.subjectName = subjectName;
+        this.completionType = completionType;
+        this.semester = semester;
+        this.professor = professor;
+        this.lectureDate = lectureDate;
+        this.room = room;
+    }
 }
