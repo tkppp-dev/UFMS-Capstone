@@ -17,7 +17,7 @@ public class Lab{
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     private String location;
