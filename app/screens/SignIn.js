@@ -1,21 +1,15 @@
-import React, { useState, useLayoutEffect, useContext } from 'react';
+import React, { useState, useLayoutEffect, useEffect, useContext } from 'react';
 import styled from 'styled-components/native';
-import { Dimensions, Image } from 'react-native';
+import { Dimensions, Image, Alert } from 'react-native';
 import { images } from '../src/images';
 import axios from 'axios'
-import { Context } from '../src/context/index'
 import { CommonActions } from '@react-navigation/native';
+import { Context } from '../src/context';
 
 const Container = styled.SafeAreaView`
   flex: 1;
   align-items: center;
   justify-content: center;
-`;
-
-const RowContainer = styled.View`
-  flex: 1;
-  flex-direction: row;
-  align-items: center;
 `;
 
 const StyledInput = styled.TextInput.attrs((props) => {
@@ -60,13 +54,14 @@ const SignUpButton = styled.TouchableOpacity`
 
 const StyledText = styled.Text`
   color: ${(props) => props.color};
-  font-size: ${(props) => (props.fontSize ? props.fontSize + 'px' : '20px')};
+  font-size: ${(props) => (props.fontSize ? props.fontSize + 'px' : '18px')};
 `;
 
 const SignInScreen = function ({ navigation }) {
-  const { state, dispatch } = useContext(Context)
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
+  const [isCompleted, setIsCompleted] = useState({ id: false, password: false})
+  const { state, dispatch } = useContext(Context)
   const width = Dimensions.get('window').width;
 
   useLayoutEffect(() => {
@@ -76,19 +71,52 @@ const SignInScreen = function ({ navigation }) {
     });
   });
 
+  useEffect(() => {
+    const format = id.split('@')
+    if(format.length === 2){
+      isCompleted.id = true
+    }
+    else{
+      isCompleted.id = 'FORMAT_ERROR'
+    }
+    setIsCompleted({...isCompleted})
+  }, [id])
+
+
+  useEffect(() => {
+    if(password.length >= 6){
+      isCompleted.password = true
+      setIsCompleted({...isCompleted})
+    } 
+  }, [password])
+  
   const _onPressSignUp = function () {
     navigation.navigate('회원가입');
   };
 
   const _onPressLogin = async function(){
-    // const res = await axios.post('/login', {id, password})
-    const res = 'success'
-
-    if(res === 'success'){
-      dispatch({ type : 'LOGIN' })
-      navigation.dispatch(CommonActions.navigate('Home'))
-    }else{
-      alert('아이디가 존재하지 않거나 비밀번호가 일치하지 않습니다.')
+    let flag = 0
+    for(let key in isCompleted){
+      if(isCompleted[key] !== true) flag = 1
+    }
+    if(flag === 0){
+      // const res = await axios.post('/login', {id, password})
+      const res = 'success'
+  
+      if(res === 'success'){
+        dispatch({ type : 'LOGIN' })
+        navigation.dispatch(CommonActions.navigate('Home'))
+      }else{
+        Alert.alert('아이디가 존재하지 않거나 비밀번호가 일치하지 않습니다.')
+      }
+    }
+    else{
+      if(isCompleted.id === 'FORMAT_ERROR'){
+        Alert.alert('이메일 형식이 올바르지 않습니다.')
+      }
+      else{
+        Alert.alert('이메일이 존재하지 않거나 비밀번호가 일치하지 않습니다.')
+      }
     }
   }
 
@@ -96,7 +124,7 @@ const SignInScreen = function ({ navigation }) {
     <Container>
       <StyledInput
         width={width}
-        placeholder={'아이디 입력'}
+        placeholder={'이메일 입력'}
         value={id}
         onChangeText={(text) => setId(text)}
       />
@@ -109,17 +137,17 @@ const SignInScreen = function ({ navigation }) {
         style={{marginBottom: 10}}
       />
       <LoginButton width={width} onPress={_onPressLogin}>
-        <StyledText color="white">Sign In</StyledText>
+        <StyledText color="white">로그인</StyledText>
       </LoginButton>
       <SocialLoginButton width={width}>
         <Image source={images.google} style={{ width: 45, height: 45 }} />
         <StyledText style={{ flex: 1, textAlign: 'center' }} color="white">
-          Sign In with Google
+          구글 아이디로 로그인
         </StyledText>
       </SocialLoginButton>
       <SignUpButton onPress={_onPressSignUp}>
-        <StyledText color="#007AFF" fontSize="18">
-          Sign Up
+        <StyledText color="#007AFF" fontSize="16">
+          회원가입
         </StyledText>
       </SignUpButton>
     </Container>

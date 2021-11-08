@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/native';
-import { Text, Dimensions } from 'react-native';
+import { Text, Dimensions, View } from 'react-native';
 
 const Container = styled.View`
   width: ${(props) => props.width - 100}px;
@@ -24,7 +24,7 @@ const Input = styled.TextInput.attrs((props) => {
   height: 42px;
   padding: 10px;
   border: 1px;
-  border-color: #D6DDE4;
+  border-color: #d6dde4;
   border-radius: 4px;
   background-color: white;
 `;
@@ -48,23 +48,62 @@ const AuthenticatoinButton = styled.TouchableOpacity`
 const TextInputWithLabel = function ({
   label,
   type,
+  value,
   placeholder,
   notice,
   authentication,
+  onChangeText,
+  onPressAuthButton,
 }) {
   const width = Dimensions.get('window').width;
+  const [isAuthCompleted, setIsAuthCompleted] = useState(false);
 
   return (
     <Container width={width}>
       <Label>{label}</Label>
-      <Input
-        placeholder={placeholder}
-        secureTextEntry={type === 'password' ? true : false}
-      />
-      {notice !== undefined ? <Notice>{notice}</Notice> : null}
+      {!isAuthCompleted ? (
+        <Input
+          placeholder={placeholder}
+          secureTextEntry={
+            type === 'password' || type === 'password_check' ? true : false
+          }
+          onChangeText={onChangeText}
+        />
+      ) : (
+        <View
+          style={{
+            borderRadius: 4,
+            borderWidth: 1,
+            borderColor: '#d6dde4',
+            padding: 10,
+            height: 42,
+          }}
+        >
+          <Text>{value}</Text>
+        </View>
+      )}
+      {notice !== undefined ? (
+        <Notice
+          style={{
+            color:
+              notice === '비밀번호가 일치합니다'
+                ? '#007AFF'
+                : type === 'password_check'
+                ? 'red'
+                : 'black',
+          }}
+        >
+          {notice}
+        </Notice>
+      ) : null}
       {authentication ? (
-        <AuthenticatoinButton>
-          <Text style={{color: 'white'}}>인증</Text>
+        <AuthenticatoinButton
+          onPress={() => {
+            onPressAuthButton();
+            setIsAuthCompleted(true);
+          }}
+        >
+          <Text style={{ color: 'white' }}>인증</Text>
         </AuthenticatoinButton>
       ) : null}
     </Container>

@@ -14,9 +14,9 @@ const Label = styled.Text`
   padding-left: 5px;
 `;
 
-const CustomButtonGroup = function ({label ,buttonItems}) {
+const CustomButtonGroup = function ({label ,buttonItems, onPress}) {
   const width = Dimensions.get('window').width;
-  const [selectedIdx, setselectedIdx] = useState();
+  const [selectedIdx, setSelectedIdx] = useState();
 
   return (
     <Container width={width}>
@@ -24,8 +24,9 @@ const CustomButtonGroup = function ({label ,buttonItems}) {
       <ButtonGroup
         buttons={buttonItems}
         selectedIndex={selectedIdx}
-        onPress={(selectedIndex) => {
-          setselectedIdx(selectedIndex);
+        onPress={(idx) => {
+          setSelectedIdx(idx)
+          onPress(idx)
         }}
         containerStyle={{
           width: width - 100,
