@@ -24,9 +24,12 @@ const columns = [
     align: 'center',
     width: '60%',
     render: (title) => (
-      <div style={{ textAlign: 'start' }}>
+      <Link
+        to="/rent/place/detail/1"
+        style={{ color: 'black', textAlign: 'start' }}
+      >
         {title.length >= 100 ? title.slice(0, 100) + '...' : title}
-      </div>
+      </Link>
     ),
   },
   {
