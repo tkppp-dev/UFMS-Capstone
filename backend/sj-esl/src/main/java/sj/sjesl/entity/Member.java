@@ -32,7 +32,7 @@ public class Member implements Persistable<Long> {
     @CreatedDate
     private LocalDateTime createDate;
 
-//    @OneToMany(mappedBy = "member")
+
 //    private List<ReservationInquiry> reservationInquiries= new ArrayList<>();
 
     @OneToMany(mappedBy = "member")

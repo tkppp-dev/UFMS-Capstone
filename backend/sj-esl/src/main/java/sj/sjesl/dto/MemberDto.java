@@ -17,8 +17,8 @@ public class MemberDto {
     private String password;
     private MemberPrivileges privileges;
 
-    public MemberDto(Long memberId, String username) {
-        this.memberId = memberId;
-        this.username = username;
+    public MemberDto(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 }
