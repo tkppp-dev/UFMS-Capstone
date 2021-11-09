@@ -2,6 +2,7 @@ package sj.sjesl.config.auth;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import sj.sjesl.entity.Member;
@@ -10,7 +11,7 @@ import java.util.*;
 
 // 스프링 시큐리티가 로그인 요청을 가로채서 로그인을 진행하고 완료가 되면 UserDetails 타입의 오브젝트를
 //스프링 시큐리티의 고유한 세션저장소에 저장을 해준다.
-public class PrincipalDetail implements UserDetails, OAuth2User {
+public class PrincipalDetail implements UserDetails, OAuth2User  {
 
     private Member member;
     private Map<String,Object> attributes;
@@ -25,6 +26,13 @@ public class PrincipalDetail implements UserDetails, OAuth2User {
 
         this.attributes=attributes;
         this.member=member;
+    }
+
+    public PrincipalDetail(String username, String password, String authorities) {
+        this.member.setUsername(username);
+        this.member.setPassword(username);
+
+
     }
 
 

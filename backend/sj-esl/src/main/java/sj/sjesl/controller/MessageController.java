@@ -12,7 +12,7 @@ public class MessageController {
 
     MessageService messageService = new MessageService();
 
-    @PostMapping("/api/user/register") //설정해야함
+    @PostMapping("/api/user/register/mobile") //설정해야함
     public String sendSMS(String toNumber) {
 
         Random rand  = new Random();

@@ -1,84 +1,58 @@
 package sj.sjesl.config.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.NoArgsConstructor;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import sj.sjesl.config.auth.PrincipalDetail;
-import sj.sjesl.entity.Member;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.filter.GenericFilterBean;
+import sj.sjesl.config.jwt.JwtTokenProvider;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
-
-//스프링 시큐리티에서 UsernamePasswordAuthenticationFilter가 있음
-// login 요청해서 username, password 전소하면 (POST)
-//UsernamePasswordAuthenticationFilter동작을 함
-
+@Slf4j
 @RequiredArgsConstructor
+public class JwtAuthenticationFilter extends GenericFilterBean {
 
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private final AuthenticationManager authenticationManager;
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_TYPE = "Bearer";
+
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTemplate redisTemplate;
 
-    // 로그인 요청을 하면 로그인 시도를 위해서 실행되는 함수
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("JwtAuthenticationFilter: 로그인 시도중");
-        //1.username, password 받아서
-        try {
-//            BufferedReader br= request.getReader();
-//            String input=null;
-//            while((input= br.readLine()) !=null){
-//                System.out.println(input);
-            ObjectMapper om= new ObjectMapper();
-            Member member= om.readValue(request.getInputStream(),Member.class);
-            System.out.println(member);
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-            UsernamePasswordAuthenticationToken authenticationToken=
-                    new UsernamePasswordAuthenticationToken(member.getEmail(),member.getPassword());
+        // 1. Request Header 에서 JWT 토큰 추출
+        String token = resolveToken((HttpServletRequest) request);
 
-            //PrincipalDetailService 호출 loa dUserByUsername() 함수가 실행.
-            Authentication authentication =
-                    authenticationManager.authenticate(authenticationToken);
+        // 2. validateToken 으로 토큰 유효성 검사
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            // (추가) Redis 에 해당 accessToken logout 여부 확인
+            String isLogout = (String)redisTemplate.opsForValue().get(token);
+            if (ObjectUtils.isEmpty(isLogout)) {
+                // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext 에 저장
+                Authentication authentication = jwtTokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
+        chain.doFilter(request, response);
+    }
 
-            // 로그인이 됨
-            PrincipalDetail principalDetail= (PrincipalDetail) authentication.getPrincipal();
-            System.out.println("로그인 완료: "+principalDetail.getMember().toString());
-            // authentication 객체가 session 영역에 저장을 하고 그 방법이 return 해주면 된다.
-            // return의 이유는 권한 관리를 security가 대신 해주기 때문에 편하려고 하는 것.
-            // 굳이 JWT 토큰을 사용하면서 세션을 만들 이유가 없음. 근데 단지 권한 처리 때문에 session 넣어 준다.
-
-
-            return authentication;
-
-        } catch (IOException e) {
-            e.printStackTrace();
+    // Request Header 에서 토큰 정보 추출
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_TYPE)) {
+            return bearerToken.substring(7);
         }
         return null;
-    }
-    // attemptAuthentication 실행 후 인증이 정상적으로 되었으면 successfulAuthentication 함수가 실행.
-    //JWT 토큰을 만들어서 request 요청한 사용자에게 JWT토큰을 response 해주면 된다.
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        System.out.println("successfulAuthentication 실행됨 :인증이 완료됨");
-        PrincipalDetail principalDetail= (PrincipalDetail) authResult.getPrincipal();
-
-        //RSA방식 X Hash 암호 방식.
-
-        String token = jwtTokenProvider.create(authResult);
-        response.addHeader("Authorization", "Bearer " +  token);
-
-//        response.addHeader("Authorization","Bearer "+jwtToken);
     }
 }
