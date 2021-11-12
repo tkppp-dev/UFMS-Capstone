@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Schedule from '../screens/Schedule';
+import Schedule from '../screens/myPageScreen/ProfessorMyPage';
 
 const MyStack = createStackNavigator();
 

@@ -1,9 +1,10 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { Dimensions, ScrollView, View } from 'react-native';
+import { Alert, Dimensions, ScrollView, View } from 'react-native';
 import TextInputWithLabel from '../src/components/TextInputWithLabel';
-import ButtonGroup from '../src/components/CustomButtonGroup';
 import CustomButton from '../src/components/CustomButton';
+import axios from 'axios';
+import { Context } from '../src/context';
 
 const Container = styled.View`
   flex: 1;
@@ -18,13 +19,10 @@ const SignUp = function ({ navigation }) {
   const [checkingPassword, setCheckingPassword] = useState('');
   const [passwordCheckNotice, setPasswordCheckNotice] = useState('');
   const [name, setName] = useState('');
-  const [userType, setUserType] = useState();
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [identifierNumber, setIdentifierNumber] = useState('');
   const [isPhoneAuthCompleted, setIsPhoneAuthCompleted] = useState(false);
-  const [isIdentifierAuthCompleted, setIsIdentifierAuthCompleted] = useState(false);
   const [disabled, setDisabled] = useState(true);
-  const userTypeList = ['교수', '학생', '외부 이용자'];
+  const { state, dispatch } = useContext(Context);
   const width = Dimensions.get('window').width;
 
   useLayoutEffect(() => {
@@ -42,15 +40,7 @@ const SignUp = function ({ navigation }) {
       name.length > 0
     ) {
       if (isPhoneAuthCompleted) {
-        if (userType === '외부 이용자') {
-          setDisabled(false);
-        } else {
-          if (isIdentifierAuthCompleted) {
-            setDisabled(false);
-          } else {
-            setDisabled(true);
-          }
-        }
+        setDisabled(false);
       } else {
         setDisabled(true);
       }
@@ -70,6 +60,21 @@ const SignUp = function ({ navigation }) {
       setPasswordCheckNotice('');
     }
   }, [password, checkingPassword]);
+
+  const _onPressSumbitButton = async function () {
+    try {
+      const res = await axios.post('http://127.0.0.1:8080/api/user/register', {
+        email,
+        password,
+      });
+
+      dispatch({ type: 'LOGIN', response: res.data.data });
+      navigation.navigate('Home');
+    } catch (err) {
+      Alert.alert('회원가입에 실패했습니다');
+      console.log(err);
+    }
+  };
 
   return (
     <ScrollView
@@ -105,24 +110,12 @@ const SignUp = function ({ navigation }) {
           placeholder="- 없이 입력"
           authentication={true}
         />
-        <ButtonGroup
-          label="가입자"
-          buttonItems={userTypeList}
-          onPress={(idx) => {
-            setUserType(userTypeList[idx]);
-          }}
-        />
-        {userType === '교수' || userType === '학생' ? (
-          <TextInputWithLabel
-            label="교내 식별자"
-            value={identifierNumber}
-            onChangeText={(value) => setIdentifierNumber(value)}
-            onPressAuthButton={() => setIsIdentifierAuthCompleted(true)}
-            authentication={true}
-          />
-        ) : null}
         <View style={{ width: width - 100, marginTop: 15 }}>
-          <CustomButton label="회원가입 완료" disabled={disabled} />
+          <CustomButton
+            label="회원가입 완료"
+            disabled={disabled}
+            onPress={_onPressSumbitButton}
+          />
         </View>
       </Container>
     </ScrollView>

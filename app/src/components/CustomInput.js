@@ -35,16 +35,17 @@ const Notice = styled.Text`
   color: black;
 `;
 
-const CustomInput = function ({ label, type, placeholder, notice }) {
+const CustomInput = function ({ label, multiline, placeholder, notice, onChangeText }) {
   const width = Dimensions.get('window').width;
 
   return (
     <Container width={width}>
       <Label>{label}</Label>
       <Input
+        onChangeText={onChangeText}
         placeholder={placeholder}
-        multiline={type === 'textarea' ? true : false}
-        type={type}
+        multiline={multiline ? true : false}
+        autoCapitalize={false}
       />
       {notice !== undefined ? <Notice>{notice}</Notice> : null}
     </Container>
