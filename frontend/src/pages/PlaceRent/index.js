@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button, Table, Tooltip } from 'antd';
+import { Button, Table } from 'antd';
 import { Link } from 'react-router-dom';
+import { RentContainer } from './style';
 
 const columns = [
   {
@@ -24,9 +25,12 @@ const columns = [
     align: 'center',
     width: '60%',
     render: (title) => (
-      <div style={{ textAlign: 'start' }}>
+      <Link
+        to="/rent/place/detail/1"
+        style={{ color: 'black', textAlign: 'start' }}
+      >
         {title.length >= 100 ? title.slice(0, 100) + '...' : title}
-      </div>
+      </Link>
     ),
   },
   {
@@ -56,7 +60,7 @@ const data = [
   },
   {
     key: '2',
-    answer: '답변 완료',
+    answer: '답변 미완료',
     name: 'Jim Green',
     title: 'London No. 2 Lake Park, London No. 2 Lake Park',
     register_date: '2021-10-29',
@@ -65,14 +69,7 @@ const data = [
 
 function PlaceRent() {
   return (
-    <div
-      style={{
-        width: '90%',
-        marginLeft: '5%',
-        marginTop: '64px',
-        minHeight: '500px',
-      }}
-    >
+    <RentContainer>
       <Table
         columns={columns}
         dataSource={data}
@@ -84,7 +81,7 @@ function PlaceRent() {
           글 작성
         </Button>
       </Link>
-    </div>
+    </RentContainer>
   );
 }
 

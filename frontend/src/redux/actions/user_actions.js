@@ -17,8 +17,9 @@ export const googleLoginAction = (user) => ({
   payload: user,
 });
 
-export const logoutAction = () => ({
+export const logoutAction = (token) => ({
   type: LOGOUT_REQUEST,
+  payload: token,
 });
 
 export const registerAction = (user) => ({

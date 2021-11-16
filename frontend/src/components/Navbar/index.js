@@ -24,12 +24,9 @@ function Navbar() {
           </div>
 
           <div>
-            <a
-              className="ant-dropdown-link"
-              onClick={(e) => e.preventDefault()}
-            >
-              MENU
-            </a>
+            <Link className="ant-dropdown-link" to="/schedule">
+              스케줄 관리
+            </Link>
           </div>
 
           <div>

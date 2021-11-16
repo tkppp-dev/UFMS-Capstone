@@ -26,6 +26,11 @@ const columns = [
     align: 'center',
 
     onFilter: (value, record) => record.description.indexOf(value) === 0,
+    render: (description) => (
+      <Link to="/place/1" style={{ color: 'black' }}>
+        {description}
+      </Link>
+    ),
   },
   {
     title: '인원',
