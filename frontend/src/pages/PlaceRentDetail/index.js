@@ -1,15 +1,43 @@
 import { RentDetailContainer, Wrap } from './style';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
-function PlaceRentDetail() {
+function PlaceRentDetail(req) {
+  // const { userId } = useSelector((state) => state.auth);
+  // const { creator } = useSelector((state) => state.question);
+  // const projectID = req.match.params.id;
+
+  // const dispatch = useDispatch();
+
+  // useLayoutEffect(() => {
+  //   dispatch(detailPlaceAction(projectID));
+  // }, [dispatch, projectID]);
+
+  // const EditDeleteButton = (
+  //   <div
+  //     style={{
+  //       display: 'flex',
+  //       justifyContent: 'end',
+  //       marginTop: '32px',
+  //     }}
+  //   >
+  //     <Link to="/rent/place/edit/{projectID}" style={{ marginRight: '8px' }}>
+  //       <Button>수정하기</Button>
+  //     </Link>
+  //     <Button type="danger">삭제하기</Button>
+  //   </div>
+  // );
+
   return (
     <RentDetailContainer>
       <Wrap>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>
-            <h1>TITLE</h1>
+            <h1>
+              New York No. 1 Lake Park, New York No. 1 Lake Park New York No.
+            </h1>
           </div>
           <div style={{ paddingTop: '10px', color: 'gray' }}>2021-11-09</div>
         </div>
@@ -49,23 +77,25 @@ function PlaceRentDetail() {
             publishing software like Aldus PageMaker including versions of Lorem
             Ipsum.
           </div>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'end',
-              marginTop: '32px',
-            }}
-          >
-            <Link to="/rent/place/edit/1" style={{ marginRight: '8px' }}>
-              <Button>수정하기</Button>
-            </Link>
-            <Button type="danger">삭제하기</Button>
-          </div>
+        </div>
+        {/* {userId === creator.id ? EditDeleteButton : <></>} */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'end',
+            marginTop: '32px',
+          }}
+        >
+          <Link to="/rent/place/edit/1" style={{ marginRight: '8px' }}>
+            <Button>수정하기</Button>
+          </Link>
+          <Button type="danger">삭제하기</Button>
         </div>
         <div
           style={{
             width: '100%',
             borderTop: '1px solid #dbdbdb',
+            marginTop: '16px',
             paddingTop: '16px',
           }}
         >

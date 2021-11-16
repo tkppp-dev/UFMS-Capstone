@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import {
   googleLoginAction,
   loginAction,
@@ -64,7 +63,12 @@ function LoginModal({ buttonType }) {
 
   const onLogoutClick = () => {
     if (window.confirm('로그아웃 하시겠습니까?') === true) {
-      dispatch(logoutAction());
+      const accessToken = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+
+      const token = { accessToken, refreshToken };
+
+      dispatch(logoutAction(token));
     } else {
       return false;
     }
@@ -153,9 +157,9 @@ function LoginModal({ buttonType }) {
             <br />
             <div style={{ textAlign: 'center', marginBottom: '7px' }}>
               <span>
-                <Link to="/user/password" onClick={handleSignInCancel}>
+                <a href="/user/password" onClick={handleSignInCancel}>
                   Forgot a Password?
-                </Link>
+                </a>
               </span>
             </div>
             <div style={{ textAlign: 'center' }}>

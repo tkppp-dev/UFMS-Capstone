@@ -14,14 +14,4 @@ export const Wrap = styled.div`
   border-radius: 5px;
   padding: 48px;
   margin-top: 64px;
-  display: flex;
-  justify-content: space-between;
-`;
-
-export const LeftSide = styled.div`
-  width: 48%;
-`;
-
-export const RightSide = styled.div`
-  width: 48%;
 `;

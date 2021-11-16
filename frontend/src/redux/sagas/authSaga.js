@@ -26,7 +26,7 @@ const loginUserAPI = (data) => {
     },
   };
 
-  return axios.post('api/auth/login', data, config);
+  return axios.post('/api/auth/login', data, config);
 };
 
 function* loginUser(action) {
@@ -59,7 +59,7 @@ const googleLoginUserAPI = (data) => {
     },
   };
 
-  return axios.post('api/auth/google', data, config);
+  return axios.post('/api/auth/google', data, config);
 };
 
 function* googleLoginUser(action) {
@@ -83,20 +83,28 @@ function* watchGoogleLoginUser() {
 }
 
 // LOGOUT
-function* logout() {
+const logoutAPI = (data) => {
+  return axios.post('/api/auth/logout', data);
+};
+
+function* logoutUser(action) {
   try {
+    const result = yield call(logoutAPI, action.payload);
+
     yield put({
       type: LOGOUT_SUCCESS,
+      payload: result.data,
     });
   } catch (e) {
     yield put({
       type: LOGOUT_FAILURE,
+      payload: e.response,
     });
   }
 }
 
-function* watchlogout() {
-  yield takeEvery(LOGOUT_REQUEST, logout);
+function* watchLogoutUser() {
+  yield takeEvery(LOGOUT_REQUEST, logoutUser);
 }
 
 // Register
@@ -170,7 +178,7 @@ function* watchuserLoading() {
 export default function* authSaga() {
   yield all([
     fork(watchLoginUser),
-    fork(watchlogout),
+    fork(watchLogoutUser),
     fork(watchregisterUser),
     fork(watchuserLoading),
     fork(watchGoogleLoginUser),

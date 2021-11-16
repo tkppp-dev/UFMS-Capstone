@@ -1,7 +1,7 @@
 package sj.sjesl.config.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+//import com.auth0.jwt.JWT;
+//import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
