@@ -8,13 +8,37 @@ const Button = styled.TouchableOpacity`
   width: 100%;
   height: 40px;
   border-radius: 4px;
-  background-color: ${({ disabled }) => (disabled ? '#8cc3ff' : '#007aff')};
+  background-color: ${({ color }) => (color !== undefined ? color : '#007aff')};
 `;
 
-const CustomButton = function ({ onPress, label, disabled }) {
+const CustomButton = function ({
+  onPress,
+  label,
+  disabled,
+  color,
+  fontColor,
+  border,
+  borderColor
+}) {
   return (
-    <Button onPress={onPress} disabled={disabled}>
-      <Text style={{ color: 'white' }}>{label}</Text>
+    <Button
+      onPress={onPress}
+      color={color}
+      disabled={disabled}
+      style={{
+        opacity: disabled ? 0.5 : 1,
+        borderWidth: border ? 1 : 0,
+        borderColor: borderColor !== undefined ? borderColor : 'gray',
+      }}
+    >
+      <Text
+        style={{
+          color: fontColor !== undefined ? fontColor : 'white',
+          fontWeight: 'bold',
+        }}
+      >
+        {label}
+      </Text>
     </Button>
   );
 };

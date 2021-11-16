@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { Text, View } from 'react-native';
+import { Text, View, Button } from 'react-native';
 import {
   Collapse,
   CollapseHeader,
   CollapseBody,
 } from 'accordion-collapse-react-native';
-import CustomButton from './CustomButton';
-import { widthNavigation } from 'react-navigation'
 
 const Container = styled(Collapse)`
   border-bottom-color: gray;
@@ -22,16 +20,27 @@ const TitleText = styled.Text`
     type === 'done-label' ? color.fontColor : 'black'};
 `;
 
-const InquiryAnswer = function ({ onPress }) {
-  const [isAnswerDone, setIsAnswerDone] = useState(false);
+const CustomButton = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  width: 80px;
+  height: 35px;
+`;
+
+const UpdateButton = styled(CustomButton)`
+  background-color: #007aff;
+`;
+
+const DeleteButton = styled(CustomButton)`
+  background-color: red;
+`;
+
+const InquiryAnswer = function ({ onPress, inquiryDetail }) {
   const doneLabelColor = [
     { name: 'answerYet', fontColor: '#FF4848' },
     { name: 'answerDone', fontColor: '#007AFF' },
   ];
-
-  useEffect(() => {
-    setIsAnswerDone(false);
-  }, []);
 
   return (
     <Container>
@@ -48,12 +57,16 @@ const InquiryAnswer = function ({ onPress }) {
         >
           <TitleText
             type={'done-label'}
-            color={!isAnswerDone ? doneLabelColor[0] : doneLabelColor[1]}
+            color={
+              !inquiryDetail.isAnswerDone
+                ? doneLabelColor[0]
+                : doneLabelColor[1]
+            }
           >
-            {isAnswerDone ? '답변 완료' : '답변 미완료'}
+            {inquiryDetail.isAnswerDone ? '답변 완료' : '답변 미완료'}
           </TitleText>
         </View>
-        <TitleText style={{ flex: 1 }}>문의 제목 문의 제목 문의 제목</TitleText>
+        <TitleText style={{ flex: 1 }}>{inquiryDetail.title}</TitleText>
       </CollapseHeader>
       <CollapseBody
         style={{
@@ -63,30 +76,57 @@ const InquiryAnswer = function ({ onPress }) {
           borderTopColor: 'gray',
         }}
       >
-        <Text style={{ fontSize: 16 }}>
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged. It was popularised in the 1960s with
-          the release of Letraset sheets containing Lorem Ipsum passages, and
-          more recently with desktop publishing software like Aldus PageMaker
-          including versions of Lorem Ipsum.
-        </Text>
-        <Text style={{ marginTop: 25, marginBottom: 15, fontSize: 16 }}>
-          문의 내용
-        </Text>
-        <Text style={{ marginBottom: 15, fontSize: 16 }}>
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book.
-        </Text>
-        <CustomButton
-          label="다시 문의하기"
-          onPress={onPress}
-        />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginBottom: 15,
+          }}
+        >
+          <Text style={{ fontSize: 16, fontWeight: 'bold' }}>문의 내용</Text>
+          <Text style={{ fontSize: 16 }}>작성일 - {inquiryDetail.date}</Text>
+        </View>
+        <Text style={{ fontSize: 16 }}>{inquiryDetail.content}</Text>
+        {inquiryDetail.isAnswerDone ? (
+          <>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginTop: 20,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                }}
+              >
+                문의 답변
+              </Text>
+              <Text style={{ fontSize: 16 }}>
+                답변일 - {inquiryDetail.answerDate}
+              </Text>
+            </View>
+            <Text style={{ fontSize: 16 }}>{inquiryDetail.answer}</Text>
+          </>
+        ) : null}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+            marginTop: 15,
+          }}
+        >
+          {!inquiryDetail.isAnswerDone ? (
+            <UpdateButton>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>문의 수정</Text>
+            </UpdateButton>
+          ) : null}
+          <DeleteButton style={{ marginStart: 10}}>
+            <Text style={{ color: 'white', fontWeight: 'bold' }}>문의 삭제</Text>
+          </DeleteButton>
+        </View>
       </CollapseBody>
     </Container>
   );

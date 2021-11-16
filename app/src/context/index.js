@@ -1,12 +1,13 @@
-import React from 'react';
-import { createContext, useReducer } from 'react';
+import React, { createContext, useReducer } from 'react';
 
 const Context = createContext({});
 
 const initialState = {
   user: {
     isLogin: false,
-    jwtToken: null,
+    accessToken: null,
+    refreshToken: null,
+    userInfo: {},
   },
 };
 
@@ -14,11 +15,19 @@ const reducer = function (state = initialState, action) {
   switch (action.type) {
     case 'LOGIN':
       state.user.isLogin = true;
-      state.user.jwtToken = 'get token';
+      state.user.accessToken = action.response.accessToken;
+      state.user.refreshToken = action.response.refreshToken;
+      state.user.userInfo = {
+        id: action.response.id,
+        email: action.response.email,
+        userName: action.response.name,
+      };
       return { ...state };
     case 'LOGOUT':
       state.user.isLogin = false;
-      state.user.jwtToken = null;
+      state.user.accessToken = null;
+      state.user.refreshToken = null;
+      state.user.userInfo = {};
       return { ...state };
   }
 };

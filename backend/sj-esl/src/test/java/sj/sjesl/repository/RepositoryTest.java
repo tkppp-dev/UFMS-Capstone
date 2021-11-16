@@ -67,10 +67,10 @@ class RepositoryTest {
                 .getResultList();
         
         // APi 페이징
-//        em.createQuery("select m from Member m order by m.memberId desc ", Member.class)
-//                .setFirstResult(0)
-//                .setMaxResults(10)
-//                .getResultList()
+        em.createQuery("select m from Member m order by m.memberId desc ", Member.class)
+                .setFirstResult(0)
+                .setMaxResults(10)
+                .getResultList();
 
     }
 

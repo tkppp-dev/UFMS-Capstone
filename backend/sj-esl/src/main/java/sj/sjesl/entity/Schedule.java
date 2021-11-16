@@ -18,4 +18,6 @@ public class Schedule {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    private Long Subject_id;
+    private Long facility_id;
 }

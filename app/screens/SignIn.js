@@ -2,7 +2,7 @@ import React, { useState, useLayoutEffect, useEffect, useContext } from 'react';
 import styled from 'styled-components/native';
 import { Dimensions, Image, Alert } from 'react-native';
 import { images } from '../src/images';
-import axios from 'axios'
+import axios from 'axios';
 import { CommonActions } from '@react-navigation/native';
 import { Context } from '../src/context';
 
@@ -25,7 +25,7 @@ const StyledInput = styled.TextInput.attrs((props) => {
   padding: 10px;
   margin: 5px;
   border: 1px;
-  border-color: #D6DDE4;
+  border-color: #d6dde4;
   border-radius: 4px;
   background-color: white;
 `;
@@ -37,7 +37,7 @@ const Button = styled.TouchableOpacity`
   margin-top: 10px;
   background-color: #007aff;
   border-radius: 4px;
-`
+`;
 
 const LoginButton = styled(Button)`
   justify-content: center;
@@ -58,74 +58,75 @@ const StyledText = styled.Text`
 `;
 
 const SignInScreen = function ({ navigation }) {
-  const [id, setId] = useState('');
+  const [email, setId] = useState('');
   const [password, setPassword] = useState('');
-  const [isCompleted, setIsCompleted] = useState({ id: false, password: false})
-  const { state, dispatch } = useContext(Context)
+  const [isCompleted, setIsCompleted] = useState({
+    email: false,
+    password: false,
+  });
+  const { state, dispatch } = useContext(Context);
   const width = Dimensions.get('window').width;
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitleVisible: false,
-      headerTitleAlign: 'center'
+      headerTitleAlign: 'center',
     });
   });
 
   useEffect(() => {
-    const format = id.split('@')
-    if(format.length === 2){
-      isCompleted.id = true
+    const format = email.split('@');
+    if (format.length === 2) {
+      isCompleted.email = true;
+    } else {
+      isCompleted.email = 'FORMAT_ERROR';
     }
-    else{
-      isCompleted.id = 'FORMAT_ERROR'
-    }
-    setIsCompleted({...isCompleted})
-  }, [id])
-
+    setIsCompleted({ ...isCompleted });
+  }, [email]);
 
   useEffect(() => {
-    if(password.length >= 6){
-      isCompleted.password = true
-      setIsCompleted({...isCompleted})
-    } 
-  }, [password])
-  
+    if (password.length >= 6) {
+      isCompleted.password = true;
+      setIsCompleted({ ...isCompleted });
+    }
+  }, [password]);
+
   const _onPressSignUp = function () {
     navigation.navigate('회원가입');
   };
 
-  const _onPressLogin = async function(){
-    let flag = 0
-    for(let key in isCompleted){
-      if(isCompleted[key] !== true) flag = 1
+  const _onPressLogin = async function () {
+    let flag = 0;
+    for (let key in isCompleted) {
+      if (isCompleted[key] !== true) flag = 1;
     }
-    if(flag === 0){
-      // const res = await axios.post('/login', {id, password})
-      const res = 'success'
-  
-      if(res === 'success'){
-        dispatch({ type : 'LOGIN' })
-        navigation.dispatch(CommonActions.navigate('Home'))
-      }else{
-        Alert.alert('아이디가 존재하지 않거나 비밀번호가 일치하지 않습니다.')
+    if (flag === 0) {
+      try {
+        const res = await axios.post('http://127.0.0.1:8080/api/auth/login', {
+          email,
+          password,
+        });
+        dispatch({ type: 'LOGIN', response: res.data.data });
+        navigation.dispatch(CommonActions.navigate('Home'));
+      } catch (err) {
+        console.log(err);
+        Alert.alert('아이디가 존재하지 않거나 비밀번호가 일치하지 않습니다.');
+      }
+    } else {
+      if (isCompleted.id === 'FORMAT_ERROR') {
+        Alert.alert('이메일 형식이 올바르지 않습니다.');
+      } else {
+        Alert.alert('이메일이 존재하지 않거나 비밀번호가 일치하지 않습니다.');
       }
     }
-    else{
-      if(isCompleted.id === 'FORMAT_ERROR'){
-        Alert.alert('이메일 형식이 올바르지 않습니다.')
-      }
-      else{
-        Alert.alert('이메일이 존재하지 않거나 비밀번호가 일치하지 않습니다.')
-      }
-    }
-  }
+  };
 
   return (
     <Container>
       <StyledInput
         width={width}
         placeholder={'이메일 입력'}
-        value={id}
+        value={email}
         onChangeText={(text) => setId(text)}
       />
       <StyledInput
@@ -134,7 +135,7 @@ const SignInScreen = function ({ navigation }) {
         value={password}
         onChangeText={(text) => setPassword(text)}
         secureTextEntry={true}
-        style={{marginBottom: 10}}
+        style={{ marginBottom: 10 }}
       />
       <LoginButton width={width} onPress={_onPressLogin}>
         <StyledText color="white">로그인</StyledText>
