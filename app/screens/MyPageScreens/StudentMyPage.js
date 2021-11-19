@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { Alert, ScrollView, Text, View } from 'react-native';
-import { Portal, Provider } from 'react-native-paper';
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Provider } from 'react-native-paper';
 import { Context } from '../../src/context/index';
 import CustomButton from '../../src/components/CustomButton';
-import ScheduleItem from '../../src/components/ScheduleItem';
+import InformationItem from '../../src/components/InformationItem';
 import axios from 'axios';
+import { Icon } from 'react-native-elements';
 
 const Container = styled.View`
   flex: 1;
@@ -51,7 +52,7 @@ const StyledText = styled.Text`
     marginBottom !== undefined ? marginBottom + 'px' : '6px'};
 `;
 
-const ProfessorMyPage = function ( { navigation }) {
+const ProfessorMyPage = function ({ navigation }) {
   const { state, dispatch } = useContext(Context);
   const [currentSchedule, setCurrentSchedule] = useState({});
   const [currentScheduleStatus, setCurrentScheduleStatus] = useState('수업중');
@@ -96,6 +97,17 @@ const ProfessorMyPage = function ( { navigation }) {
           </ContentContainer>
           <ContentContainer>
             <ContentTopColorRow />
+            <TouchableOpacity onPress={() => navigation.navigate('Schedule')}>
+              <Content style={{ flexDirection: 'row' }}>
+                <StyledText style={{ flex: 1 }} fontSize="20" fontWeight="bold">
+                  나의 스케줄 관리
+                </StyledText>
+                <Icon type="material" name="navigate-next" />
+              </Content>
+            </TouchableOpacity>
+          </ContentContainer>
+          <ContentContainer>
+            <ContentTopColorRow />
             <Content>
               <ContentTitle>
                 <StyledText fontSize="20" fontWeight="bold">
@@ -109,18 +121,22 @@ const ProfessorMyPage = function ( { navigation }) {
                   </View>
                 ) : (
                   <View style={{ marginBottom: 8 }}>
-                    <ScheduleItem
+                    <InformationItem
                       title="스케줄 이름"
                       body="컴퓨터공학 캡스톤디자인 2반"
                     />
-                    <ScheduleItem title="위치" body="율곡관 301호" />
+                    <InformationItem title="위치" body="율곡관 301호" />
                     <View style={{ flexDirection: 'row' }}>
-                      <ScheduleItem
+                      <InformationItem
                         title="시간"
                         body="12:00~13:30"
                         row={true}
                       />
-                      <ScheduleItem title="상태" body={currentScheduleStatus} row={true} />
+                      <InformationItem
+                        title="상태"
+                        body={currentScheduleStatus}
+                        row={true}
+                      />
                     </View>
                   </View>
                 )}
@@ -131,23 +147,16 @@ const ProfessorMyPage = function ( { navigation }) {
                 </StyledText>
               </ContentTitle>
               <ContentBody>
-                <ScheduleItem
+                <InformationItem
                   title="스케줄 이름"
                   body="컴퓨터공학 캡스톤디자인 2반"
                 />
-                <ScheduleItem title="위치" body="율곡관 301호" />
+                <InformationItem title="위치" body="율곡관 301호" />
                 <View style={{ flexDirection: 'row' }}>
-                  <ScheduleItem title="시간" body="13:30~15:00" row={true} />
-                  <ScheduleItem title="상태" body="수업 대기중" row={true} />
+                  <InformationItem title="시간" body="13:30~15:00" row={true} />
+                  <InformationItem title="상태" body="수업 대기중" row={true} />
                 </View>
               </ContentBody>
-              <CustomButton
-                label="스케줄 관리하기"
-                color={'#f7f9fa'}
-                fontColor={'black'}
-                border={true}
-                onPress={() => navigation.navigate('Schedule')}
-              />
             </Content>
           </ContentContainer>
         </Container>

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import PropTypes from 'prop-types';
+import { View, Text } from 'react-native'
 import { Card, Title, Paragraph } from 'react-native-paper'
 
 const Container = styled.View`
@@ -14,8 +14,10 @@ const UsageDetail = function(){
         <Card.Content>
           <Title>10:30AM~12:00PM</Title>
           <Paragraph>
-            Reservation Information
-          </Paragraph>
+          <View>
+            <Text>asdfasdf</Text>
+          </View>
+        </Paragraph>
         </Card.Content>
       </Card>
       <Card style={{marginVertical: 5}}>

@@ -103,7 +103,9 @@ const ClassRentApplication = function ({ navigation, route }) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown: false,
+      headerBackTitleVisible: false,
+      headerTitleAlign: 'center',
+      title: '예약하기'
     });
   });
 

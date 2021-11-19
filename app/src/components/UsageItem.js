@@ -7,7 +7,11 @@ export default UsageItem = function () {
     <Card style={{ marginVertical: 5 }}>
       <Card.Content>
         <Title>10:30AM~12:00PM</Title>
-        <Paragraph>Reservation Information</Paragraph>
+        <Paragraph>
+          <View>
+            <Text>예약자</Text>
+          </View>
+        </Paragraph>
       </Card.Content>
     </Card>
   );

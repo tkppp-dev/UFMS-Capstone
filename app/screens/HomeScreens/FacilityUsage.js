@@ -1,10 +1,9 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import styled from 'styled-components/native';
-import PropTypes from 'prop-types';
-import { Text, View, TouchableOpacity, Touchable } from 'react-native';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
-import localeConfig from '../src/CalendarLocaleConfig';
-import UsageDetail from '../src/components/UsageDetail'
+import localeConfig from '../../src/CalendarLocaleConfig';
+import DayUsage from '../../src/components/DayUsage';
+import LoadingSpinner from '../../src/components/LoadingSpinner'
 
 LocaleConfig.locales['kr'] = localeConfig;
 LocaleConfig.defaultLocale = 'kr';
@@ -54,7 +53,7 @@ const getItems = function (min, max) {
   const items = {};
 
   while (date <= endDate) {
-    items[getDateStr(date)] = [{name : '123'}];
+    items[getDateStr(date)] = [{ name: '123' }];
     date.setDate(date.getDate() + 1);
   }
   return items;
@@ -64,55 +63,64 @@ const FacilityUsage = function ({ navigation, route }) {
   const { min, now, max } = getCalendarRange();
   const [selectDate, setSelectDate] = useState(new Date());
   const [items, setItems] = useState(getItems(min, max));
+  const [isReady, setIsReady] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitleAlign: 'center',
-      title: `${route.params.facilityName} 사용 현황`,
+      title: `${route.params.buildingName} ${route.params.facilityName} 사용 현황`,
     });
   });
 
-  const _onDayPress = function(day){
-    setSelectDate(new Date(day.dateString))
-  }
+  useEffect(() => {
+    setTimeout(() => {
+      setIsReady(true);
+    }, 1000);
+  }, []);
 
-  const _onDayChange = function(day){
-    setSelectDate(new Date(day.dateString))
-  }
+  const _onDayPress = function (day) {
+    setSelectDate(new Date(day.dateString));
+  };
 
-  const _renderItem = function(item){
-    return (
-      <UsageDetail />
-    );
-  }
+  const _onDayChange = function (day) {
+    setSelectDate(new Date(day.dateString));
+  };
 
-  const _rowHasChanaged = function(r1, r2){
-    return r1.name !== r2.name
-  }
+  const _renderItem = function (item) {
+    return <DayUsage />;
+  };
+
+  const _rowHasChanaged = function (r1, r2) {
+    return r1.name !== r2.name;
+  };
 
   return (
     <Container>
       <CalendarHeader>
         {`${selectDate.getFullYear()} ${selectDate.getMonth() + 1}월`}
       </CalendarHeader>
-      <Agenda
-        items={items}
-        selected={now}
-        minDate={min}
-        maxDate={max}
-        pastScrollRange={2}
-        futureScrollRange={6}
-        showClosingKnob={true}
-        onDayPress={_onDayPress}
-        onDayChange={_onDayChange}
-        renderItem={_renderItem}
-        rowHasChanged={_rowHasChanaged}
-        theme={{
-          agendaKnobColor: 'gray',
-        }}
-        style={{}}
-      />
+      {!isReady ? (
+        <LoadingSpinner />
+      ) : (
+        <Agenda
+          items={items}
+          selected={now}
+          minDate={min}
+          maxDate={max}
+          pastScrollRange={2}
+          futureScrollRange={6}
+          showClosingKnob={true}
+          onDayPress={_onDayPress}
+          onDayChange={_onDayChange}
+          renderItem={_renderItem}
+          rowHasChanged={_rowHasChanaged}
+          theme={{
+            agendaKnobColor: 'gray',
+          }}
+          style={{}}
+        />
+      )}
     </Container>
   );
 };

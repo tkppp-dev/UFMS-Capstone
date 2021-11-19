@@ -1,18 +1,25 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import ProfessorMyPage from '../screens/myPageScreen/ProfessorMyPage';
-import StudentMyPage from '../screens/myPageScreen/StudentMyPage'
-import WeekSchedule from '../screens/myPageScreen/WeekSchedule';
+import ProfessorMyPage from '../screens/MyPageScreens/ProfessorMyPage';
+import StudentMyPage from '../screens/MyPageScreens/StudentMyPage';
+import WeekSchedule from '../screens/MyPageScreens/WeekSchedule';
 
 const MyStack = createStackNavigator();
 
 const MyStackNavigator = function () {
   return (
-    <MyStack.Navigator screenOptions={{ headerShown: false }}>
-      <MyStack.Screen name="MyStack" component={StudentMyPage} />
+    <MyStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          height: 50,
+        },
+        headerTitleStyle: {},
+      }}
+    >
+      <MyStack.Screen name="MyStack" component={ProfessorMyPage} />
       <MyStack.Screen name="Schedule" component={WeekSchedule} />
     </MyStack.Navigator>
   );
 };
 
-export default MyStackNavigator
+export default MyStackNavigator;

@@ -27,7 +27,9 @@ const ClassRentNotice = function ({ navigation, route }) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown: false,
+      headerBackTitleVisible: false,
+      headerTitleAlign: 'center',
+      title: '강의실 예약 유의사항'
     });
   });
 
@@ -63,7 +65,7 @@ const ClassRentNotice = function ({ navigation, route }) {
             <Button onPress={() => {
               navigation.navigate('Class Rent Application', { placeName : name })
             }}>
-              <Text style={{ color: 'white' }}>강의실 예약</Text>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>강의실 예약</Text>
             </Button>
           </View>
         </Content>

@@ -6,26 +6,26 @@ const Container = styled.View`
   margin: 6px 0;
 `;
 
-const SubjectText = styled.Text`
+const Title = styled.Text`
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 6px;
 `;
 
-const DetailText = styled.Text`
+const Information = styled.Text`
   font-size: 15px;
   margin-bottom: 6px;
   padding: 0 0 0 6px;
   margin: 4px 0;
 `;
 
-const ScheduleItem = function ({ title, body, row }) {
+const InformationItem = function ({ title, body, row }) {
   return (
     <Container row={row}>
-      <SubjectText>{title}</SubjectText>
-      <DetailText>{body}</DetailText>
+      <Title>{title}</Title>
+      <Information>{body}</Information>
     </Container>
   );
 };
 
-export default ScheduleItem;
+export default InformationItem;

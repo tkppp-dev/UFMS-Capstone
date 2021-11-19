@@ -109,13 +109,31 @@ const RentApplication = function ({ navigation, route }) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown: false,
+      headerBackTitleVisible: false,
+      headerTitleAlign: 'center',
+      title: '대관 신청'
     });
   });
 
+  const isAfter10Days = function(){
+    const monthStr = month < 10 ? `0${month}` : month
+    const dayStr = day < 10 ? `0${day}` : day
+    const offset = new Date(`${year}-${monthStr}-${dayStr}`) - dt
+
+    if(new Date(offset).getDate() <= 10){
+      return false
+    }
+    else{
+      return true
+    }
+   }
+
   const _onPressSearchButton = function () {
     const isAlreadyRented = false;
-    if (isAlreadyRented) {
+    if(!isAfter10Days()){
+      Alert.alert('', '대관은 선택한 예약일로부터 10일 전부터 신청 가능합니다');
+    }
+    else if (isAlreadyRented) {
       Alert.alert('알림', '선택한 날짜는 대관이 불가합니다.');
     } else {
       Alert.alert(
