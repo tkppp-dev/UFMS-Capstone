@@ -17,7 +17,7 @@ import {
 } from 'redux/types/user_types';
 
 const initialState = {
-  token: localStorage.getItem('token'),
+  token: localStorage.getItem('accessToken'),
   isAuthenticated: false,
   isLoading: false,
   user: '',
@@ -38,22 +38,23 @@ const authReducer = (state = initialState, action) => {
     case LOGIN_SUCCESS:
     case GOOGLE_LOGIN_SUCCESS:
     case REGISTER_SUCCESS:
-      localStorage.setItem('token', action.payload.token);
+      localStorage.setItem('accessToken', action.payload.data.accessToken);
+      localStorage.setItem('refreshToken', action.payload.data.refreshToken);
 
       return {
         ...state,
         ...action.payload,
         isAuthenticated: true,
         isLoading: false,
-        user: action.payload.user,
-        userId: action.payload.user.id,
-        userName: action.payload.user.name,
+        user: action.payload.data,
+        userId: action.payload.data.id,
+        userName: action.payload.data.username,
       };
     case LOGIN_FAILURE:
     case GOOGLE_LOGIN_FAILURE:
-    case LOGOUT_FAILURE:
     case REGISTER_FAILURE:
-      localStorage.removeItem('token');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
 
       return {
         ...state,
@@ -66,7 +67,8 @@ const authReducer = (state = initialState, action) => {
       };
 
     case LOGOUT_SUCCESS:
-      localStorage.removeItem('token');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
 
       return {
         token: null,
@@ -74,6 +76,11 @@ const authReducer = (state = initialState, action) => {
         userId: null,
         isAuthenticated: false,
         isLoading: false,
+      };
+
+    case LOGOUT_FAILURE:
+      return {
+        ...state,
       };
 
     case USER_LOADING_REQUEST:
@@ -87,8 +94,8 @@ const authReducer = (state = initialState, action) => {
         isAuthenticated: true,
         isLoading: false,
         user: action.payload,
-        userId: action.payload._id,
-        userName: action.payload.name,
+        userId: action.payload.id,
+        userName: action.payload.username,
       };
     case USER_LOADING_FAILURE:
       return {

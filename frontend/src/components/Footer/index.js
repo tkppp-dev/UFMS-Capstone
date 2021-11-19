@@ -17,28 +17,28 @@ function Footer() {
           <div>
             <div>Creator</div>
             <div>
-              <span>Creator1</span>
-              <BeforeSpan>Creator2</BeforeSpan>
-              <BeforeSpan>Creator3</BeforeSpan>
-              <BeforeSpan>Creator4</BeforeSpan>
+              <span>허인주</span>
+              <BeforeSpan>박태경</BeforeSpan>
+              <BeforeSpan>윤제혁</BeforeSpan>
+              <BeforeSpan>이풍원</BeforeSpan>
             </div>
           </div>
           <div>
             <div>Partner</div>
             <div>
-              <span>Partner1</span>
-              <BeforeSpan>Partner2</BeforeSpan>
-              <BeforeSpan>Partner3</BeforeSpan>
-              <BeforeSpan>Partner4</BeforeSpan>
+              <span>허인주</span>
+              <BeforeSpan>박태경</BeforeSpan>
+              <BeforeSpan>윤제혁</BeforeSpan>
+              <BeforeSpan>이풍원</BeforeSpan>
             </div>
           </div>
           <div>
             <div>Developer</div>
             <div>
-              <span>Developer1</span>
-              <BeforeSpan>Developer2</BeforeSpan>
-              <BeforeSpan>Developer3</BeforeSpan>
-              <BeforeSpan>Developer4</BeforeSpan>
+              <span>허인주</span>
+              <BeforeSpan>박태경</BeforeSpan>
+              <BeforeSpan>윤제혁</BeforeSpan>
+              <BeforeSpan>이풍원</BeforeSpan>
             </div>
           </div>
         </FooterBody>
