@@ -15,6 +15,9 @@ import PlaceRentWrite from 'pages/PlaceRentWrite';
 import PlaceRentDetail from 'pages/PlaceRentDetail';
 import PlaceRentEdit from 'pages/PlaceRentEdit';
 import Schedule from 'pages/Schedule';
+import Manager from 'pages/Manager';
+import PlaceAdd from 'pages/PlaceAdd';
+import PlaceEdit from 'pages/PlaceEdit';
 
 // components
 import Navbar from 'components/Navbar';
@@ -59,6 +62,9 @@ function App() {
         />
 
         <Route path="/schedule" exact component={Schedule} />
+        <Route path="/manager" exact component={Manager} />
+        <Route path="/manager/place/add" exact component={PlaceAdd} />
+        <Route path="/manager/place/edit/:id" exact component={PlaceEdit} />
       </Switch>
       {FooterContainer}
     </Layout>

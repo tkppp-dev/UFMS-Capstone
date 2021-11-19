@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 // antd
-import { Card, Modal, Table, Tag } from 'antd';
+import { Card, Modal, Table } from 'antd';
 
 // style
 import { OfficeContainer, CardRow } from './style';
@@ -40,59 +40,35 @@ const columns = [
     defaultSortOrder: 'descend',
     sorter: (a, b) => a.capacity - b.capacity,
   },
-  {
-    title: '사용 가능 여부',
-    key: 'available',
-    dataIndex: 'available',
-    align: 'center',
-
-    width: '20%',
-    render: (available) => (
-      <>
-        {
-          <div style={{ width: '100%', textAlign: 'center' }}>
-            <Tag color={available === 'O' ? 'geekblue' : 'volcano'}>
-              {available}
-            </Tag>
-          </div>
-        }
-      </>
-    ),
-  },
 ];
 
 const data = [
   {
     key: '1',
-    available: 'O',
     title: '충무관 B201호',
     capacity: 40,
     description: 'DUMMY DUMMY DUMMY DUMMY',
   },
   {
     key: '2',
-    available: 'X',
     title: '충무관 B202호',
     capacity: 42,
     description: 'DUMMY DUMMY DUMMY DUMMY',
   },
   {
     key: '3',
-    available: 'O',
     title: '충무관 B203호',
     capacity: 50,
     description: 'DUMMY DUMMY DUMMY DUMMY',
   },
   {
     key: '4',
-    available: 'O',
     title: '충무관 B204호',
     capacity: 46,
     description: 'DUMMY DUMMY DUMMY DUMMY',
   },
   {
     key: '5',
-    available: 'X',
     title: '충무관 B205호',
     capacity: 44,
     description: 'DUMMY DUMMY DUMMY DUMMY',
@@ -377,13 +353,8 @@ function PlaceContainer() {
         width={800}
       >
         <div id="modal-container">
-          <div>&lt;예시입니다&gt;</div>
           <h2 style={{ textAlign: 'center' }}>충무관</h2>
-          <Table
-            columns={columns}
-            dataSource={data}
-            // pagination={{ position: ['none', 'none'] }}
-          />
+          <Table columns={columns} dataSource={data} />
         </div>
       </Modal>
     </OfficeContainer>

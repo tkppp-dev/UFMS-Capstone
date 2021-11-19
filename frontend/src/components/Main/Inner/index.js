@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 // antd
-import { Avatar, Card } from 'antd';
+import { Card } from 'antd';
 
 // style
 import {

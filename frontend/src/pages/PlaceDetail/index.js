@@ -1,24 +1,69 @@
-import React, { useLayoutEffect } from 'react';
-import { DetailContainer, Wrap, LeftSide, RightSide } from './style';
-import ImageGallery from 'react-image-gallery';
-import { Button } from 'antd';
+import React, { useLayoutEffect, useState } from 'react';
+import { DetailContainer, Wrap } from './style';
+import { Button, Calendar, Badge } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { detailLoadingAction } from 'redux/actions/place_actions';
+import Modal from 'antd/lib/modal/Modal';
 
-const images = [
-  {
-    original: 'https://picsum.photos/id/1018/1000/600/',
-    thumbnail: 'https://picsum.photos/id/1018/250/150/',
-  },
-  {
-    original: 'https://picsum.photos/id/1015/1000/600/',
-    thumbnail: 'https://picsum.photos/id/1015/250/150/',
-  },
-  {
-    original: 'https://picsum.photos/id/1019/1000/600/',
-    thumbnail: 'https://picsum.photos/id/1019/250/150/',
-  },
-];
+function getListData(value) {
+  let listData;
+  switch (value.date()) {
+    case 8:
+      listData = [
+        { type: 'warning', content: 'This is warning event.' },
+        { type: 'success', content: 'This is usual event.' },
+      ];
+      break;
+    case 10:
+      listData = [
+        { type: 'warning', content: 'This is warning event.' },
+        { type: 'success', content: 'This is usual event.' },
+        { type: 'error', content: 'This is error event.' },
+      ];
+      break;
+    case 15:
+      listData = [
+        { type: 'warning', content: 'This is warning event' },
+        { type: 'success', content: 'This is very long usual event。。....' },
+        { type: 'error', content: 'This is error event 1.' },
+        { type: 'error', content: 'This is error event 2.' },
+        { type: 'error', content: 'This is error event 3.' },
+        { type: 'error', content: 'This is error event 4.' },
+      ];
+      break;
+    default:
+  }
+  return listData || [];
+}
+
+function dateCellRender(value) {
+  const listData = getListData(value);
+  return (
+    <ul className="events">
+      {listData.map((item) => (
+        <li key={item.content}>
+          <Badge status={item.type} text={item.content} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function getMonthData(value) {
+  if (value.month() === 8) {
+    return 1394;
+  }
+}
+
+function monthCellRender(value) {
+  const num = getMonthData(value);
+  return num ? (
+    <div className="notes-month">
+      <section>{num}</section>
+      <span>Backlog number</span>
+    </div>
+  ) : null;
+}
 
 function PlaceDetail(req) {
   const { placedetail } = useSelector((state) => state.place);
@@ -30,6 +75,19 @@ function PlaceDetail(req) {
   useLayoutEffect(() => {
     dispatch(detailLoadingAction(placeID));
   }, [dispatch, placeID]);
+
+  const [isModalVisible, setisModalVisible] = useState(false);
+
+  const showModal = () => {
+    setisModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setisModalVisible(false);
+  };
+  const handleCancel = () => {
+    setisModalVisible(false);
+  };
 
   return (
     <DetailContainer>
@@ -53,9 +111,26 @@ function PlaceDetail(req) {
           </div>
 
           <div style={{ marginTop: '16px' }}>
-            <Button type="primary">예약하기</Button>
+            <Button type="primary" onClick={showModal}>
+              예약하기
+            </Button>
           </div>
         </div>
+        <Modal
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          footer=""
+          width={800}
+        >
+          <div id="modal-container">
+            <h2 style={{ textAlign: 'center' }}>예약하기</h2>
+            <Calendar
+              dateCellRender={dateCellRender}
+              monthCellRender={monthCellRender}
+            />
+          </div>
+        </Modal>
       </Wrap>
     </DetailContainer>
   );

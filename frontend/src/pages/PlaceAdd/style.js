@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const RentDetailContainer = styled.div`
+export const AddContainer = styled.div`
   width: 100%;
   min-height: 500px;
   display: flex;

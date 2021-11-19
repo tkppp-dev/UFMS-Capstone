@@ -5,6 +5,7 @@ import styled from 'styled-components';
 export const WriteContainer = styled.div`
   width: 90%;
   margin-left: 5%;
+  margin-bottom: 64px;
 `;
 
 export const Title = styled.h1`

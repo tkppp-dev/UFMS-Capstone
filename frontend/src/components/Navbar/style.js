@@ -22,12 +22,6 @@ export const Wrap = styled.div`
   justify-content: space-between;
 `;
 
-export const MenuBox = styled(Menu)`
-  width: 100vw;
-  margin-top: 24px;
-  height: 230px;
-`;
-
 export const Logo = styled(Link)`
   width: 15%;
   font-size: 32px;

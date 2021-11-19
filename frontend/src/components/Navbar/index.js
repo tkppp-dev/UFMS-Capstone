@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 
 // style
-import { Logo, MenuContainer, MenuBox, NavbarContainer, Wrap } from './style';
+import { Logo, MenuContainer, NavbarContainer, Wrap } from './style';
 
 // component
 import LoginModal from 'components/LoginModal/LoginModal';
