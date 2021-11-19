@@ -4,24 +4,31 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import sj.sjesl.dto.ExcelReservationDto;
 import sj.sjesl.dto.ExcelSubjectDto;
-import sj.sjesl.entity.Facility;
-import sj.sjesl.entity.Member;
-import sj.sjesl.entity.ReservationInquiry;
+import sj.sjesl.entity.*;
 import sj.sjesl.dto.ExcelFacilityDto;
-import sj.sjesl.entity.Subject;
+import sj.sjesl.reservation.FacilityDateRequestDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @SpringBootTest
 @Transactional
@@ -37,6 +44,9 @@ class MemberRepositoryTest {
     FacilityRepository facilityRepository;
     @Autowired
     SubjectRepository subjectRepository;
+    @Autowired
+    ReservationRepository reservationRepository;
+
     @Test
     public void testMember() {
         Member member = new Member();
@@ -47,16 +57,20 @@ class MemberRepositoryTest {
     }
 
     @Test
+    public void as() throws InvalidFormatException, IOException {
+
+    }
+
+    @Test
     public void excelFacilityAndSubject() throws InvalidFormatException, IOException {
 
 
-        OPCPackage opcPackage = OPCPackage.open(new File("C:\\Users\\vnddn\\Downloads\\sj-esl\\src\\main\\resources\\Fac.xlsx"));
+        OPCPackage opcPackage = OPCPackage.open(new File("src\\main\\resources\\Fac.xlsx"));
 
         XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
 
 
         Sheet worksheet = workbook.getSheetAt(0);
-        System.out.println(worksheet.getPhysicalNumberOfRows());
         for (int i = 0; i < worksheet.getPhysicalNumberOfRows(); i++) {
 
             Row row = worksheet.getRow(i);
@@ -68,7 +82,6 @@ class MemberRepositoryTest {
             data.setFloor(row.getCell(3,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
             data.setCategory(row.getCell(6,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
 
-            System.out.println(data.toString());
             Facility facility = new Facility(data.getName(), data.getBuilding(), data.getFloor(), 0, 0, data.getCategory());
             facilityRepository.save(facility);
 
@@ -76,15 +89,14 @@ class MemberRepositoryTest {
         }
 
             //  ==============================과목 삽입 ==============================
-
-
-        opcPackage = OPCPackage.open(new File("C:\\Users\\vnddn\\Downloads\\sj-esl\\src\\main\\resources\\subjectComputer.xlsx"));
+        em.flush();
+        em.clear();
+        opcPackage = OPCPackage.open(new File("src\\main\\resources\\subjectComputer.xlsx"));
 
         workbook = new XSSFWorkbook(opcPackage);
 
 
         worksheet = workbook.getSheetAt(0);
-        System.out.println(worksheet.getPhysicalNumberOfRows());
         for (int i = 3; i < worksheet.getPhysicalNumberOfRows(); i++) {
 
             Row row = worksheet.getRow(i);
@@ -100,7 +112,6 @@ class MemberRepositoryTest {
             data.setLectureDate(row.getCell(14,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
             data.setRoom(row.getCell(15,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
 
-            System.out.println(data.toString());
             Subject subject = new Subject(data.getMajor(),data.getClassroom(),data.getSubjectName(),data.getCompletionType(),data.getSemester(),data.getProfessor(),data.getLectureDate(),data.getRoom());
 
             subjectRepository.save(subject);
@@ -110,14 +121,14 @@ class MemberRepositoryTest {
 
 
         //  ==============================교양 삽입 ==============================
-
-        opcPackage = OPCPackage.open(new File("C:\\Users\\vnddn\\Downloads\\sj-esl\\src\\main\\resources\\liberalArtsClasses.xlsx"));
+        em.flush();
+        em.clear();
+        opcPackage = OPCPackage.open(new File("src\\main\\resources\\liberalArtsClasses.xlsx"));
 
         workbook = new XSSFWorkbook(opcPackage);
 
 
         worksheet = workbook.getSheetAt(0);
-        System.out.println(worksheet.getPhysicalNumberOfRows());
         for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
 
             Row row = worksheet.getRow(i);
@@ -133,11 +144,9 @@ class MemberRepositoryTest {
             data.setLectureDate(row.getCell(13,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
             data.setRoom(row.getCell(14,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
 
-            System.out.println(data.toString());
             Subject subject = new Subject(data.getMajor(),data.getClassroom(),data.getSubjectName(),data.getCompletionType(),data.getSemester(),data.getProfessor(),data.getLectureDate(),data.getRoom());
 
             subjectRepository.save(subject);
-
         }
 
     }

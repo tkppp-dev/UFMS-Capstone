@@ -1,5 +1,6 @@
 package sj.sjesl.repository;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Row;
@@ -13,15 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 import sj.sjesl.dto.ExcelFacilityDto;
 import sj.sjesl.dto.ExcelSubjectDto;
 import sj.sjesl.dto.MemberDto;
-import sj.sjesl.entity.Facility;
-import sj.sjesl.entity.Member;
-import sj.sjesl.entity.ReservationInquiry;
-import sj.sjesl.entity.Subject;
+import sj.sjesl.entity.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
@@ -38,42 +41,39 @@ class RepositoryTest {
     FacilityRepository facilityRepository;
     @Autowired
     SubjectRepository subjectRepository;
+
     @Test
     public void testMember() {
         Member member = new Member();
         memberRepository.save(member);
-
-//        ReservationInquiry reservationInquiry = new ReservationInquiry(member, "안녕", "이거야");
+        LocalDateTime selectDate_1 ;
+    //        ReservationInquiry reservationInquiry = new ReservationInquiry(member, "안녕", "이거야");
 //        reservationInquiryRepository.save(reservationInquiry);
     }
-    @Test
-    public void 연습() {
-        Member member = new Member();
-        memberRepository.save(member);
-
-//        ReservationInquiry reservationInquiry = new ReservationInquiry(member, "안녕", "이거야");
-//        reservationInquiryRepository.save(reservationInquiry);
-
-        List<Member> resultList = em.createQuery("select m from Member m where m.username=:username", Member.class)
-                .setParameter("username", "이풍원")
-                .getResultList();
-
-        for (Member member1 :  resultList){
-            System.out.println("member = "+member1);
-        }
-        //Dto 로 했을때 ..
-        List<MemberDto> resultList1 = em.createQuery("select new sj.sjesl.dto.MemberDto(m.memberId,m.username) from Member m where m.username=:username", MemberDto.class)
-                .setParameter("username", "이풍원")
-                .getResultList();
-        
-        // APi 페이징
-        em.createQuery("select m from Member m order by m.memberId desc ", Member.class)
-                .setFirstResult(0)
-                .setMaxResults(10)
-                .getResultList();
-
-    }
-
-
-
+//    @Test
+//    public void 연습() {
+////        LocalDateTime dateTime= LocalDateTime.now();
+//        LocalDateTime selectDate_1 = LocalDateTime.of(2021,12,19,0,0);
+//        LocalDateTime selectDate_2 = LocalDateTime.of(2021,12,19,23,59);
+//
+//
+//        boolean bool[] = new boolean[31];
+//        Arrays.fill(bool,true);
+//
+//        List<Reservation> reservations = em.createQuery("select r from Reservation  r where r.startDateTime <= :selectDate_2 and :selectDate_1 <=r.endTDateTime")
+//                .setParameter("selectDate_1", selectDate_1)
+//                .setParameter("selectDate_2", selectDate_2)
+//                .getResultList();
+//
+//        int flag=0;
+//        for ( Reservation r: reservations){
+//
+//            if( r.getEndTDateTime().getDayOfWeek() ==selectDate_1.getDayOfWeek()){
+//                System.out.println(r.getEndTDateTime().toLocalTime());
+//            }
+//            else{
+//
+//            }
+//        }
+//    }
 }
