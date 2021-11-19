@@ -1,29 +1,36 @@
 package sj.sjesl.entity;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import sj.sjesl.entity.BaseEntity;
+import sj.sjesl.entity.Facility;
+import sj.sjesl.entity.Member;
+import sj.sjesl.entity.ReservationStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Getter
 @Setter
-public class Reservation {
+@NoArgsConstructor
+public class Reservation extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
-    private int id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "name")
+    @JoinColumn(name = "facility_id")
     private Facility facility;
-
-    private LocalDateTime reservationDate;
 
     private LocalDateTime startTime;
 
@@ -31,8 +38,17 @@ public class Reservation {
 
     private String purpose;
 
-    private int 인원수;
+//    private ReservationStatus reservationStatus;
 
-    private ReservationStatus reservationStatus;
+
+    @Builder
+    public Reservation(Member member, Facility facility,
+                       LocalDateTime startTime, LocalDateTime endTime, String purpose) {
+        this.member = member;
+        this.facility = facility;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.purpose = purpose;
+    }
 
 }
