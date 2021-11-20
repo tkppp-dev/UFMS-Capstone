@@ -3,6 +3,7 @@ package sj.sjesl.reservation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import sj.sjesl.entity.Facility;
 import sj.sjesl.entity.Reservation;
 import sj.sjesl.repository.FacilityRepository;
@@ -18,7 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+
 @SpringBootTest
+@Rollback
 class ReservationServiceTest {
 
     @Autowired
@@ -100,6 +103,7 @@ class ReservationServiceTest {
 //            System.out.println(cls + " " + tf);
 //            ReservationListResponseDto dto = new ReservationListResponseDto(cls, tf);
             ReservationListResponseDto dto = new ReservationListResponseDto(t, timetable.get(t));
+            System.out.println(dto.get시간대()+ " " + dto.get예약가능());
             list.add(dto);
         }
     }
