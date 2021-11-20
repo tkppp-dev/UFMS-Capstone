@@ -1,14 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { Alert, ScrollView, Text, View } from 'react-native';
+import { Alert, ScrollView, Text, View, TouchableOpacity } from 'react-native';
 import { Portal, Provider } from 'react-native-paper';
+import { Icon } from 'react-native-elements'
 import { Context } from '../../src/context/index';
 import CustomButton from '../../src/components/CustomButton';
-import ScheduleItem from '../../src/components/ScheduleItem';
-import axios from 'axios';
+import InformationItem from '../../src/components/InformationItem';
 import OfficeStatusUpdateModal from '../../src/components/modal/OfficeStatusUpdateModal';
 import OfficeNoticeUpdateModal from '../../src/components/modal/OfficeNoticeUpdateModal';
 import CurrentSchduleStatusUpdateModal from '../../src/components/modal/CurrentScheduleStatusUpdateModal';
+import axios from 'axios';
 
 const Container = styled.View`
   flex: 1;
@@ -58,7 +59,7 @@ const ButtonGroup = styled.View`
   flex-direction: row;
   justify-content: space-around;
   margin-top: 10px;
-  border-width: 1;
+  border-width: 1px;
   border-color: gray;
   border-radius: 6px;
 `;
@@ -97,6 +98,13 @@ const ProfessorMyPage = function ( { navigation }) {
     currentScheduleStatusModalVisible,
     setCurrentScheduleStatusModalVisible,
   ] = useState(false);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitleAlign: 'center',
+      title: '마이페이지'
+    })
+  })
 
   const _onPressOfficeStatus = function (value) {
     setOfficeStatus(value);
@@ -160,8 +168,8 @@ const ProfessorMyPage = function ( { navigation }) {
                 <StyledText fontSize="18" fontWeight="bold" marginBottom={12}>
                   율곡관 501호
                 </StyledText>
-                <ScheduleItem title="상태" body={officeStatus} />
-                <ScheduleItem title="공지사항" body={officeNotice} />
+                <InformationItem title="상태" body={officeStatus} />
+                <InformationItem title="공지사항" body={officeNotice} />
                 <ButtonGroup>
                   <Portal>
                     <OfficeStatusUpdateModal
@@ -198,6 +206,17 @@ const ProfessorMyPage = function ( { navigation }) {
           </ContentContainer>
           <ContentContainer>
             <ContentTopColorRow />
+            <TouchableOpacity onPress={() => navigation.navigate('Schedule')}>
+              <Content style={{ flexDirection: 'row' }}>
+                <StyledText style={{ flex: 1 }} fontSize="20" fontWeight="bold">
+                  나의 스케줄 관리
+                </StyledText>
+                <Icon type="material" name="navigate-next" />
+              </Content>
+            </TouchableOpacity>
+          </ContentContainer>
+          <ContentContainer>
+            <ContentTopColorRow />
             <Content>
               <ContentTitle>
                 <StyledText fontSize="20" fontWeight="bold">
@@ -211,18 +230,18 @@ const ProfessorMyPage = function ( { navigation }) {
                   </View>
                 ) : (
                   <View style={{ marginBottom: 16 }}>
-                    <ScheduleItem
+                    <InformationItem
                       title="스케줄 이름"
                       body="컴퓨터공학 캡스톤디자인 2반"
                     />
-                    <ScheduleItem title="위치" body="율곡관 301호" />
+                    <InformationItem title="위치" body="율곡관 301호" />
                     <View style={{ flexDirection: 'row', marginBottom: 8 }}>
-                      <ScheduleItem
+                      <InformationItem
                         title="시간"
                         body="12:00~13:30"
                         row={true}
                       />
-                      <ScheduleItem title="상태" body={currentScheduleStatus} row={true} />
+                      <InformationItem title="상태" body={currentScheduleStatus} row={true} />
                     </View>
                     <CustomButton
                       label="현재 스케줄 상태 변경"
@@ -249,23 +268,16 @@ const ProfessorMyPage = function ( { navigation }) {
                 </StyledText>
               </ContentTitle>
               <ContentBody>
-                <ScheduleItem
+                <InformationItem
                   title="스케줄 이름"
                   body="컴퓨터공학 캡스톤디자인 2반"
                 />
-                <ScheduleItem title="위치" body="율곡관 301호" />
+                <InformationItem title="위치" body="율곡관 301호" />
                 <View style={{ flexDirection: 'row' }}>
-                  <ScheduleItem title="시간" body="13:30~15:00" row={true} />
-                  <ScheduleItem title="상태" body="수업 대기중" row={true} />
+                  <InformationItem title="시간" body="13:30~15:00" row={true} />
+                  <InformationItem title="상태" body="수업 대기중" row={true} />
                 </View>
               </ContentBody>
-              <CustomButton
-                label="스케줄 관리하기"
-                color={'#f7f9fa'}
-                fontColor={'black'}
-                border={true}
-                onPress={() => navigation.navigate('Schedule')}
-              />
             </Content>
           </ContentContainer>
         </Container>

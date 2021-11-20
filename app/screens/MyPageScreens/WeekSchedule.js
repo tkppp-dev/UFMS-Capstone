@@ -1,6 +1,5 @@
-import React, { useContext, useState } from 'react';
-import styled from 'styled-components/native';
-import { View, Text, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { Text, Dimensions } from 'react-native';
 import DaySchedule from '../../src/components/DaySchedule';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { ScheduleProvider, ScheduleContext } from '../../src/context/schedule';
@@ -18,18 +17,20 @@ const korDayOfWeek = {
   Sat: '토',
 };
 
-const renderScene = function () {
+const renderScene = function (date, setDate) {
   const components = {};
   for (let i = 0; i < 7; i++) {
-    components[dayOfWeek[i]] = () => <DaySchedule dayOfWeek={i} />;
+    components[dayOfWeek[i]] = () => <DaySchedule referenceDate={date} setReferenceDate={setDate} dayOfWeek={i} />;
   }
 
   return SceneMap(components);
 };
 
+
 const WeekSchdule = function () {
   const layout = Dimensions.get('window');
-  const [index, setIndex] = useState(new Date().getDay());
+  const [date, setDate] = useState(new Date())
+  const [index, setIndex] = useState(date.getDay());
   const [routes] = useState(
     dayOfWeek.map((day) => {
       return { key: day, title: day };
@@ -59,7 +60,7 @@ const WeekSchdule = function () {
       <TabView
         renderTabBar={renderTabBar}
         navigationState={{ index, routes }}
-        renderScene={renderScene()}
+        renderScene={renderScene(date, setDate)}
         onIndexChange={(idx) => setIndex(idx)}
         initialLayout={{ width: layout.width }}
         swipeEnabled={false}

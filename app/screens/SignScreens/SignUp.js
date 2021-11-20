@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { Alert, Dimensions, ScrollView, View } from 'react-native';
-import TextInputWithLabel from '../src/components/TextInputWithLabel';
-import CustomButton from '../src/components/CustomButton';
+import TextInputWithLabel from '../../src/components/TextInputWithLabel';
+import CustomButton from '../../src/components/CustomButton';
 import axios from 'axios';
-import { Context } from '../src/context';
+import { Context } from '../../src/context';
 
 const Container = styled.View`
   flex: 1;

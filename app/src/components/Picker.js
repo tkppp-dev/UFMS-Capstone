@@ -9,7 +9,7 @@ const PickerText = styled.Text`
   text-align: center;
 `;
 
-const Picker = function ({ label, items, onValueChange, value }) {
+const Picker = function ({ label, items, onValueChange = () => console.log('123'), value, disabled = false }) {
   return (
     <>
       <PickerText>{label}</PickerText>
@@ -23,6 +23,7 @@ const Picker = function ({ label, items, onValueChange, value }) {
         onValueChange={onValueChange}
         items={items}
         value={value}
+        disabled={disabled}
       />
     </>
   );

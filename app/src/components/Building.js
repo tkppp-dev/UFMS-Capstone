@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
-import PropTypes from 'prop-types';
-import { Dimensions, Image, View, Text, StyleSheet } from 'react-native';
+import { Dimensions, Image, View, Text, Alert } from 'react-native';
 import {
   Collapse,
   CollapseHeader,
   CollapseBody,
 } from 'accordion-collapse-react-native';
-import PlacePicker from './PlacePicker'
+import PlacePicker from './PlacePicker';
 
 const Container = styled.View`
   width: 95%;
   align-items: center;
-  margin: 10px;
-  border: 1px solid #D6DDE4;
+  margin: 10px 10px 0 10px;
+  border: 1px solid #d6dde4;
   border-radius: 4px;
   background-color: white;
 `;
@@ -38,12 +37,14 @@ const SearchButton = styled.TouchableOpacity`
   justify-content: center;
   width: 100%;
   height: 40px;
-  background-color: #007AFF;
+  background-color: #007aff;
   border-radius: 4px;
-`
+`;
 
-const Building = function ({navigation, buildingData}) {
+const Building = function ({ navigation, buildingData }) {
   const width = Dimensions.get('window').width;
+  const [floor, setFloor] = useState(null);
+  const [facility, setFacility] = useState(null);
 
   return (
     <Container width={width}>
@@ -54,7 +55,9 @@ const Building = function ({navigation, buildingData}) {
               style={{ width: 70, height: 70, marginLeft: 5 }}
               source={require('../../assets/dummy-image.jpeg')}
             />
-            <Text style={{ marginLeft: 10, fontSize: 20 }}>{buildingData.name}</Text>
+            <Text style={{ marginLeft: 10, fontSize: 20 }}>
+              {buildingData.name}
+            </Text>
           </HeaderView>
         </CollapseHeader>
         <CollapseBody>
@@ -71,10 +74,27 @@ const Building = function ({navigation, buildingData}) {
               publishing software like Aldus PageMaker including versions of
               Lorem Ipsum.
             </Text>
-            <PlacePicker />
-            <View style={{alignItems: 'center'}}>
-              <SearchButton onPress={() => navigation.navigate('Facility Usage', {facilityName: buildingData.name})}>
-                <Text style={{color : 'white', fontSize: 16}}>사용 현황 조회</Text>
+            <PlacePicker
+              buildingData={buildingData}
+              setFloor={setFloor}
+              setFacility={setFacility}
+            />
+            <View style={{ alignItems: 'center' }}>
+              <SearchButton
+                onPress={() => {
+                  if (floor === null || facility === null) {
+                    Alert.alert('층과 시설을 모두 선택해주세요');
+                  } else {
+                    navigation.navigate('Facility Usage', {
+                      buildingName: buildingData.name,
+                      facilityName: facility
+                    });
+                  }
+                }}
+              >
+                <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                  사용 현황 조회
+                </Text>
               </SearchButton>
             </View>
           </BodyView>

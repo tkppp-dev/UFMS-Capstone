@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { Button, Icon } from 'react-native-elements';
 import styled from 'styled-components/native';
 import ScheduleDetail from './ScheduleDetail';
 
 const DateContainer = styled.View`
+  flex-direction: row;
   background-color: white;
   border-bottom-width: 1px;
   border-bottom-color: #dddfe2;
@@ -15,8 +17,8 @@ const DateText = styled.Text`
   font-weight: bold;
 `;
 
-const getCurrentWeekDate = function (dayOfWeek) {
-  const dt = new Date();
+const getCurrentWeekDate = function (date, dayOfWeek) {
+  const dt = new Date(date);
   const currentDayOfWeek = dt.getDay();
 
   if (currentDayOfWeek === dayOfWeek) {
@@ -26,8 +28,8 @@ const getCurrentWeekDate = function (dayOfWeek) {
   }
 };
 
-const DaySchedule = function ({ dayOfWeek }) {
-  const [date] = useState(getCurrentWeekDate(dayOfWeek % 7));
+const DaySchedule = function ({ referenceDate, setReferenceDate, dayOfWeek }) {
+  const [date] = useState(getCurrentWeekDate(referenceDate, dayOfWeek % 7));
   const schedules = [
     {
       id: 1,
@@ -54,12 +56,35 @@ const DaySchedule = function ({ dayOfWeek }) {
       status: '대기중',
     },
   ];
+
+  const _setReferenceDate = function (offset) {
+    const dt = new Date(referenceDate);
+    dt.setDate(referenceDate.getDate() + offset * 7);
+    setReferenceDate(dt);
+  };
+
   return (
     <View>
-      <DateContainer>
-        <DateText>
-          {`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`}
-        </DateText>
+      <DateContainer style={{ alignItems: 'center' }}>
+        <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+          onPress={() => _setReferenceDate(-1)}
+        >
+          <Icon type="antdesign" name="left" size={18} />
+          <Text>지난주</Text>
+        </TouchableOpacity>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <DateText>
+            {`${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`}
+          </DateText>
+        </View>
+        <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+          onPress={() => _setReferenceDate(1)}
+        >
+          <Text>다음주</Text>
+          <Icon type="antdesign" name="right" size={18} />
+        </TouchableOpacity>
       </DateContainer>
       <ScrollView>
         {schedules.map((schedule) => {

@@ -13,8 +13,7 @@ const Container = styled.View`
 
 const InquiryContainer = styled.View`
   flex: 1;
-  width: 95%;
-  margin: 10px;
+  width: 100%;
   padding: 15px;
   background-color: white;
 `;
@@ -56,7 +55,9 @@ const RentInquiry = function ({ navigation }) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown: false,
+      headerBackTitleVisible: false,
+      headerTitleAlign: 'center',
+      title: '문의 작성'
     });
   });
 

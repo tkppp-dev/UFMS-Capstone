@@ -33,7 +33,8 @@ const RentInquiry = function ({ navigation }) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown: false,
+      headerBackTitleVisible: false,
+      headerTitleAlign: 'center',
     });
   });
 
@@ -70,7 +71,7 @@ const RentInquiry = function ({ navigation }) {
       )}
       <FAB
         placement="right"
-        icon={<Icon name="plus" type="material-community" color="white" />}
+        icon={<Icon name="edit" type="antdesign" color="white" />}
         buttonStyle={{ backgroundColor: '#00AAFF' }}
         containterStyle={{ margin: 15 }}
         onPress={() => {

@@ -1,10 +1,10 @@
 import React, { useState, useLayoutEffect, useEffect, useContext } from 'react';
 import styled from 'styled-components/native';
 import { Dimensions, Image, Alert } from 'react-native';
-import { images } from '../src/images';
+import { images } from '../../src/images';
 import axios from 'axios';
 import { CommonActions } from '@react-navigation/native';
-import { Context } from '../src/context';
+import { Context } from '../../src/context';
 
 const Container = styled.SafeAreaView`
   flex: 1;
