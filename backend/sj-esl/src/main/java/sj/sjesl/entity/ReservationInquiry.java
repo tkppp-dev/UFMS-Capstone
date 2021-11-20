@@ -29,14 +29,6 @@ public class ReservationInquiry extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    private LocalDateTime answerDate;
-    private String answerContent;
-
-    private LocalDateTime replyDate;
-    private String replyDetails;
-
-
-
     @Builder
     public ReservationInquiry(String author, String title, String content) {
         this.author = author;
