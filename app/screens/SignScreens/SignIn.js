@@ -106,8 +106,13 @@ const SignInScreen = function ({ navigation }) {
           email,
           password,
         });
-        dispatch({ type: 'LOGIN', response: res.data.data });
-        navigation.dispatch(CommonActions.navigate('Home'));
+        if (res.data.state === 200) {
+          dispatch({ type: 'LOGIN', response: res.data.data });
+          navigation.dispatch(CommonActions.navigate('Home'));
+        }
+        else{
+          throw new Error()
+        }
       } catch (err) {
         console.log(err);
         Alert.alert('아이디가 존재하지 않거나 비밀번호가 일치하지 않습니다.');

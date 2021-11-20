@@ -1,6 +1,6 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { Dimensions, Image, ScrollView, Text, View } from 'react-native';
+import { Alert, Dimensions, Image, ScrollView, Text, View } from 'react-native';
 import PlacePicker from '../../src/components/PlacePicker';
 
 const Container = styled.View`
@@ -18,20 +18,32 @@ const Button = styled.TouchableOpacity`
   width: 100%;
   height: 40px;
   border-radius: 4px;
-  background-color: #007AFF;
-`
+  background-color: #007aff;
+`;
 
 const ClassRentNotice = function ({ navigation, route }) {
-  const name = route.params.name;
   const window = Dimensions.get('window');
+  const building = route.params.building;
+  const [floor, setFloor] = useState(null);
+  const [facililty, setFacility] = useState(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitleAlign: 'center',
-      title: '강의실 예약 유의사항'
+      title: '강의실 예약 유의사항',
     });
   });
+
+  const _onPressReservation = function () {
+    if (floor === null || facililty === null) {
+      Alert.alert('층과 시설을 모두 선택해 주세요');
+    } else {
+      navigation.navigate('Class Rent Application', {
+        facililty,
+      });
+    }
+  };
 
   return (
     <ScrollView style={{ backgroundColor: 'white' }}>
@@ -45,7 +57,9 @@ const ClassRentNotice = function ({ navigation, route }) {
           source={require('../../assets/dummy-image.jpeg')}
         />
         <Content>
-          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{name}</Text>
+          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+            {building.name}
+          </Text>
           <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>
             강의실 예약 유의 사항
           </Text>
@@ -60,12 +74,18 @@ const ClassRentNotice = function ({ navigation, route }) {
             and more recently with desktop publishing software like Aldus
             PageMaker including versions of Lorem Ipsum.
           </Text>
-          <PlacePicker />
+          <PlacePicker
+            buildingData={building}
+            setFloor={setFloor}
+            setFacility={setFacility}
+          />
           <View style={{ alignItems: 'center' }}>
-            <Button onPress={() => {
-              navigation.navigate('Class Rent Application', { placeName : name })
-            }}>
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>강의실 예약</Text>
+            <Button
+              onPress={_onPressReservation}
+            >
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                강의실 예약
+              </Text>
             </Button>
           </View>
         </Content>

@@ -3,6 +3,7 @@ import { ScrollView, View, Text, Alert, Modal, StyleSheet } from 'react-native';
 import styled from 'styled-components';
 import Picker from '../../src/components/Picker';
 import CustomInput from '../../src/components/CustomInput';
+import TimeCheckbox from '../../src/components/TimeCheckbox';
 
 const Container = styled.View`
   width: 100%;
@@ -81,6 +82,7 @@ const ClassRentApplication = function ({ navigation, route }) {
   );
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(null);
 
   const yearList = [
     { label: `${dt.getFullYear()}`, value: dt.getFullYear() },
@@ -105,12 +107,12 @@ const ClassRentApplication = function ({ navigation, route }) {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitleAlign: 'center',
-      title: '예약하기'
+      title: '예약하기',
     });
   });
 
   const _onPressSearchButton = function () {
-    setShowApplication(true)
+    setShowApplication(true);
   };
 
   const _onPressApplyButton = function () {
@@ -148,7 +150,7 @@ const ClassRentApplication = function ({ navigation, route }) {
         </DatePicker>
         <Content>
           <Button onPress={_onPressSearchButton}>
-            <Text style={{ color: 'white' }}>조회</Text>
+            <Text style={{ color: 'white', fontWeight: 'bold' }}>조회</Text>
           </Button>
           <View
             style={{
@@ -160,11 +162,64 @@ const ClassRentApplication = function ({ navigation, route }) {
           >
             {showApplication === false ? null : (
               <>
+                <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                  <TimeCheckbox
+                    index={0}
+                    selectedIndex={selectedIndex}
+                    setTime={setSelectedIndex}
+                  />
+                  <TimeCheckbox
+                    index={1}
+                    selectedIndex={selectedIndex}
+                    setTime={setSelectedIndex}
+                  />
+                  <TimeCheckbox
+                    index={2}
+                    selectedIndex={selectedIndex}
+                    setTime={setSelectedIndex}
+                  />
+                </View>
+                <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                  <TimeCheckbox
+                    index={3}
+                    selectedIndex={selectedIndex}
+                    setTime={setSelectedIndex}
+                  />
+                  <TimeCheckbox
+                    index={4}
+                    selectedIndex={selectedIndex}
+                    setTime={setSelectedIndex}
+                  />
+                  <TimeCheckbox
+                    index={5}
+                    selectedIndex={selectedIndex}
+                    setTime={setSelectedIndex}
+                  />
+                </View>
+                <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                  <TimeCheckbox
+                    index={6}
+                    selectedIndex={selectedIndex}
+                    setTime={setSelectedIndex}
+                  />
+                  <TimeCheckbox
+                    index={7}
+                    selectedIndex={selectedIndex}
+                    setTime={setSelectedIndex}
+                  />
+                  <TimeCheckbox
+                    index={8}
+                    selectedIndex={selectedIndex}
+                    disabled={true}
+                  />
+                </View>
                 <CustomInput label="예약 이름" />
                 <CustomInput label="대상" />
                 <CustomInput label="예약 목적" type="textarea" />
-                <Button onPress={_onPressApplyButton}>
-                  <Text style={{ color: 'white' }}>강의실 예약</Text>
+                <Button style={{ marginTop: 10 }} onPress={_onPressApplyButton}>
+                  <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                    강의실 예약
+                  </Text>
                 </Button>
                 <CenteredView>
                   <Modal
