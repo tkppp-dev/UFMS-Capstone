@@ -16,7 +16,7 @@ public class RentalFacilityResponseDto {
     private String purpose;
     private int area;
     private String time;
-    private String option;
+//    private String option;
     private String notice;
     private String img;
 
@@ -29,7 +29,7 @@ public class RentalFacilityResponseDto {
         this.purpose = facility.getPurpose();
         this.area = facility.getArea();
         this.time = facility.getTime();
-        this.option = facility.getOption();
+//        this.option = facility.getOption();
         this.notice = facility.getNotice();
         this.img = facility.getImg();
     }

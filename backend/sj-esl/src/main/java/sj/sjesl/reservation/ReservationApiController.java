@@ -21,15 +21,21 @@ public class ReservationApiController {
     }
 
     @ApiOperation(value = "건물의 이미지 리턴")
-    @PostMapping("/reservation/building/{building}")
+    @GetMapping("/reservation/building/{building}")
     public String getBuildingImg(@PathVariable String building) {   //이미지 리턴 타입 바꿔야함
         return reservationService.getBuildingImg(building);
     }
 
+    @ApiOperation(value = "건물의 층 리스트 리턴")
+    @GetMapping("/reservation/building/floor/{building}")
+    public List<String> getFloorList(@PathVariable String building) {
+        return reservationService.getFloorList(building);
+    }
+
     @ApiOperation(value = "건물 - 층 의 강의실 리스트 리턴")
     @PostMapping("/reservation/building/floor")
-    public List<FacilityResponseDto> getFloorList(@RequestBody BuildingFloorRequestDto requestDto){
-        return reservationService.getFloorList(requestDto);
+    public List<FacilityResponseDto> getFloor(@RequestBody BuildingFloorRequestDto requestDto){
+        return reservationService.getFloor(requestDto);
     }
 
     @ApiOperation(value = "강의실 - 날짜 에 예약 가능한 시간 리스트 리턴")
@@ -46,8 +52,8 @@ public class ReservationApiController {
 
     @ApiOperation(value = "예약 삭제")
     @DeleteMapping("/reservation/{id}")
-    public Long delete(@PathVariable Long id) {
-        reservationService.delete(id);
+    public Long cancel(@PathVariable Long id) {
+        reservationService.cancel(id);
         return id;
     }
 }

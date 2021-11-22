@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class ReservationInquiry extends BaseEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "contact_id")
+    @Column(name = "inquiry_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

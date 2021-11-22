@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import sj.sjesl.entity.Facility;
 import sj.sjesl.entity.Member;
 import sj.sjesl.entity.Reservation;
+import sj.sjesl.entity.ReservationStatus;
 import sj.sjesl.repository.BuildingRepository;
 import sj.sjesl.repository.FacilityRepository;
 import sj.sjesl.repository.MemberRepository;
@@ -41,9 +42,13 @@ public class ReservationService {
     }
 
     @Transactional
-    public List<FacilityResponseDto> getFloorList(BuildingFloorRequestDto requestDto) {
-        return facilityRepository.findByBuildingAndFloorAndCategory(requestDto.getBuilding(),
-                        requestDto.getFloor(), "강의실")
+    public List<String> getFloorList(String building) {
+        return facilityRepository.findFloorByBuildingAndCategory(building, "강의실");
+    }
+
+    @Transactional
+    public List<FacilityResponseDto> getFloor(BuildingFloorRequestDto requestDto) {
+        return facilityRepository.findByBuildingAndFloorAndCategory(requestDto.getBuilding(), requestDto.getFloor(), "강의실")
                 .stream()
                 .map(FacilityResponseDto::new)
                 .collect(Collectors.toList());
@@ -56,7 +61,7 @@ public class ReservationService {
         LocalDateTime endDatetime = LocalDateTime.of(requestDto.getDate(), LocalTime.of(23, 59, 59));
 
         List<Reservation> reservations = reservationRepository
-                .findAllByFacilityAndStartTimeBetween(facility, startDatetime, endDatetime);
+                .findAllByFacilityAndReservationStatusAndStartTimeBetween(facility, ReservationStatus.COMPLETE, startDatetime, endDatetime);
 
 
         Map<LocalTime, Boolean> timetable = new TreeMap<>();
@@ -82,12 +87,7 @@ public class ReservationService {
         int n = 1;
 
         for (LocalTime t : timetable.keySet()) {
-//            String cls = n++ + "교시";
-//            Boolean tf = timetable.get(t);
-//
-//            ReservationListResponseDto dto = new ReservationListResponseDto(cls, tf);
             ReservationListResponseDto dto = new ReservationListResponseDto(t, timetable.get(t));
-
             list.add(dto);
         }
 
@@ -100,23 +100,24 @@ public class ReservationService {
         Facility facility = facilityRepository.findByName(requestDto.getFacility());
         LocalDateTime startTime = requestDto.getStartTime();
         LocalDateTime endTime = requestDto.getEndTime();
-        String purpose = requestDto.getPurpose();
-
+        String reservationName = requestDto.getReservationName();
+        String notice = requestDto.getNotice();
         Reservation reservation = Reservation.builder()
                 .member(member)
                 .facility(facility)
                 .startTime(startTime)
                 .endTime(endTime)
-                .purpose(purpose)
+                .reservationName(reservationName)
+                .notice(notice)
+                .reservationStatus(ReservationStatus.COMPLETE)
                 .build();
 
         return reservationRepository.save(reservation).getId();
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void cancel(Long id) {
         Reservation reservation = reservationRepository.findById(id).get();
-
-        reservationRepository.delete(reservation);
+        reservation.setReservationStatus(ReservationStatus.CANCEL);
     }
 }

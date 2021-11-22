@@ -10,7 +10,6 @@ import sj.sjesl.entity.ReservationInquiry;
 public class InquirySaveRequestDto {
 
     private Long memberId;
-    private String author;
     private String title;
     private String content;
 
