@@ -5,19 +5,17 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class CommentResponseDto {
-
+public class CommentListResponseDto {
     private Long id;
-    private Long memberId;
     private String memberName;
-    private LocalDateTime modifiedDate;
     private String content;
+    private LocalDateTime modifiedDate;
 
-    public CommentResponseDto(Comment comment) {
+
+    public CommentListResponseDto(Comment comment) {
         this.id = comment.getId();
-        this.memberId = comment.getMember().getId();
         this.memberName = comment.getMember().getUsername();
-        this.modifiedDate = comment.getUpdateDate();
         this.content = comment.getContent();
+        this.modifiedDate = comment.getUpdateDate();
     }
 }

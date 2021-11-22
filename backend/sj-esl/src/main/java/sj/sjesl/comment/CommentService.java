@@ -10,6 +10,7 @@ import sj.sjesl.repository.ReservationInquiryRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -19,22 +20,25 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
 
-    public List<Comment> getCommentList(Long id){
+    @Transactional(readOnly = true)
+    public List<CommentListResponseDto> getCommentList(Long id){
         ReservationInquiry reservationInquiry = reservationInquiryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 문의글이 없습니다. id=" + id));
 
-        return commentRepository.findCommentsByReservationInquiry(reservationInquiry);
+        return commentRepository.findCommentsByReservationInquiry(reservationInquiry).stream()
+                .map(CommentListResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public Long save(Long id, CommentSaveRequestDto requestDto) {
         Optional<ReservationInquiry> reservationInquiry = reservationInquiryRepository.findById(id);
-        Optional<Member> admin = memberRepository.findById(requestDto.getAdminId());
+        Optional<Member> member = memberRepository.findById(requestDto.getAdminId());
         String content = requestDto.getContent();
 
         Comment comment = Comment.builder()
                 .reservationInquiry(reservationInquiry.get())
-                .admin(admin.get())
+                .member(member.get())
                 .content(content)
                 .build();
 
@@ -51,6 +55,7 @@ public class CommentService {
         return commentId;
     }
 
+    @Transactional(readOnly = true)
     public CommentResponseDto findById(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + commentId));

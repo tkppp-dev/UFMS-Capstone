@@ -23,15 +23,15 @@ public class Comment extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name="memberId")
-    private Member admin;
+    private Member member;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @Builder
-    public Comment(ReservationInquiry reservationInquiry, Member admin, String content) {
+    public Comment(ReservationInquiry reservationInquiry, Member member, String content) {
         this.reservationInquiry = reservationInquiry;
-        this.admin = admin;
+        this.member = member;
         this.content = content;
     }
 
