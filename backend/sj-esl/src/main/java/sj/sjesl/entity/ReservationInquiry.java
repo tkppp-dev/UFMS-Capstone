@@ -17,11 +17,9 @@ public class ReservationInquiry extends BaseEntity {
     @Column(name = "contact_id")
     private Long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id")
-//    private Member member;
-
-    private String author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(length = 500, nullable = false) //생략해도 OK 기본값 외에 추가로 변경 필요한 옵션 있을 때 사용
     private String title;
@@ -30,8 +28,8 @@ public class ReservationInquiry extends BaseEntity {
     private String content;
 
     @Builder
-    public ReservationInquiry(String author, String title, String content) {
-        this.author = author;
+    public ReservationInquiry(Member member, String title, String content) {
+        this.member = member;
         this.title = title;
         this.content = content;
     }
