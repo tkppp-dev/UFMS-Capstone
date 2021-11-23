@@ -8,14 +8,16 @@ import java.time.LocalDateTime;
 @Getter
 class InquiryListResponseDto {
     private Long id;
-    private String title;
     private String author;
+    private String title;
+    private String content;
     private LocalDateTime modifiedDate;
 
     public InquiryListResponseDto(ReservationInquiry entity) {
         this.id = entity.getId();
+        this.author = entity.getMember().getUsername();
         this.title = entity.getTitle();
-        this.author = entity.getAuthor();
+        this.content = entity.getContent();
         this.modifiedDate = entity.getUpdateDate();
     }
 }

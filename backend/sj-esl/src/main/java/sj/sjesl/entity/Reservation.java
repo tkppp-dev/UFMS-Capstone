@@ -36,19 +36,28 @@ public class Reservation extends BaseEntity {
 
     private LocalDateTime endTime;
 
-    private String purpose;
+    private String reservationName;
+    private String notice;
 
-//    private ReservationStatus reservationStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ReservationStatus reservationStatus;
 
+//    @OneToOne
+//    @JoinColumn(name = "subject_id")
+//    private Subject subject;
+    private Long subjectId;
 
     @Builder
-    public Reservation(Member member, Facility facility,
-                       LocalDateTime startTime, LocalDateTime endTime, String purpose) {
+    public Reservation(Member member, Facility facility, LocalDateTime startTime, LocalDateTime endTime,
+                       String reservationName, String notice, ReservationStatus reservationStatus) {
         this.member = member;
         this.facility = facility;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.purpose = purpose;
+        this.reservationName = reservationName;
+        this.notice = notice;
+        this.reservationStatus = reservationStatus;
     }
 
 }

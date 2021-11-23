@@ -36,6 +36,13 @@ public class Facility {
     @Column(nullable = false)
     private int cost;
 
+    private String purpose;
+    private int area;
+    private String time;
+//    private String option;
+    private String notice;
+    private String img;
+
     @Column(nullable = false)
     private String category;
 
