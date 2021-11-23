@@ -1,5 +1,6 @@
 package sj.sjesl.rental;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,4 +20,17 @@ public class RentalRequestDto {
     private String additionalMobile;
     private String additionalEmail;
 
+    @Builder
+    public RentalRequestDto(Long memberId, String facility,LocalDate startDate, int rentalDays, String purpose,
+                            String hirer, String group, String additionalMobile, String additionalEmail) {
+        this.memberId = memberId;
+        this.facility = facility;
+        this.startDate = startDate;
+        this.rentalDays = rentalDays;
+        this.purpose = purpose;
+        this.hirer = hirer;
+        this.group = group;
+        this.additionalMobile = additionalMobile;
+        this.additionalEmail = additionalEmail;
+    }
 }
