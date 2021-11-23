@@ -75,4 +75,4 @@ const ClassRentReservation = function ({ navigation }) {
   );
 };
 
-export default ClassRentReservation;
+export default React.memo(ClassRentReservation);

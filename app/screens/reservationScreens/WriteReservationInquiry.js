@@ -70,7 +70,7 @@ const RentInquiry = function ({ navigation }) {
         {
           title,
           content,
-          author: state.user.username,
+          memberId: state.user.id
         },
         {
           accessToken: state.user.accessToken,

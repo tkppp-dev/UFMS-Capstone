@@ -37,6 +37,7 @@ const Notice = styled.Text`
 
 const CustomInput = function ({
   label,
+  value = '',
   multiline = false,
   placeholder,
   notice,
@@ -50,6 +51,7 @@ const CustomInput = function ({
       <Label>{label}</Label>
       <Input
         onChangeText={onChangeText}
+        value={value}
         placeholder={placeholder}
         multiline={multiline}
         autoCapitalize={'none'}
