@@ -66,14 +66,15 @@ const SignUp = function ({ navigation }) {
       const res = await axios.post('http://127.0.0.1:8080/api/user/register', {
         email,
         password,
+        username: name,
+        mobile: phoneNumber,
       });
 
       if (res.data.state === 200) {
         dispatch({ type: 'LOGIN', response: res.data.data });
         navigation.navigate('Home');
-      }
-      else{
-        throw new Error()
+      } else {
+        throw new Error();
       }
     } catch (err) {
       Alert.alert('회원가입에 실패했습니다');

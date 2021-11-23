@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 import { Text } from 'react-native';
+import ClassTime from '../ClassTime';
 
 const Container = styled.TouchableOpacity`
   flex: 1;
@@ -10,53 +11,29 @@ const Container = styled.TouchableOpacity`
   align-items: center;
 `;
 
-class ClassTime {
-  constructor(index) {
-    this.hour = 9;
-    this.minute = 0;
-
-    this.setTime(index);
-  }
-
-  setTime(index) {
-    for (let i = 0; i < index; i++) {
-      this.hour += 1;
-      if (this.minute === 0) {
-        this.minute = 30;
-      } else {
-        this.hour += 1;
-        this.minute = 0;
-      }
-    }
-  }
-
-  toString() {
-    let hourStr, minuteStr;
-
-    if (this.hour < 10) {
-      hourStr = `0${this.hour}`;
-    } else {
-      hourStr = `${this.hour}`;
-    }
-
-    if (this.minute < 10) {
-      minuteStr = `0${this.minute}`;
-    } else {
-      minuteStr = `${this.minute}`;
-    }
-
-    return `${hourStr}:${minuteStr}`;
-  }
-}
-
 const TimeCheckbox = function ({
   index,
-  disabled = false,
   selectedIndex,
   setTime,
+  available,
+  date,
 }) {
   const startTime = new ClassTime(index);
   const endTime = new ClassTime(index + 1);
+  const isBefore = startTime.isBeforeTime(date.year, date.month - 1, date.day);
+  const [disabled, setDisabled] = useState(false);
+
+  useEffect(() => {
+    if ((index < 8 && available['예약가능'] === false) || isBefore) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+
+    if (index === 8) {
+      setDisabled(true);
+    }
+  }, [date]);
 
   return (
     <Container
@@ -70,7 +47,7 @@ const TimeCheckbox = function ({
         setTime(index);
       }}
     >
-      <Text style={{ color: index === selectedIndex ? 'white' : 'black',}}>
+      <Text style={{ color: index === selectedIndex ? 'white' : 'black' }}>
         {startTime.toString()} - {endTime.toString()}
       </Text>
     </Container>

@@ -17,6 +17,7 @@ const StyledInput = styled.TextInput.attrs((props) => {
     placeholder: props.placeholder,
     placeholderTextColor: 'gray',
     autoCapitalize: 'none',
+    autoCorrect: false,
     returnKeyType: 'done',
   };
 })`

@@ -25,7 +25,7 @@ const ClassRentNotice = function ({ navigation, route }) {
   const window = Dimensions.get('window');
   const building = route.params.building;
   const [floor, setFloor] = useState(null);
-  const [facililty, setFacility] = useState(null);
+  const [facility, setFacility] = useState(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -36,11 +36,11 @@ const ClassRentNotice = function ({ navigation, route }) {
   });
 
   const _onPressReservation = function () {
-    if (floor === null || facililty === null) {
+    if (floor === null || facility === null) {
       Alert.alert('층과 시설을 모두 선택해 주세요');
     } else {
       navigation.navigate('Class Rent Application', {
-        facililty,
+        facility,
       });
     }
   };
@@ -76,6 +76,8 @@ const ClassRentNotice = function ({ navigation, route }) {
           </Text>
           <PlacePicker
             buildingData={building}
+            floor={floor}
+            facility={facility}
             setFloor={setFloor}
             setFacility={setFacility}
           />

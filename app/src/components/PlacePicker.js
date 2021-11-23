@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Platform } from 'react-native';
 import { StyleSheet } from 'react-native';
 import Picker from './Picker';
+import axios from 'axios';
+import { endPoint } from '../endPoint';
 
 const Container = styled.View`
   flex-direction: row;
@@ -15,7 +17,13 @@ const PickerItem = styled.View`
   width: 48%;
 `;
 
-const PlacePicker = function ({ buildingData, setFloor, setFacility }) {
+const PlacePicker = function ({
+  buildingData,
+  floor,
+  facility,
+  setFloor,
+  setFacility,
+}) {
   const [floorItems, setFloorItems] = useState([]);
   const [facilityItems, setFacilityItems] = useState([]);
   const [disabled, setDisabled] = useState(true);
@@ -32,14 +40,31 @@ const PlacePicker = function ({ buildingData, setFloor, setFacility }) {
     setFloorItems(temp);
   }, []);
 
-  const _onSelectFloor = function (value) {
+  const getFaciltyList = async function (floor) {
+    try {
+      const res = await axios.post(endPoint + 'reservation/building/floor', {
+        building: buildingData.name,
+        floor: floor + '층',
+      });
+      const temp = [];
+
+      res.data.map((facility) => {
+        temp.push({ label: facility.name, value: facility.name });
+      });
+      setFacilityItems(temp);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const _onSelectFloor = async function (value, idx) {
     if (value === null) {
       setDisabled(true);
     } else {
       setDisabled(false);
     }
     setFloor(value);
-    // 해당 층의 시설 리스트 뽑아오기 - 플랫폼별 다름
+    getFaciltyList(value);
   };
 
   const _onSelectFacility = function (value) {
@@ -54,12 +79,7 @@ const PlacePicker = function ({ buildingData, setFloor, setFacility }) {
       <PickerItem>
         <Picker
           label="시설"
-          items={[
-            { label: 'XX1호', value: 'XX1호' },
-            { label: 'XX2호', value: 'XX2호' },
-            { label: 'XX3호', value: 'XX3호' },
-            { label: 'XX4호', value: 'XX4호' },
-          ]}
+          items={facilityItems}
           onValueChange={_onSelectFacility}
           disabled={disabled}
         />

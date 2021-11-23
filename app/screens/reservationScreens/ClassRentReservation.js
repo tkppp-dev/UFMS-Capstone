@@ -1,6 +1,8 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { Dimensions, Image, Text, ScrollView } from 'react-native';
+import axios from 'axios';
+import { endPoint } from '../../src/endPoint';
 
 const Container = styled.View`
   flex: 1;
@@ -20,16 +22,27 @@ const BuildingTitle = styled.TouchableOpacity`
 
 const ClassRentReservation = function ({ navigation }) {
   const width = Dimensions.get('window').width;
-  const buildings = [
-    { id: 1, name: '대양 AI 센터', floor: [-2, -1, 1, 2, 3, 4, 5, 6] },
-    { id: 2, name: '광개토관', floor: [-2, -1, 1, 2, 3, 4, 5, 6] },
-    { id: 3, name: '율곡관', floor: [-2, -1, 1, 2, 3, 4, 5, 6] },
-    { id: 4, name: '영실관', floor: [-2, -1, 1, 2, 3, 4, 5, 6] },
-    { id: 5, name: '우정당', floor: [-2, -1, 1, 2, 3, 4, 5, 6] },
-    { id: 6, name: '학술정보원', floor: [-2, -1, 1, 2, 3, 4, 5, 6] },
-    { id: 7, name: '군자관', floor: [-2, -1, 1, 2, 3, 4, 5, 6] },
-    { id: 8, name: '학생회관', floor: [-2, -1, 1, 2, 3, 4, 5, 6] },
-  ];
+  const [buildings, setBuildings] = useState([]);
+
+  useEffect(() => {
+    const getBuilding = async function () {
+      try {
+        const res = await axios.get(endPoint + 'reservation/building');
+        res.data.map((building, idx) => {
+          buildings.push({
+            id: idx + 1,
+            name: building,
+            floor: [1, 2, 3, 4, 5, 6],
+          });
+        });
+        setBuildings([...buildings]);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    getBuilding();
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
