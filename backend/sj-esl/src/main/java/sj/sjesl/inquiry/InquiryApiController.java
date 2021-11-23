@@ -5,12 +5,26 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Api(tags = "문의 API")
 @RequiredArgsConstructor
 @RestController
 public class InquiryApiController {
 
     private final InquiryService inquiryService;
+
+    @ApiOperation(value = "문의 리스트 조회")
+    @GetMapping("/inquiry")    //문의 리스트 조회
+    public List<InquiryListResponseDto> findAllDesc() {
+        return inquiryService.findAllDesc();
+    }
+
+    @ApiOperation(value = "내 문의 리스트 조회")
+    @GetMapping("/inquiry/my/{memberId}")    //내 문의 리스트 조회
+    public List<InquiryResponseDto> findByMemberDesc(@PathVariable Long memberId) {
+        return inquiryService.findByMemberDesc(memberId);
+    }
 
     @ApiOperation(value = "문의 등록")
     @PostMapping("/inquiry")    //문의 등록
@@ -36,13 +50,4 @@ public class InquiryApiController {
         inquiryService.delete(id);
         return id;
     }
-
-    //    POST – 파라미터 { userId } : 해당 유저가 작성한 문의 정보 리스트 반환
-//필요한 문의 정보 : [{문의id, 문의명, 문의 작성일, 문의 내용, 답변 내용, 답변 날짜, 댓글 리스트 }, …]
-//    @GetMapping("/inquiry/{userId}")    //문의 조회
-//    public void findById(@PathVariable Long id) {
-//        return inquiryService.findByUserId(id);
-//    }
-
-
 }

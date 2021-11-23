@@ -17,7 +17,7 @@ public class CommentApiController {
 
     @ApiOperation(value = "댓글 리스트 조회")
     @GetMapping("/inquiry/{id}/comment/")    //모두 조회
-    public List<Comment> getCommentList(@PathVariable Long id) {
+    public List<CommentListResponseDto> getCommentList(@PathVariable Long id) {
         return commentService.getCommentList(id);
     }
 
