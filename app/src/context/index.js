@@ -5,9 +5,6 @@ const Context = createContext({});
 const initialState = {
   user: {
     isLogin: false,
-    accessToken: null,
-    refreshToken: null,
-    userInfo: {},
   },
 };
 
@@ -15,13 +12,7 @@ const reducer = function (state = initialState, action) {
   switch (action.type) {
     case 'LOGIN':
       state.user.isLogin = true;
-      state.user.accessToken = action.response.accessToken;
-      state.user.refreshToken = action.response.refreshToken;
-      state.user.userInfo = {
-        id: action.response.id,
-        email: action.response.email,
-        userName: action.response.name,
-      };
+      state.user = { ...state.user, ...action.response}
       return { ...state };
     case 'LOGOUT':
       state.user.isLogin = false;

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { View, Text } from 'react-native';
 import styled from 'styled-components/native';
 import { ScheduleContext } from '../context/schedule';
-import ScheduleItem from './ScheduleItem';
+import InformationItem from './InformationItem';
 
 const Container = styled.View`
   background-color: white;
@@ -43,18 +43,18 @@ const ScheduleDetail = function ({ schedule }) {
   return (
     <Container key={schedule.id}>
       <View style={{ flexDirection: 'row', marginBottom: 8 }}>
-        <ScheduleItem
+        <InformationItem
           title="시간"
           body={`${schedule.startTime}~${schedule.endTime}`}
           row={true}
         />
-        <ScheduleItem title="상태" body={schedule.status} row={true} />
+        <InformationItem title="상태" body={schedule.status} row={true} />
       </View>
       <View style={{ flexDirection: 'row' }}>
-        <ScheduleItem title="이름" body={schedule.name} row={true} />
-        <ScheduleItem title="위치" body={schedule.location} row={true} />
+        <InformationItem title="이름" body={schedule.name} row={true} />
+        <InformationItem title="위치" body={schedule.location} row={true} />
       </View>
-      <ScheduleItem title="공지사항" body={schedule.notice !== undefined ? schedule.notice : '없음'} />
+      <InformationItem title="공지사항" body={schedule.notice !== undefined ? schedule.notice : '없음'} />
       <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>
         <UpdateButton onPress={onPressUpdate}>
           <Text style={{ color: 'white', fontWeight: 'bold' }}>변경</Text>

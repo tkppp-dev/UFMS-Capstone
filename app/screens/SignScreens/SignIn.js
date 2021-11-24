@@ -1,10 +1,10 @@
 import React, { useState, useLayoutEffect, useEffect, useContext } from 'react';
 import styled from 'styled-components/native';
 import { Dimensions, Image, Alert } from 'react-native';
-import { images } from '../src/images';
+import { images } from '../../src/images';
 import axios from 'axios';
 import { CommonActions } from '@react-navigation/native';
-import { Context } from '../src/context';
+import { Context } from '../../src/context';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -17,6 +17,7 @@ const StyledInput = styled.TextInput.attrs((props) => {
     placeholder: props.placeholder,
     placeholderTextColor: 'gray',
     autoCapitalize: 'none',
+    autoCorrect: false,
     returnKeyType: 'done',
   };
 })`
@@ -106,8 +107,13 @@ const SignInScreen = function ({ navigation }) {
           email,
           password,
         });
-        dispatch({ type: 'LOGIN', response: res.data.data });
-        navigation.dispatch(CommonActions.navigate('Home'));
+        if (res.data.state === 200) {
+          dispatch({ type: 'LOGIN', response: res.data.data });
+          navigation.dispatch(CommonActions.navigate('Home'));
+        }
+        else{
+          throw new Error()
+        }
       } catch (err) {
         console.log(err);
         Alert.alert('아이디가 존재하지 않거나 비밀번호가 일치하지 않습니다.');

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { Alert, Dimensions, ScrollView, View } from 'react-native';
-import TextInputWithLabel from '../src/components/TextInputWithLabel';
-import CustomButton from '../src/components/CustomButton';
+import TextInputWithLabel from '../../src/components/TextInputWithLabel';
+import CustomButton from '../../src/components/CustomButton';
 import axios from 'axios';
-import { Context } from '../src/context';
+import { Context } from '../../src/context';
 
 const Container = styled.View`
   flex: 1;
@@ -66,10 +66,16 @@ const SignUp = function ({ navigation }) {
       const res = await axios.post('http://127.0.0.1:8080/api/user/register', {
         email,
         password,
+        username: name,
+        mobile: phoneNumber,
       });
 
-      dispatch({ type: 'LOGIN', response: res.data.data });
-      navigation.navigate('Home');
+      if (res.data.state === 200) {
+        dispatch({ type: 'LOGIN', response: res.data.data });
+        navigation.navigate('Home');
+      } else {
+        throw new Error();
+      }
     } catch (err) {
       Alert.alert('회원가입에 실패했습니다');
       console.log(err);

@@ -3,11 +3,15 @@ package sj.sjesl.reservation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import sj.sjesl.entity.Facility;
 import sj.sjesl.entity.Reservation;
+import sj.sjesl.entity.ReservationStatus;
 import sj.sjesl.repository.FacilityRepository;
 import sj.sjesl.repository.ReservationRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,9 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-@SpringBootTest
-class ReservationServiceTest {
 
+@SpringBootTest
+@Rollback
+class ReservationServiceTest {
+    @PersistenceContext
+    EntityManager em;
     @Autowired
     private FacilityRepository facilityRepository;
     @Autowired
@@ -39,16 +46,28 @@ class ReservationServiceTest {
 
     @Test
     void getBuildingImg() {
-        String img = reservationService.getBuildingImg("광개토대관");
+        String img = reservationService.getBuildingImg("광개토관");
 
         System.out.println(img);
     }
 
     @Test
     void getFloorList() {
+        String building = "광개토관";
+
+        List<String> list = reservationService.getFloorList(building);
+
+        for (String a :
+                list) {
+            System.out.println(a);
+        }
+    }
+
+    @Test
+    void getFloor() {
         BuildingFloorRequestDto requestDto = new BuildingFloorRequestDto("군자관", "3층");
 
-        List<FacilityResponseDto> responseDtos = reservationService.getFloorList(requestDto);
+        List<FacilityResponseDto> responseDtos = reservationService.getFloor(requestDto);
 
         for (FacilityResponseDto a : responseDtos) {
             System.out.println(a.getName() + " " + a.getCapacity());
@@ -69,7 +88,7 @@ class ReservationServiceTest {
         LocalDateTime endDatetime = LocalDateTime.of(requestDto.getDate(), LocalTime.of(23, 59, 59));
 
         List<Reservation> reservations = reservationRepository
-                .findAllByFacilityAndStartTimeBetween(facility1, startDatetime, endDatetime);
+                .findAllByFacilityAndReservationStatusAndStartTimeBetween(facility1, ReservationStatus.COMPLETE, startDatetime, endDatetime);
 
 
         Map<LocalTime, Boolean> timetable = new TreeMap<>();
@@ -100,6 +119,7 @@ class ReservationServiceTest {
 //            System.out.println(cls + " " + tf);
 //            ReservationListResponseDto dto = new ReservationListResponseDto(cls, tf);
             ReservationListResponseDto dto = new ReservationListResponseDto(t, timetable.get(t));
+            System.out.println(dto.get시간대()+ " " + dto.get예약가능());
             list.add(dto);
         }
     }
@@ -113,8 +133,10 @@ class ReservationServiceTest {
         LocalDateTime endTime = LocalDateTime.parse("2021-12-08 21:00:00",
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        String purpose = "study";
-        ReservationRequestDto requestDto = new ReservationRequestDto(memberId, facility, startTime, endTime, purpose);
+        String reservationName = "study";
+        String notice = "faw";
+
+        ReservationRequestDto requestDto = new ReservationRequestDto(memberId, facility, startTime, endTime, reservationName, notice);
 
         Long id = reservationService.save(requestDto);
 
@@ -126,12 +148,17 @@ class ReservationServiceTest {
         System.out.println(reservation.getFacility().getName());
         System.out.println(reservation.getStartTime());
         System.out.println(reservation.getEndTime());
-        System.out.println(reservation.getPurpose());
+//        System.out.println(reservation.getPurpose());
     }
 
     @Test
     void delete() {
         Long id = Long.valueOf(2);
-        reservationService.delete(id);
+        reservationService.cancel(id);
+    }
+
+    @Test
+    void update(){
+//        em.createQuery("update Reservation as r set r.member =1 where  r.subjectId =1",Reservation.class)
     }
 }

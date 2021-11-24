@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Platform } from 'react-native';
 import { StyleSheet } from 'react-native';
 import Picker from './Picker';
+import axios from 'axios';
+import { endPoint } from '../endPoint';
 
 const Container = styled.View`
   flex-direction: row;
@@ -14,30 +17,71 @@ const PickerItem = styled.View`
   width: 48%;
 `;
 
-const PlacePicker = function () {
+const PlacePicker = function ({
+  buildingData,
+  floor,
+  facility,
+  setFloor,
+  setFacility,
+}) {
+  const [floorItems, setFloorItems] = useState([]);
+  const [facilityItems, setFacilityItems] = useState([]);
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    const temp = [];
+    for (let floor of buildingData.floor) {
+      if (floor < 0) {
+        temp.push({ label: `지하 ${floor * -1}층`, value: floor });
+      } else {
+        temp.push({ label: `${floor}층`, value: floor });
+      }
+    }
+    setFloorItems(temp);
+  }, []);
+
+  const getFaciltyList = async function (floor) {
+    try {
+      const res = await axios.post(endPoint + 'reservation/building/floor', {
+        building: buildingData.name,
+        floor: floor + '층',
+      });
+      const temp = [];
+
+      res.data.map((facility) => {
+        temp.push({ label: facility.name, value: facility.name });
+      });
+      setFacilityItems(temp);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const _onSelectFloor = async function (value, idx) {
+    if (value === null) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+    setFloor(value);
+    getFaciltyList(value);
+  };
+
+  const _onSelectFacility = function (value) {
+    setFacility(value);
+  };
+
   return (
     <Container>
       <PickerItem>
-        <Picker
-          label="층"
-          items={[
-            { label: '지하 2층', value: -2 },
-            { label: '지하 1층', value: -1 },
-            { label: '1층', value: 1 },
-            { label: '2층', value: 2 },
-            { label: '3층', value: 3 },
-          ]}
-        />
+        <Picker label="층" items={floorItems} onValueChange={_onSelectFloor} />
       </PickerItem>
       <PickerItem>
         <Picker
           label="시설"
-          items={[
-            { label: 'XX1호', value: 'XX1' },
-            { label: 'XX2호', value: 'XX2' },
-            { label: 'XX3호', value: 'XX3' },
-            { label: 'XX4호', value: 'XX4' },
-          ]}
+          items={facilityItems}
+          onValueChange={_onSelectFacility}
+          disabled={disabled}
         />
       </PickerItem>
     </Container>

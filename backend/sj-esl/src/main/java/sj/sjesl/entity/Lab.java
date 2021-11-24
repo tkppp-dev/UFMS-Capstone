@@ -34,13 +34,9 @@ public class Lab{
     @Override
     public String toString() {
         return "Lab{" +
-                "id=" + id +
-                ", member=" + member +
                 ", location='" + location + '\'' +
                 ", state='" + state + '\'' +
-                ", scheduleStartDate=" + scheduleStartDate +
-                ", scheduleEndDate=" + scheduleEndDate +
-                ", reason='" + content + '\'' +
+
                 ", notice='" + notice + '\'' +
                 '}';
     }

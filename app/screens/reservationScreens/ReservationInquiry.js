@@ -1,9 +1,15 @@
-import React, { useState, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect, useContext } from 'react';
 import styled from 'styled-components/native';
-import { ScrollView, View, Text } from 'react-native';
+import { ScrollView, View, Text, Alert } from 'react-native';
 import { FAB, Icon } from 'react-native-elements';
 import InquiryAnswer from '../../src/components/InquiryAnswer';
 import axios from 'axios';
+import { endPoint } from '../../src/endPoint';
+import { Context } from '../../src/context';
+import { InquiryContext, InquiryProvider } from '../../src/context/inquiry';
+import { Provider } from 'react-native-paper';
+import InquiryUpdateModal from '../../src/components/modal/InquiryUpdateModal';
+import InquiryDeleteModal from '../../src/components/modal/InquiryDeleteModal';
 
 const Container = styled.View`
   width: 100%;
@@ -12,73 +18,136 @@ const Container = styled.View`
 `;
 
 const RentInquiry = function ({ navigation }) {
-  const [inquiryList, setInquiryList] = useState([
-    {
-      id: 1,
-      title: '대양홀 대관 문의',
-      content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-      date: '2021/11/14',
-      isAnswerDone: false,
-    },
-    {
-      id: 2,
-      title: '대양홀 대관 문의',
-      content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-      date: '2021/11/14',
-      isAnswerDone: true,
-      answerDate : '2021/11/16',
-      answer: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
-    },
-  ]);
+  const { state } = useContext(Context);
+  const { inquiryState, dispatch } = useContext(InquiryContext);
+  const [inquiryList, setInquiryList] = useState([]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown: false,
+      headerBackTitleVisible: false,
+      headerTitleAlign: 'center',
     });
   });
 
+  const getInquiryList = async function () {
+    try {
+      const res = await axios.get(endPoint + `inquiry/my/${state.user.id}`);
+      if (res.status === 200) {
+        const temp = [];
+        res.data.map((inquiry, idx) => {
+          temp.push({
+            id: idx,
+            inquiryId: inquiry.id,
+            title: inquiry.title,
+            author: inquiry.author,
+            content: inquiry.content,
+            date: new Date(inquiry.modifiedDate),
+            isAnswerDone: false,
+          });
+        });
+        setInquiryList([...temp]);
+        dispatch({ type: 'SET_INQUIRY_LIST', inquiryList: temp });
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('예상치 못한 에러로 정보를 불러오지 못했습니다');
+    }
+  };
+
   useEffect(() => {
-    const getInquiryList = async function () {
-      return await axios.get('http://127.0.0.1:8080/inquiry');
-    };
+    getInquiryList();
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('Refreshed!');
+      getInquiryList();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const _updateInquiry = async function () {
+    try {
+      const params = {
+        title: inquiryState.title,
+        content: inquiryState.content,
+      };
+      console.log(params, inquiryState);
+      const res = await axios.put(
+        endPoint + `inquiry/${inquiryState.inquiryId}`,
+        params
+      );
+
+      if (res.status === 200) {
+        dispatch({ type: 'UPDATE_MODAL_DISMISS' });
+        getInquiryList();
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('예상치 못한 에러로 문의 수정에 실패했습니다');
+    }
+  };
+
+  const _deleteInquiry = async function () {
+    try {
+      const res = await axios.delete(
+        endPoint + `inquiry/${inquiryState.inquiryId}`
+      );
+
+      if (res.status === 200) {
+        dispatch({ type: 'DELETE_MODAL_DISMISS' });
+        getInquiryList();
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('예상치 못한 에러로 문의 수정에 실패했습니다');
+    }
+  };
+
   return (
-    <Container>
-      {inquiryList.length === 0 ? (
-        <View
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        >
-          <Text style={{ fontSize: 18 }}>문의 내역이 없습니다</Text>
-        </View>
-      ) : (
-        <ScrollView contentContainerStyle={{ backgroundColor: 'white' }}>
-          <View style={{ flex: 1, paddingHorizontal: 10 }}>
-            {inquiryList.map((inquiry) => {
-              return (
-                <InquiryAnswer
-                  key={inquiry.id}
-                  onPress={() => {
-                    navigation.navigate('Write Reservation Inquiry');
-                  }}
-                  inquiryDetail={inquiry}
-                />
-              );
-            })}
+    <Provider>
+      <Container>
+        {inquiryList.length === 0 ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ fontSize: 18 }}>문의 내역이 없습니다</Text>
           </View>
-        </ScrollView>
-      )}
-      <FAB
-        placement="right"
-        icon={<Icon name="plus" type="material-community" color="white" />}
-        buttonStyle={{ backgroundColor: '#00AAFF' }}
-        containterStyle={{ margin: 15 }}
-        onPress={() => {
-          navigation.navigate('Write Reservation Inquiry');
-        }}
-      />
-    </Container>
+        ) : (
+          <ScrollView contentContainerStyle={{ backgroundColor: 'white' }}>
+            <View style={{ flex: 1, paddingHorizontal: 10 }}>
+              {inquiryList.map((inquiry) => {
+                return (
+                  <InquiryAnswer
+                    key={inquiry.inquiryId}
+                    inquiryDetail={inquiry}
+                    onPressUpdate={() => {}}
+                  />
+                );
+              })}
+            </View>
+          </ScrollView>
+        )}
+        <FAB
+          placement="right"
+          icon={<Icon name="edit" type="antdesign" color="white" />}
+          buttonStyle={{ backgroundColor: '#00AAFF' }}
+          containterStyle={{ margin: 15 }}
+          onPress={() => {
+            navigation.navigate('Write Reservation Inquiry');
+          }}
+        />
+        <InquiryUpdateModal updateInquiry={_updateInquiry} />
+        <InquiryDeleteModal deleteInquiry={_deleteInquiry} />
+      </Container>
+    </Provider>
   );
 };
 
-export default RentInquiry;
+export default React.memo(RentInquiry);

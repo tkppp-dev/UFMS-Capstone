@@ -21,7 +21,7 @@ const Input = styled.TextInput.attrs((props) => {
   };
 })`
   width: 100%;
-  height: ${({type}) => type === 'textarea' ? 100 : 42}px;
+  height: ${({ type }) => (type === 'textarea' ? 100 : 42)}px;
   padding: 10px;
   border: 1px;
   border-color: #d6dde4;
@@ -35,7 +35,15 @@ const Notice = styled.Text`
   color: black;
 `;
 
-const CustomInput = function ({ label, multiline, placeholder, notice, onChangeText }) {
+const CustomInput = function ({
+  label,
+  value = '',
+  multiline = false,
+  placeholder,
+  notice,
+  onChangeText,
+  type
+}) {
   const width = Dimensions.get('window').width;
 
   return (
@@ -43,9 +51,12 @@ const CustomInput = function ({ label, multiline, placeholder, notice, onChangeT
       <Label>{label}</Label>
       <Input
         onChangeText={onChangeText}
+        value={value}
         placeholder={placeholder}
-        multiline={multiline ? true : false}
-        autoCapitalize={false}
+        multiline={multiline}
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        type={type}
       />
       {notice !== undefined ? <Notice>{notice}</Notice> : null}
     </Container>

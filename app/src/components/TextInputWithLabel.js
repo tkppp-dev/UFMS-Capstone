@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
-import { Text, Dimensions, View } from 'react-native';
+import { Text, Dimensions, View, Alert } from 'react-native';
+import axios from 'axios';
+import { endPoint } from '../endPoint';
 
 const Container = styled.View`
   width: ${(props) => props.width - 100}px;
@@ -57,6 +59,27 @@ const TextInputWithLabel = function ({
 }) {
   const width = Dimensions.get('window').width;
   const [isAuthCompleted, setIsAuthCompleted] = useState(false);
+  const [messageSendButtonText, setMessageSendButtonText] =
+    useState('인증번호 전송');
+  const [verifyNumber, setVerifyNumber] = useState(null);
+  const [inputNumber, setInputNumber] = useState('');
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+
+  const _sendAuthResquest = async function () {
+    try {
+      const res = await axios.post(
+        endPoint + 'api/user/register/mobile',
+        null,
+        {
+          params: { toNumber: value },
+        }
+      );
+      setVerifyNumber(res.data);
+      setMessageSendButtonText('인증번호 재전송');
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <Container width={width}>
@@ -68,6 +91,8 @@ const TextInputWithLabel = function ({
             type === 'password' || type === 'password_check' ? true : false
           }
           onChangeText={onChangeText}
+          autoCapitalize={'none'}
+          autoCorrect={false}
         />
       ) : (
         <View
@@ -98,14 +123,41 @@ const TextInputWithLabel = function ({
       ) : null}
       {authentication ? (
         <AuthenticatoinButton
-          onPress={() => {
-            onPressAuthButton();
-            setIsAuthCompleted(true);
-          }}
+          style={{ opacity: buttonDisabled ? 0.5 : 1 }}
+          disabled={buttonDisabled}
+          onPress={_sendAuthResquest}
         >
-          <Text style={{ color: 'white' }}>인증</Text>
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>
+            {messageSendButtonText}
+          </Text>
         </AuthenticatoinButton>
       ) : null}
+      {verifyNumber === null ? null : (
+        <View style={{ marginTop: 20 }}>
+          <Input
+            placeholder="인증번호 입력"
+            onChangeText={(value) => setInputNumber(value)}
+            maxLength={4}
+            keyboardType="number-pad"
+          />
+          <AuthenticatoinButton
+            onPress={() => {
+              if (verifyNumber == inputNumber) {
+                //check api 어따 쓰는지 문의
+                Alert.alert('휴대폰 인증에 성공했습니다');
+                onPressAuthButton();
+                setIsAuthCompleted(true);
+                setVerifyNumber(null);
+                setButtonDisabled(true)
+              } else {
+                Alert.alert('휴대폰 인증에 실패했습니다.');
+              }
+            }}
+          >
+            <Text style={{ color: 'white', fontWeight: 'bold' }}>인증</Text>
+          </AuthenticatoinButton>
+        </View>
+      )}
     </Container>
   );
 };

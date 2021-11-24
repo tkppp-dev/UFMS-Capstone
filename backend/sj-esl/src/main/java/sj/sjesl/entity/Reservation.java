@@ -36,19 +36,50 @@ public class Reservation extends BaseEntity {
 
     private LocalDateTime endTime;
 
-    private String purpose;
+    private String reservationName;
+    private String notice;
 
-//    private ReservationStatus reservationStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ReservationStatus reservationStatus;
 
+    //    @OneToOne
+//    @JoinColumn(name = "subject_id")
+//    private Subject subject;
+    private Long subjectId;
 
     @Builder
-    public Reservation(Member member, Facility facility,
-                       LocalDateTime startTime, LocalDateTime endTime, String purpose) {
+    public Reservation(Member member, Facility facility, LocalDateTime startTime, LocalDateTime endTime,
+                       String reservationName, String notice, ReservationStatus reservationStatus,Long subjectId) {
         this.member = member;
         this.facility = facility;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.purpose = purpose;
+        this.reservationName = reservationName;
+        this.notice = notice;
+        this.reservationStatus = reservationStatus;
+        this.subjectId=subjectId;
     }
 
+    public Reservation(LocalDateTime startTime, LocalDateTime endTime, String reservationName, String notice, ReservationStatus reservationStatus, Long subjectId) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.reservationName = reservationName;
+        this.notice = notice;
+        this.reservationStatus = reservationStatus;
+        this.subjectId = subjectId;
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", reservationName='" + reservationName + '\'' +
+                ", notice='" + notice + '\'' +
+                ", reservationStatus=" + reservationStatus +
+                ", subjectId=" + subjectId +
+                '}';
+    }
 }

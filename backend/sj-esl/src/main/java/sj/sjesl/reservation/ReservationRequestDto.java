@@ -15,16 +15,18 @@ public class ReservationRequestDto {
     private String facility;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private String purpose;
+    private String reservationName;
+    private String notice;
 
     @Builder
-    public ReservationRequestDto(Long memberId, String facility,
-                                 LocalDateTime startTime, LocalDateTime endTime, String purpose) {
+    public ReservationRequestDto(Long memberId, String facility, LocalDateTime startTime, LocalDateTime endTime,
+                                 String reservationName, String notice) {
 
         this.memberId = memberId;
         this.facility = facility;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.purpose = purpose;
+        this.reservationName = reservationName;
+        this.notice = notice;
     }
 }
