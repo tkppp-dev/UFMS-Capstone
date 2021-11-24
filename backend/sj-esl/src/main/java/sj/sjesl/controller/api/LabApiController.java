@@ -57,8 +57,8 @@ public class LabApiController {
     @PatchMapping("/lab/notice/{id}")    //공지사항 변경
     @ApiOperation(value = "연구실 공지사항 변경")
 
-    public ResponseEntity<?> Update_1(@PathVariable Long id, @RequestBody LabNoticeUpdateRequestDto requestDto) {
-        return labService.noticeUpdate(id, requestDto);
+    public ResponseEntity<?> Update_1(@PathVariable Long id, @RequestBody String notice) {
+        return labService.noticeUpdate(id, notice);
     }
 
     @PatchMapping("/lab/state/{id}")    //상태 변경

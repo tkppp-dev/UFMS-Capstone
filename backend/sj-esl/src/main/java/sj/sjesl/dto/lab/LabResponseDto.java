@@ -34,4 +34,44 @@ public class LabResponseDto {
         }
     }
 
+
+    @Builder
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class StateLab
+    {
+
+        private Long memberId;
+        private String state;
+
+
+        @Override
+        public String toString() {
+            return "StateLab{" +
+                    "memberId=" + memberId +
+                    ", state='" + state + '\'' +
+                    '}';
+        }
+    }
+
+    @Builder
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class noticeLab
+    {
+
+        private Long memberId;
+        private String notice;
+
+        @Override
+        public String toString() {
+            return "noticeLab{" +
+                    "memberId=" + memberId +
+                    ", notice='" + notice + '\'' +
+                    '}';
+        }
+    }
+
 }
