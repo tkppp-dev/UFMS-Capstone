@@ -49,10 +49,10 @@ public class Reservation extends BaseEntity {
     private Long subjectId;
 
     @Builder
-    public Reservation(Member member,Facility facility, LocalDateTime startTime, LocalDateTime endTime,
+    public Reservation(Member member, Facility facility, LocalDateTime startTime, LocalDateTime endTime,
                        String reservationName, String notice, ReservationStatus reservationStatus,Long subjectId) {
-        this.member=member;
-        this.facility=facility;
+        this.member = member;
+        this.facility = facility;
         this.startTime = startTime;
         this.endTime = endTime;
         this.reservationName = reservationName;
@@ -61,18 +61,25 @@ public class Reservation extends BaseEntity {
         this.subjectId=subjectId;
     }
 
-    @Builder
-    public Reservation( LocalDateTime startTime, LocalDateTime endTime,
-                        String reservationName, String notice, ReservationStatus reservationStatus,Long subjectId) {
-
+    public Reservation(LocalDateTime startTime, LocalDateTime endTime, String reservationName, String notice, ReservationStatus reservationStatus, Long subjectId) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.reservationName = reservationName;
         this.notice = notice;
         this.reservationStatus = reservationStatus;
-        this.subjectId=subjectId;
+        this.subjectId = subjectId;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", reservationName='" + reservationName + '\'' +
+                ", notice='" + notice + '\'' +
+                ", reservationStatus=" + reservationStatus +
+                ", subjectId=" + subjectId +
+                '}';
+    }
 }

@@ -53,9 +53,11 @@ public class FTPUploader2 {
         List<Reservation> reservations = reservationRepository
                 .findAllByFacilityAndReservationStatusAndStartTimeBetween(facility1, ReservationStatus.COMPLETE, startDatetime, endDatetime);
 
-        for( Reservation r: reservations)
+        LocalTime time= LocalTime.now();
+        System.out.println(time);
+        for( Reservation r: reservations) {
             System.out.println(r.toString());
-
+        }
 
 
 
@@ -65,7 +67,7 @@ public class FTPUploader2 {
         System.out.println(reservations.get(0).getEndTime().getHour()+" "+reservations.get(0).getEndTime().getMinute());
         String startTime=reservations.get(0).getStartTime().getHour()+":"+String.format("%02d",reservations.get(0).getStartTime().getMinute());
         String endTime=reservations.get(0).getEndTime().getHour()+":"+String.format("%02d",reservations.get(0).getEndTime().getMinute());
-
+//        String professor=reservations.
         System.out.println("2222222222222222222");
         System.out.println(byId.get().toString());
         System.out.println("33333333333333333");
