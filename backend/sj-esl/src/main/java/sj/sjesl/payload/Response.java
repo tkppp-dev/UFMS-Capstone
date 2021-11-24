@@ -5,11 +5,11 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import sj.sjesl.dto.lab.LabResponseDto;
+import sj.sjesl.entity.Lab;
 import sj.sjesl.entity.Member;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.*;
 
 @Component
 public class Response {
@@ -35,8 +35,52 @@ public class Response {
                     '}';
         }
     }
+    @Getter
+    @Builder
+    private static class ListBody {
 
-    public ResponseEntity<?> success(Object data, String msg, HttpStatus status) {
+        private int state;
+        private String result;
+        private String massage;
+        private List<Lab> data;
+        private Object error;
+
+
+        @Override
+        public String toString() {
+            return "ListBody{" +
+                    "state=" + state +
+                    ", result='" + result + '\'' +
+                    ", massage='" + massage + '\'' +
+                    ", data=" + data +
+                    ", error=" + error +
+                    '}';
+        }
+    }
+
+    public ResponseEntity<?> success(List<Lab> data, String msg, HttpStatus status) {
+        System.out.println(data);
+        List<LabResponseDto.Lab> labs = new ArrayList<>();
+        for ( Lab l :data){
+            LabResponseDto.Lab lab= new LabResponseDto.Lab();
+            lab.setNotice(l.getNotice());
+            lab.setState(l.getState());
+            lab.setLocation(l.getLocation());
+            labs.add(lab);
+        }
+        Body body = Body.builder()
+                .state(status.value())
+                .data(labs)
+                .result("success")
+                .massage(msg)
+                .error(Collections.emptyList())
+                .build();
+
+        return ResponseEntity.ok(body);
+    }
+
+   public ResponseEntity<?> success(Object data, String msg, HttpStatus status) {
+
         Body body = Body.builder()
                 .state(status.value())
                 .data(data)
@@ -46,6 +90,8 @@ public class Response {
                 .build();
         return ResponseEntity.ok(body);
     }
+
+
 
     public ResponseEntity<?> success(Object data, Member member, String msg, HttpStatus status) {
         Body body = Body.builder()
