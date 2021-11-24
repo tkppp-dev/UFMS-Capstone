@@ -39,7 +39,7 @@ public class LabService {
                 .build();
 
         labRepository.save(lab);
-        return response.success(lab.toString(),"연구실 추가에 성공하였습니다.",HttpStatus.OK);
+        return response.success(requestDto,"연구실 추가에 성공하였습니다.",HttpStatus.OK);
     }
 
     @Transactional

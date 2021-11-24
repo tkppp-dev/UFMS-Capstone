@@ -16,7 +16,6 @@ import sj.sjesl.repository.MemberRepository;
 import sj.sjesl.service.LabService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Api(tags = "연구실 조회/ 공지사항/ 상태 변경 ")
 @RequiredArgsConstructor
@@ -38,8 +37,8 @@ public class LabApiController {
 
 
         System.out.println(byMember);
-
-        return response.success(byMember.toString(),"조회성공",HttpStatus.OK);
+        List<Lab> labs= byMember;
+        return response.success(byMember,"조회성공",HttpStatus.OK);
     }
 
     @GetMapping("/lab/save")    //연구실추가 페이지
