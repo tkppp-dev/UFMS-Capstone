@@ -30,9 +30,8 @@ const ClassRentReservation = function ({ navigation }) {
         const res = await axios.get(endPoint + 'reservation/building');
         res.data.map((building, idx) => {
           buildings.push({
-            id: idx + 1,
+            id: idx,
             name: building,
-            floor: [1, 2, 3, 4, 5, 6],
           });
         });
         setBuildings([...buildings]);

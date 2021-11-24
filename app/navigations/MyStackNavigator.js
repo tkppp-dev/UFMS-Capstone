@@ -1,7 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import ProfessorMyPage from '../screens/MyPageScreens/ProfessorMyPage';
-import StudentMyPage from '../screens/MyPageScreens/StudentMyPage';
+import Mypage from '../screens/MyPageScreens/Mypage';
 import WeekSchedule from '../screens/MyPageScreens/WeekSchedule';
 
 const MyStack = createStackNavigator();
@@ -16,7 +15,7 @@ const MyStackNavigator = function () {
         headerBackTitleVisible: false
       }}
     >
-      <MyStack.Screen name="MyStack" component={ProfessorMyPage} />
+      <MyStack.Screen name="MyStack" component={Mypage} />
       <MyStack.Screen name="Schedule" component={WeekSchedule} />
     </MyStack.Navigator>
   );

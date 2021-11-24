@@ -69,7 +69,7 @@ const OfficeStatusUpdateModal = function ({
             />
           </View>
         </RadioButton.Group>
-        <View style={{ width: '30%', alignSelf: 'flex-end', marginTop: 20 }}>
+        <View style={{ width: '35%', alignSelf: 'flex-end', marginTop: 20 }}>
           <CustomButton
             label="사용 상태 변경"
             onPress={() => {
@@ -82,6 +82,7 @@ const OfficeStatusUpdateModal = function ({
               } else {
                 onPressUpdate(officeStatus);
               }
+              setOfficeStatus('');
               onDismiss();
             }}
           />

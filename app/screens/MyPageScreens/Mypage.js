@@ -68,10 +68,8 @@ const ProfessorMyPage = function ({ navigation }) {
   const { state, dispatch } = useContext(Context);
   const [previlege, setPrevilege] = useState();
   const [currentSchedule, setCurrentSchedule] = useState({});
-  const [officeStatus, setOfficeStatus] = useState('재실');
-  const [officeNotice, setOfficeNotice] = useState(
-    '11/14~11/15 세미나 참석으로 부재'
-  );
+  const [officeList, setOfficeList] = useState([]);
+  const [selectedLab, setSelectedLab] = useState(null);
   const [currentScheduleStatus, setCurrentScheduleStatus] = useState('수업중');
   const [officeStatusModalVisible, setOfficeStatusModalVisible] =
     useState(false);
@@ -89,27 +87,74 @@ const ProfessorMyPage = function ({ navigation }) {
     });
   });
 
-  useEffect(() => {
-    const getPrevilege = async function () {
-      const res = await axios.get(endPoint + `api/auth/user/${state.user.id}`);
-      setPrevilege(res.data.privileges);
-    };
-
-    const getOfficeList = async function () {
+  const getOfficeList = async function () {
+    try {
       const res = await axios.get(endPoint + `schedule/lab/${state.user.id}`);
-      console.log(typeof res.data.data)
-    };
+      const temp = [];
+      res.data.data.map((office, index) => {
+        temp.push({
+          officeData: office,
+          isFirst: false,
+          isEnd: false,
+          key: index,
+        });
+      });
+      temp[0].isFirst = true;
+      temp[temp.length - 1].isEnd = true;
+      setOfficeList(temp);
+    } catch (err) {
+      console.error(err);
+      Alert.alert('정보 로드에 실패했습니다');
+    }
+  };
 
+  const getPrevilege = async function () {
+    try {
+      const res = await axios.get(endPoint + `api/auth/user/${state.user.id}`);
+      setPrevilege(res.data.data.privileges);
+    } catch (err) {
+      console.error(err);
+      Alert.alert('정보 로드에 실패했습니다');
+    }
+  };
+
+  useEffect(() => {
     getPrevilege();
     getOfficeList();
   }, []);
 
-  const _onPressOfficeStatus = function (value) {
-    setOfficeStatus(value);
+  const _onPressOfficeStatus = async function (value) {
+    try {
+      const res = await axios.put(
+        endPoint + `schedule/lab/state/${selectedLab}`,
+        { state: value }
+      );
+      if (res.status !== 200) {
+        throw new Error();
+      } else {
+        getOfficeList();
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('상태 변경에 실패했습니다');
+    }
   };
 
-  const _onPressOfficeNotice = function (value) {
-    setOfficeNotice(value);
+  const _onPressOfficeNotice = async function (value) {
+    try {
+      const res = await axios.put(
+        endPoint + `schedule/lab/notice/${selectedLab}`,
+        { notice: value }
+      );
+      if (res.status !== 200) {
+        throw new Error();
+      } else {
+        getOfficeList();
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('공지사항 변경에 실패했습니다');
+    }
   };
 
   const _onPressScheduleStatus = function (value) {
@@ -166,20 +211,13 @@ const ProfessorMyPage = function ({ navigation }) {
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
                 pagingEnabled={true}
-                data={[
-                  { status: officeStatus, notice: officeNotice, key: 1 },
-                  { status: officeStatus, notice: officeNotice, key: 2 },
-                ]}
+                keyExtractor={(item, index) => index.toString()}
+                data={officeList}
                 renderItem={({ item, index }) => (
                   <OfficeInformation
-                    ContentContainer={{
-                      width: 500
-                    }}
                     key={item.key}
-                    officeData={{
-                      status: item.status,
-                      notice: item.notice,
-                    }}
+                    item={item}
+                    setSelectedLab={setSelectedLab}
                     showOfficeStatusModal={() =>
                       setOfficeStatusModalVisible(true)
                     }
@@ -234,13 +272,6 @@ const ProfessorMyPage = function ({ navigation }) {
                         row={true}
                       />
                     </View>
-                    <CustomButton
-                      label="현재 스케줄 상태 변경"
-                      color={'#f7f9fa'}
-                      fontColor={'black'}
-                      border={true}
-                      onPress={() => setCurrentScheduleStatusModalVisible(true)}
-                    />
                     <Portal>
                       <CurrentSchduleStatusUpdateModal
                         visible={currentScheduleStatusModalVisible}
@@ -281,7 +312,6 @@ const ProfessorMyPage = function ({ navigation }) {
         </Portal>
         <Portal>
           <OfficeNoticeUpdateModal
-            value={officeNotice}
             visible={officeNoticeModalVisible}
             onDismiss={() => setOfficeNoticeModalVisible(false)}
             onPressUpdate={_onPressOfficeNotice}

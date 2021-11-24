@@ -10,15 +10,6 @@ const Container = styled.View`
   margin: 8px 0 8px 0;
 `;
 
-const StyledText = styled.Text`
-  font-size: ${({ fontSize }) =>
-    fontSize !== undefined ? fontSize + 'px' : '16px'};
-  font-weight: ${({ fontWeight }) =>
-    fontWeight !== undefined ? fontWeight : 'normal'};
-  margin-bottom: ${({ marginBottom }) =>
-    marginBottom !== undefined ? marginBottom + 'px' : '6px'};
-`;
-
 const ButtonGroup = styled.View`
   flex-direction: row;
   justify-content: space-around;
@@ -47,38 +38,50 @@ const RigthButtonGroupItem = styled(ButtonGroupItem)`
 `;
 
 const OfficeInformation = function ({
-  officeData,
+  item,
+  setSelectedLab,
   showOfficeStatusModal,
   showOfficeNoticeModal,
 }) {
   const width = Dimensions.get('window').width;
+  const office = item.officeData;
+
   return (
     <Container width={width}>
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          marginBottom: 10
+          marginBottom: 10,
         }}
       >
-        <Icon type="antdesign" name="left" size={18} />
+        {item.isFirst ? null : <Icon type="antdesign" name="left" size={18} />}
         <View
           style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
         >
-          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>율곡관 501호</Text>
+          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+            {office.location}
+          </Text>
         </View>
-        <Icon type="antdesign" name="right" size={18} />
+        {item.isEnd ? null : <Icon type="antdesign" name="right" size={18} />}
       </View>
-
-      <InformationItem title="상태" body={officeData.status} />
-      <InformationItem title="공지사항" body={officeData.notice} />
+      <InformationItem title="상태" body={office.state} />
+      <InformationItem title="공지사항" body={office.notice} />
       <ButtonGroup>
-        <LeftButtonGroupItem onPress={showOfficeStatusModal}>
+        <LeftButtonGroupItem onPress={() => {
+          setSelectedLab(office.labId)
+          showOfficeStatusModal(true)
+        }}>
           <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>
             사용 상태 변경
           </Text>
         </LeftButtonGroupItem>
-        <RigthButtonGroupItem onPress={showOfficeNoticeModal}>
+        <RigthButtonGroupItem
+          onPress={() => {
+            setSelectedLab(office.labId);
+            showOfficeNoticeModal(true);
+          }}
+        >
           <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>
             공지사항 변경
           </Text>

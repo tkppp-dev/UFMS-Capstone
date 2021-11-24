@@ -6,10 +6,9 @@ import CustomButton from '../CustomButton';
 const OfficeNoticeUpdateModal = function ({
   visible,
   onDismiss,
-  value,
   onPressUpdate,
 }) {
-  const [notice, setNotice] = useState(value);
+  const [notice, setNotice] = useState('');
 
   return (
     <Modal
@@ -42,14 +41,13 @@ const OfficeNoticeUpdateModal = function ({
               marginHorizontal: 20,
               padding: 10,
             }}
-            value={notice}
             autoCapitalize="none"
             autoCorrect={false}
             multiline={true}
             onChangeText={(value) => setNotice(value)}
           />
         </View>
-        <View style={{ width: '30%', alignSelf: 'flex-end', marginTop: 20 }}>
+        <View style={{ width: '35%', alignSelf: 'flex-end', marginTop: 20 }}>
           <CustomButton
             label="공지사항 변경"
             onPress={() => {
