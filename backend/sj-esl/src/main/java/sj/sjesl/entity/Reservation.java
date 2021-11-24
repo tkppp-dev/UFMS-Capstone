@@ -43,14 +43,14 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false)
     private ReservationStatus reservationStatus;
 
-    //    @OneToOne
+//    @OneToOne
 //    @JoinColumn(name = "subject_id")
 //    private Subject subject;
     private Long subjectId;
 
     @Builder
     public Reservation(Member member, Facility facility, LocalDateTime startTime, LocalDateTime endTime,
-                       String reservationName, String notice, ReservationStatus reservationStatus,Long subjectId) {
+                       String reservationName, String notice, ReservationStatus reservationStatus) {
         this.member = member;
         this.facility = facility;
         this.startTime = startTime;
@@ -58,28 +58,6 @@ public class Reservation extends BaseEntity {
         this.reservationName = reservationName;
         this.notice = notice;
         this.reservationStatus = reservationStatus;
-        this.subjectId=subjectId;
     }
 
-    public Reservation(LocalDateTime startTime, LocalDateTime endTime, String reservationName, String notice, ReservationStatus reservationStatus, Long subjectId) {
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.reservationName = reservationName;
-        this.notice = notice;
-        this.reservationStatus = reservationStatus;
-        this.subjectId = subjectId;
-    }
-
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", reservationName='" + reservationName + '\'' +
-                ", notice='" + notice + '\'' +
-                ", reservationStatus=" + reservationStatus +
-                ", subjectId=" + subjectId +
-                '}';
-    }
 }
