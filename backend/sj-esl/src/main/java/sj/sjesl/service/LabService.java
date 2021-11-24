@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sj.sjesl.dto.lab.LabNoticeUpdateRequestDto;
+import sj.sjesl.dto.lab.LabResponseDto;
 import sj.sjesl.dto.lab.LabSaveRequestDto;
 import sj.sjesl.entity.Lab;
 import sj.sjesl.entity.Member;
@@ -43,14 +44,14 @@ public class LabService {
     }
 
     @Transactional
-    public ResponseEntity<?> noticeUpdate(Long id, LabNoticeUpdateRequestDto requestDto) {
+    public ResponseEntity<?> noticeUpdate(Long id, String notice) {
         Optional<Lab> lab = labRepository.findById(id);
         if (lab==null) return response.fail("해당하는 연구실이 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
 
         Lab findLab= lab.get();
-        findLab.noticeUpdate(requestDto.getNotice(),requestDto.getContent(),requestDto.getStartDate(),requestDto.getEndDate());
-
-        return response.success("공지사항 변경이 완료되었습니다.");
+        findLab.noticeUpdate(notice);
+        LabResponseDto.noticeLab build = LabResponseDto.noticeLab.builder().notice(notice).memberId(id).build();
+        return response.success(build,"연구실 공지사항 변경이 완료되었습니다.",HttpStatus.OK);
     }
 
     @Transactional
@@ -59,9 +60,9 @@ public class LabService {
         if (lab==null) return response.fail("해당하는 연구실이 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
 
         Lab findLab= lab.get();
-        findLab.setState(state);
-
-        return response.success("상태 변경이 완료되었습니다.");
+        findLab.stateUpdate(state);
+        LabResponseDto.StateLab build = LabResponseDto.StateLab.builder().state(state).memberId(id).build();
+        return response.success(build,"연구실 상태 변경이 완료되었습니다.",HttpStatus.OK);
     }
 //
 //    public InquiryResponseDto findById(Long id) {
