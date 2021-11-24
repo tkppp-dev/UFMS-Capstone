@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ResolvableType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -92,8 +93,12 @@ public class MemberController {
     @GetMapping("/api/auth/user/{id}")    //유저조회
     @ApiOperation(value = "유저조회 버전( 멤버아이디넣어서 확인)")
 
-    public Optional<Member> findById(@PathVariable Long id) {
-        return memberRepository.findById(id);
+    public ResponseEntity<?> findById(@PathVariable Long id) {
+
+        Optional<Member> member = memberRepository.findById(id);
+        System.out.println(member);
+        if(member.isEmpty()) return response.fail("해당하는 멤버가 없습니다.",HttpStatus.BAD_REQUEST);
+        return response.success(member.get(),"멤버 조회에 성공 하였습니다", HttpStatus.OK);
     }
 //    @GetMapping("/inquiry/{id}")    //문의 조회
 //    public InquiryResponseDto findById(@PathVariable Long id) {
@@ -109,6 +114,14 @@ public class MemberController {
         System.out.println(member);
 
         return member;
+    }
+
+    @GetMapping("/api/member/{id}")
+    @ApiOperation(value = "회원삭제")
+    public  ResponseEntity<?> delete(@PathVariable Long id){
+       memberService.delete(id);
+
+        return response.success("삭제완료하였습니다.");
     }
 
 
