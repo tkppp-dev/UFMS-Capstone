@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ScheduleContainer = styled.div`
+export const ManagerContainer = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;

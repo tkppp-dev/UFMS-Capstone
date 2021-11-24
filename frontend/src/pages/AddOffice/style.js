@@ -1,24 +1,26 @@
 import { Button, Input } from 'antd';
-import ReactQuill from 'react-quill';
 import styled from 'styled-components';
 
-export const WriteContainer = styled.div`
+const { TextArea } = Input;
+
+export const AddContainer = styled.div`
   width: 90%;
   margin-left: 5%;
+  margin-bottom: 64px;
 `;
 
 export const Title = styled.h1`
   margin-top: 48px;
 `;
 
-export const TitleInput = styled(Input)`
+export const LocationInput = styled(Input)`
   width: 100%;
   height: 48px;
 `;
 
-export const ContentsInput = styled(ReactQuill)`
-  height: 400px;
+export const NoticeInput = styled(TextArea)`
   width: 100%;
+  height: 400px;
   margin-top: 16px;
   background-color: white;
 `;

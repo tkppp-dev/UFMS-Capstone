@@ -5,4 +5,5 @@ export const RentContainer = styled.div`
   min-height: 500px;
   margin-left: 5%;
   margin-top: 64px;
+  margin-bottom: 64px;
 `;

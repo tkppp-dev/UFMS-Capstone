@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 
 // style
-import { Logo, MenuContainer, MenuBox, NavbarContainer, Wrap } from './style';
+import { Logo, MenuContainer, NavbarContainer, Wrap } from './style';
 
 // component
 import LoginModal from 'components/LoginModal/LoginModal';
@@ -18,7 +18,7 @@ function Navbar() {
         <Logo to="/">Logo Logo</Logo>
         <MenuContainer>
           <div>
-            <Link className="ant-dropdown-link" to="/rent/place">
+            <Link className="ant-dropdown-link" to="/inquery">
               대관 문의
             </Link>
           </div>

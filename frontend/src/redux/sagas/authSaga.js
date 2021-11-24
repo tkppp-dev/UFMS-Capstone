@@ -115,7 +115,7 @@ const registerUserAPI = (data) => {
     },
   };
 
-  return axios.post('api/user/register', data, config);
+  return axios.post('/api/user/register', data, config);
 };
 
 function* registerUser(action) {
@@ -141,18 +141,8 @@ function* watchregisterUser() {
 }
 
 // User Loading
-const userLoadingAPI = (token) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  if (token) {
-    config.headers['x-auth-token'] = token;
-  }
-
-  return axios.get('api/auth/user', config);
+const userLoadingAPI = (id) => {
+  return axios.get(`api/auth/user/${id}`);
 };
 
 function* userLoading(action) {
