@@ -16,15 +16,22 @@ const OfficeNoticeUpdateModal = function ({
       visible={visible}
       onDismiss={onDismiss}
       contentContainerStyle={{
+        width: '90%',
         backgroundColor: 'white',
         padding: 20,
         justifyContent: 'center',
         alignItems: 'center',
+        alignSelf: 'center',
+        borderRadius: 4,
       }}
     >
       <View style={{ width: '90%' }}>
-        <View style={{marginBottom: 30}}>
-          <Text style={{textAlign: 'center', fontSize: 18, fontWeight: 'bold'}}>공지사항 변경</Text>
+        <View style={{ marginBottom: 30 }}>
+          <Text
+            style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold' }}
+          >
+            공지사항 변경
+          </Text>
         </View>
         <View>
           <TextInput
@@ -46,13 +53,12 @@ const OfficeNoticeUpdateModal = function ({
           <CustomButton
             label="공지사항 변경"
             onPress={() => {
-              if(notice.length === 0){
-                onPressUpdate('없음')
+              if (notice.length === 0) {
+                onPressUpdate('없음');
+              } else {
+                onPressUpdate(notice);
               }
-              else{
-                onPressUpdate(notice)
-              }
-              onDismiss()
+              onDismiss();
             }}
           />
         </View>

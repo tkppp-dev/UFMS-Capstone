@@ -17,34 +17,65 @@ const PickerItem = styled.View`
   width: 48%;
 `;
 
-const PlacePicker = function ({
-  buildingData,
-  floor,
-  facility,
-  setFloor,
-  setFacility,
-}) {
+const getFloorValue = function (floor) {
+  if (floor.slice(0, 2) === '지하') {
+    const temp = floor.slice(2, -1);
+    return parseInt(`-${temp.toString()}`);
+  } else {
+    const temp = floor.slice(0, -1);
+    return parseInt(temp.toString());
+  }
+};
+
+const PlacePicker = function ({ buildingData, setFloor, setFacility }) {
   const [floorItems, setFloorItems] = useState([]);
   const [facilityItems, setFacilityItems] = useState([]);
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    const temp = [];
-    for (let floor of buildingData.floor) {
-      if (floor < 0) {
-        temp.push({ label: `지하 ${floor * -1}층`, value: floor });
-      } else {
-        temp.push({ label: `${floor}층`, value: floor });
+    const getFloorList = async function () {
+      try {
+        const res = await axios.get(
+          endPoint + `reservation/building/floor/${buildingData.name}`
+        );
+        const temp = [];
+
+        res.data.map((value, idx) => {
+          temp.push({
+            label: value,
+            value: getFloorValue(value),
+          });
+        });
+
+        temp.sort((a, b) => {
+          if (a.value <= b.value) {
+            return -1;
+          } else {
+            return 0;
+          }
+        });
+        setFloorItems(temp);
+      } catch (err) {
+        console.error(err);
+        Alert.alert('예상치 못한 에러로 정보 로딩에 실패했습니다');
       }
-    }
-    setFloorItems(temp);
+    };
+
+    getFloorList();
   }, []);
 
   const getFaciltyList = async function (floor) {
     try {
+      let floorStr;
+      if (floor < 0) {
+        floorStr = `지하${floor * -1}층`;
+      }
+      else{
+        floorStr = `${floor}층`
+      }
       const res = await axios.post(endPoint + 'reservation/building/floor', {
         building: buildingData.name,
-        floor: floor + '층',
+        floor: floorStr
       });
       const temp = [];
 

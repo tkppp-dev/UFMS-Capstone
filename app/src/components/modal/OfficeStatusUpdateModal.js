@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, TextInput, Alert } from 'react-native';
+import { View, TextInput, Alert } from 'react-native';
 import { RadioButton, Modal } from 'react-native-paper';
 import CustomButton from '../CustomButton';
 
@@ -26,10 +26,13 @@ const OfficeStatusUpdateModal = function ({
       visible={visible}
       onDismiss={onDismiss}
       contentContainerStyle={{
+        width: '90%',
         backgroundColor: 'white',
         padding: 20,
         justifyContent: 'center',
         alignItems: 'center',
+        alignSelf: 'center',
+        borderRadius: 4,
       }}
     >
       <View style={{ width: '90%' }}>
@@ -55,11 +58,11 @@ const OfficeStatusUpdateModal = function ({
                 borderWidth: 1,
                 borderColor: 'gray',
                 borderRadius: 4,
-                marginHorizontal: 20,
+                marginHorizontal: 18,
                 padding: 10,
               }}
               value={etcInput}
-              autoCapitalize='none'
+              autoCapitalize="none"
               autoCorrect={false}
               editable={editable}
               onChangeText={(value) => setEtcInput(value)}
@@ -71,14 +74,13 @@ const OfficeStatusUpdateModal = function ({
             label="사용 상태 변경"
             onPress={() => {
               if (officeStatus === '기타') {
-                if(etcInput.length < 1){
-                  Alert.alert('기타 사유를 적어주세요')
-                  return ''
+                if (etcInput.length < 1) {
+                  Alert.alert('기타 사유를 적어주세요');
+                  return '';
                 }
                 onPressUpdate(etcInput);
-              }
-              else{
-                onPressUpdate(officeStatus)
+              } else {
+                onPressUpdate(officeStatus);
               }
               onDismiss();
             }}

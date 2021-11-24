@@ -25,8 +25,7 @@ const CustomButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   border-radius: 4px;
-  width: 80px;
-  height: 35px;
+  padding: 8px 8px;
 `;
 
 const UpdateButton = styled(CustomButton)`
@@ -138,12 +137,14 @@ const InquiryAnswer = function ({ inquiryDetail }) {
                   idx: inquiryDetail.id,
                   inquiryId: inquiryDetail.inquiryId,
                   title: inquiryDetail.title,
-                  content: inquiryDetail.content
+                  content: inquiryDetail.content,
                 });
                 dispatch({ type: 'UPDATE_MODAL_VISIBLE' });
               }}
             >
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>
+              <Text
+                style={{ color: 'white', fontSize: 13, fontWeight: 'bold' }}
+              >
                 문의 수정
               </Text>
             </UpdateButton>
@@ -154,11 +155,11 @@ const InquiryAnswer = function ({ inquiryDetail }) {
               dispatch({
                 type: 'SET_INQUIRY_ID',
                 inquiryId: inquiryDetail.inquiryId,
-              })
+              });
               dispatch({ type: 'DELETE_MODAL_VISIBLE' });
             }}
           >
-            <Text style={{ color: 'white', fontWeight: 'bold' }}>
+            <Text style={{ color: 'white', fontSize: 13, fontWeight: 'bold' }}>
               문의 삭제
             </Text>
           </DeleteButton>

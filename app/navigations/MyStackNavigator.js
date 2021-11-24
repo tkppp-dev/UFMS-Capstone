@@ -13,7 +13,7 @@ const MyStackNavigator = function () {
         headerStyle: {
           height: 50,
         },
-        headerTitleStyle: {},
+        headerBackTitleVisible: false
       }}
     >
       <MyStack.Screen name="MyStack" component={ProfessorMyPage} />
