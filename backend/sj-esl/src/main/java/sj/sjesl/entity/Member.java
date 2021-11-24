@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import sj.sjesl.rental.Rental;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -37,8 +38,11 @@ public class Member implements Persistable<Long> {
 
 //    private List<ReservationInquiry> reservationInquiries= new ArrayList<>();
 
-    @OneToMany(mappedBy = "member")
-    private List<Lab> labs= new ArrayList<>();
+//    @OneToMany(mappedBy = "member")
+//    private List<Lab> labs= new ArrayList<>();
+//    @OneToMany(mappedBy = "member")
+//    private List<Reservation> reservations= new ArrayList<>();
+
 
 
 
