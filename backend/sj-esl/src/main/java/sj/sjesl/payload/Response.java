@@ -63,6 +63,7 @@ public class Response {
         List<LabResponseDto.Lab> labs = new ArrayList<>();
         for ( Lab l :data){
             LabResponseDto.Lab lab= new LabResponseDto.Lab();
+            lab.setLabId(l.getId());
             lab.setNotice(l.getNotice());
             lab.setState(l.getState());
             lab.setLocation(l.getLocation());

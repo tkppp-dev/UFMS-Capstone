@@ -16,7 +16,7 @@ public class LabResponseDto {
     @Setter
     @AllArgsConstructor
     public static class Lab {
-
+        private Long labId;
         private String location;
         private String state;
         private String notice;
@@ -24,7 +24,8 @@ public class LabResponseDto {
         @Override
         public String toString() {
             return "Lab{" +
-                    "location='" + location + '\'' +
+                    "labId=" + labId +
+                    ", location='" + location + '\'' +
                     ", state='" + state + '\'' +
                     ", notice='" + notice + '\'' +
                     '}';
