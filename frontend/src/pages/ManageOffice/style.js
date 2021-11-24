@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-export const MyPageContainer = styled.div`
+export const ManageContainer = styled.div`
   width: 100%;
   min-height: 500px;
-  margin-bottom: 64px;
+  padding: 5%;
 `;

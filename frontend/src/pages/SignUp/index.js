@@ -36,7 +36,7 @@ function SignUp() {
       if (password !== passwordCheck) {
         alert('비밀번호와 비밀번호 확인은 같아야 합니다.');
       } else {
-        const user = { name, email, password };
+        const user = { email, password };
 
         dispatch(registerAction(user));
       }

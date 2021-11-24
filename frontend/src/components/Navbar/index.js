@@ -18,7 +18,7 @@ function Navbar() {
         <Logo to="/">Logo Logo</Logo>
         <MenuContainer>
           <div>
-            <Link className="ant-dropdown-link" to="/rent/place">
+            <Link className="ant-dropdown-link" to="/inquery">
               대관 문의
             </Link>
           </div>

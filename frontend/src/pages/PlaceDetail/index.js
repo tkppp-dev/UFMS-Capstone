@@ -1,72 +1,35 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useState } from 'react';
 import { DetailContainer, Wrap } from './style';
-import { Button, Calendar, Badge } from 'antd';
+import { Button, DatePicker, Input, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { detailLoadingAction } from 'redux/actions/place_actions';
 import Modal from 'antd/lib/modal/Modal';
+import {
+  reservationAction,
+  reservationTimeAction,
+} from 'redux/actions/reservation_actions';
 
-function getListData(value) {
-  let listData;
-  switch (value.date()) {
-    case 8:
-      listData = [
-        { type: 'warning', content: 'This is warning event.' },
-        { type: 'success', content: 'This is usual event.' },
-      ];
-      break;
-    case 10:
-      listData = [
-        { type: 'warning', content: 'This is warning event.' },
-        { type: 'success', content: 'This is usual event.' },
-        { type: 'error', content: 'This is error event.' },
-      ];
-      break;
-    case 15:
-      listData = [
-        { type: 'warning', content: 'This is warning event' },
-        { type: 'success', content: 'This is very long usual event。。....' },
-        { type: 'error', content: 'This is error event 1.' },
-        { type: 'error', content: 'This is error event 2.' },
-        { type: 'error', content: 'This is error event 3.' },
-        { type: 'error', content: 'This is error event 4.' },
-      ];
-      break;
-    default:
-  }
-  return listData || [];
-}
-
-function dateCellRender(value) {
-  const listData = getListData(value);
-  return (
-    <ul className="events">
-      {listData.map((item) => (
-        <li key={item.content}>
-          <Badge status={item.type} text={item.content} />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function getMonthData(value) {
-  if (value.month() === 8) {
-    return 1394;
-  }
-}
-
-function monthCellRender(value) {
-  const num = getMonthData(value);
-  return num ? (
-    <div className="notes-month">
-      <section>{num}</section>
-      <span>Backlog number</span>
-    </div>
-  ) : null;
-}
+const { Option } = Select;
 
 function PlaceDetail(req) {
+  const [date, setDate] = useState('');
+  const [form, setValues] = useState({
+    name: '',
+    subject: '',
+    purpose: '',
+    phone: '',
+    email: '',
+    duration: '',
+  });
   const { placedetail } = useSelector((state) => state.place);
+  // const { timeSet } = useSelector((state) => state.reservation);
+
+  const onChange = (e) => {
+    setValues({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   // const { contents, title } = placedetail;
   const dispatch = useDispatch();
@@ -88,6 +51,34 @@ function PlaceDetail(req) {
   const handleCancel = () => {
     setisModalVisible(false);
   };
+
+  const onChangeDuration = (value) => {
+    setValues({ duration: value });
+  };
+
+  const onChangeDate = (date, dateString) => {
+    setDate(dateString);
+
+    const data = {
+      date: dateString,
+      // facility: placedetail.name,
+    };
+
+    dispatch(reservationTimeAction(data));
+  };
+
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      const { name, subject, purpose, phone, email, duration } = form;
+
+      const data = { name, subject, purpose, phone, email, duration };
+
+      dispatch(reservationAction(data));
+    },
+    [form, dispatch],
+  );
 
   return (
     <DetailContainer>
@@ -112,7 +103,7 @@ function PlaceDetail(req) {
 
           <div style={{ marginTop: '16px' }}>
             <Button type="primary" onClick={showModal}>
-              예약하기
+              대관 예약
             </Button>
           </div>
         </div>
@@ -124,11 +115,83 @@ function PlaceDetail(req) {
           width={800}
         >
           <div id="modal-container">
-            <h2 style={{ textAlign: 'center' }}>예약하기</h2>
-            <Calendar
-              dateCellRender={dateCellRender}
-              monthCellRender={monthCellRender}
-            />
+            <h2 style={{ textAlign: 'center' }}>대관 예약</h2>
+            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <div>
+                <label for="date">날짜를 선택하세요 : </label>
+                <DatePicker
+                  onChange={onChangeDate}
+                  id="date"
+                  style={{ marginBottom: '16px' }}
+                />
+              </div>
+              <div style={{ marginLeft: '32px' }}>
+                <label for="duration">희망하는 기간을 작성해주세요 : </label>
+                <Select defaultValue="1" onChange={onChangeDuration}>
+                  <Option value="1">1일</Option>
+                  <Option value="2">2일</Option>
+                  <Option value="3">3일</Option>
+                </Select>
+              </div>
+            </div>
+
+            {/* {Array.isArray(timeSet)
+              ? timeSet.map((id, date) => <div key={id}>{date}</div>)
+              : ''} */}
+            <form onSubmit={onSubmit}>
+              <label for="name">대관자 : </label>
+              <Input
+                type="name"
+                name="name"
+                id="name"
+                placeholder="대관자를 입력하세요"
+                onChange={onChange}
+                style={{ width: '100%', height: '32px', marginBottom: '16px' }}
+              />
+              <label for="subject">대관 주체 : </label>
+              <Input
+                type="text"
+                name="subject"
+                id="subject"
+                placeholder="대관 주체를 입력하세요"
+                onChange={onChange}
+                style={{ width: '100%', height: '32px', marginBottom: '16px' }}
+              />
+              <label for="purpose">대관 목적 : </label>
+              <Input
+                type="text"
+                name="purpose"
+                id="purpose"
+                placeholder="대관 목적을 입력하세요"
+                onChange={onChange}
+                style={{ width: '100%', height: '32px', marginBottom: '16px' }}
+              />
+              <label for="phone">연락처 : </label>
+              <Input
+                type="text"
+                name="phone"
+                id="phone"
+                placeholder="연락처를 입력하세요"
+                onChange={onChange}
+                style={{ width: '100%', height: '32px', marginBottom: '16px' }}
+              />
+              <label for="email">이메일 : </label>
+              <Input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="이메일을 입력하세요"
+                onChange={onChange}
+                style={{ width: '100%', height: '32px', marginBottom: '16px' }}
+              />
+              <Button
+                type="primary"
+                style={{ width: '100%' }}
+                onClick={onSubmit}
+              >
+                대관 신청
+              </Button>
+            </form>
           </div>
         </Modal>
       </Wrap>

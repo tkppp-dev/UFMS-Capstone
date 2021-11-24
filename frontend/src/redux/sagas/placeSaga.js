@@ -219,6 +219,7 @@ function* watchSearchResult() {
   yield takeEvery(SEARCH_REQUEST, SearchResult);
 }
 
+///////////////////////////////////////
 export default function* PlaceSaga() {
   yield all([
     fork(watchloadPlaces),

@@ -1,12 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {
-  googleLoginAction,
-  loginAction,
-  logoutAction,
-} from 'redux/actions/user_actions';
+import { loginAction, logoutAction } from 'redux/actions/user_actions';
 import { useDispatch, useSelector } from 'react-redux';
-import GoogleLogin from 'react-google-login';
-import GoogleButton from 'react-google-button';
 
 // antd
 import { Modal, Form, Button, Input, Divider } from 'antd';
@@ -74,20 +68,6 @@ function LoginModal({ buttonType }) {
     }
   };
 
-  // Google Login
-  const responseGoogle = (res) => {
-    const { email, name } = res.profileObj;
-    const { tokenId } = res;
-
-    const user = { email, name, tokenId };
-
-    dispatch(googleLoginAction(user));
-  };
-
-  const responseFail = (err) => {
-    console.log(err);
-  };
-
   return (
     <div>
       {isAuthenticated ? (
@@ -98,30 +78,11 @@ function LoginModal({ buttonType }) {
         </Button>
       )}
       <Modal
-        title="LOGO"
+        title="LOGIN"
         visible={signInVisible}
         onCancel={handleSignInCancel}
         footer=""
       >
-        <div style={{ marginBottom: '32px', width: '100%' }}>
-          <Divider>소셜 계정으로 로그인</Divider>
-          <GoogleLogin
-            clientId="534707785395-1c3aq9gp00tfbib4rgg0eemp6ma0ddup.apps.googleusercontent.com"
-            render={(renderProps) => (
-              <GoogleButton
-                onClick={renderProps.onClick}
-                style={{ width: '100%' }}
-              >
-                Sign in with Google
-              </GoogleButton>
-            )}
-            onSuccess={responseGoogle}
-            onFailure={responseFail}
-            theme="dark"
-          />
-        </div>
-
-        <Divider>이메일로 로그인</Divider>
         <div>
           <Form onSubmit={onSubmit}>
             <div>
@@ -155,13 +116,6 @@ function LoginModal({ buttonType }) {
               </Button>
             </div>
             <br />
-            <div style={{ textAlign: 'center', marginBottom: '7px' }}>
-              <span>
-                <a href="/user/password" onClick={handleSignInCancel}>
-                  Forgot a Password?
-                </a>
-              </span>
-            </div>
             <div style={{ textAlign: 'center' }}>
               <span>Not a Member?&nbsp;&nbsp;</span>
               <span>

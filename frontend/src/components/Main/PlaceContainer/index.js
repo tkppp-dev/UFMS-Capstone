@@ -1,34 +1,23 @@
-import React, { useState } from 'react';
-
-// antd
+import React, { useState, useEffect } from 'react';
 import { Card, Modal, Table } from 'antd';
-
-// style
-import { OfficeContainer, CardRow } from './style';
+import { OfficeContainer, CardRow, CardItem } from './style';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  buildingListAction,
+  floorListAction,
+} from 'redux/actions/reservation_actions';
 
 const columns = [
   {
     title: '강의실 명',
-    dataIndex: 'title',
+    dataIndex: 'name',
     align: 'center',
-    width: '20%',
-    onFilter: (value, record) => record.title.indexOf(value) === 0,
-    render: (title) => (
-      <Link to="/place/1" style={{ color: 'black' }}>
-        {title}
-      </Link>
-    ),
-  },
-  {
-    title: '설명',
-    dataIndex: 'description',
-    align: 'center',
-
-    onFilter: (value, record) => record.description.indexOf(value) === 0,
-    render: (description) => (
-      <Link to="/place/1" style={{ color: 'black' }}>
-        {description}
+    width: '80%',
+    onFilter: (value, record) => record.name.indexOf(value) === 0,
+    render: (name) => (
+      <Link to={`/place/1`} style={{ color: 'black' }}>
+        {name}
       </Link>
     ),
   },
@@ -36,7 +25,7 @@ const columns = [
     title: '인원',
     dataIndex: 'capacity',
     align: 'center',
-    width: '10%',
+    width: '20%',
     defaultSortOrder: 'descend',
     sorter: (a, b) => a.capacity - b.capacity,
   },
@@ -45,54 +34,106 @@ const columns = [
 const data = [
   {
     key: '1',
-    title: '충무관 B201호',
+    name: '충무관 B201호',
     capacity: 40,
-    description: 'DUMMY DUMMY DUMMY DUMMY',
   },
   {
     key: '2',
-    title: '충무관 B202호',
+    name: '충무관 B202호',
     capacity: 42,
-    description: 'DUMMY DUMMY DUMMY DUMMY',
   },
   {
     key: '3',
-    title: '충무관 B203호',
+    name: '충무관 B203호',
     capacity: 50,
-    description: 'DUMMY DUMMY DUMMY DUMMY',
   },
   {
     key: '4',
-    title: '충무관 B204호',
+    name: '충무관 B204호',
     capacity: 46,
-    description: 'DUMMY DUMMY DUMMY DUMMY',
   },
   {
     key: '5',
-    title: '충무관 B205호',
+    name: '충무관 B205호',
     capacity: 44,
-    description: 'DUMMY DUMMY DUMMY DUMMY',
   },
 ];
 
 function PlaceContainer() {
   const [isModalVisible, setisModalVisible] = useState(false);
+  const [isFloorSelected, setIsFloorSelected] = useState(false);
+  const [buildingName, setBuildingName] = useState('');
 
-  const showModal = () => {
+  // const { buildings, classes } = useSelector((state) => state.reservation);
+
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   dispatch(buildingListAction());
+  // }, [dispatch]);
+
+  const showModal = (name) => {
     setisModalVisible(true);
+    setBuildingName(name);
   };
 
   const handleOk = () => {
     setisModalVisible(false);
+    setIsFloorSelected(false);
   };
   const handleCancel = () => {
     setisModalVisible(false);
+    setIsFloorSelected(false);
   };
+
+  const [floor, setFloor] = useState();
+
+  // const onChangeHanlder = (e) => {
+  //   setFloor(e.currentTarget.value);
+
+  //   const data = {
+  //     building: buildingName,
+  //     floor: e.currentTarget.value,
+  //   };
+
+  //   dispatch(floorListAction(data));
+
+  //   setIsFloorSelected(true);
+  // };
+
+  const Options = [
+    { key: 1, value: '1층' },
+    { key: 2, value: '2층' },
+    { key: 3, value: '3층' },
+    { key: 4, value: '4층' },
+    { key: 5, value: '5층' },
+  ];
 
   return (
     <OfficeContainer>
       <CardRow>
-        <Card
+        {/* {Array.isArray(buildings)
+          ? buildings.map(({ id, name, image }) => (
+              <CardItem
+                key={id}
+                title={name}
+                extra={
+                  <div
+                    onClick={() => showModal(name)}
+                    style={{ color: '#1990ff', cursor: 'pointer' }}
+                  >
+                    More
+                  </div>
+                }
+                style={{
+                  width: 300,
+                }}
+              >
+                <img src={image} />
+              </CardItem>
+            ))
+          : '현재 예약 가능한 건물이 없습니다.'} */}
+        <CardItem
           title="충무관"
           extra={
             <div
@@ -104,14 +145,10 @@ function PlaceContainer() {
           }
           style={{
             width: 300,
-            height: '213px',
-            borderBottom: '2px solid #1990ff',
           }}
         >
-          <p>충무관 201호</p>
-          <p>충무관 202호</p>
-          <p>충무관 203호</p>
-        </Card>
+          <img src="https://placeimg.com/300/200/arch" />
+        </CardItem>
         <Card
           title="영실관"
           extra={
@@ -353,8 +390,22 @@ function PlaceContainer() {
         width={800}
       >
         <div id="modal-container">
-          <h2 style={{ textAlign: 'center' }}>충무관</h2>
-          <Table columns={columns} dataSource={data} />
+          {true ? (
+            <div>
+              <h2 style={{ textAlign: 'center' }}>{buildingName}</h2>
+              <Table columns={columns} dataSource={data} />
+              {/* <Table columns={columns} dataSource={classes} /> */}
+            </div>
+          ) : (
+            // <select onChange={onChangeHanlder} value={floor}>
+            //   {Options.map((item, index) => (
+            //     <option key={item.key} value={item.key}>
+            //       {item.value}
+            //     </option>
+            //   ))}
+            // </select>
+            ''
+          )}
         </div>
       </Modal>
     </OfficeContainer>
