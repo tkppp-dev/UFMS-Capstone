@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { ManagerContainer, Wrap } from './style';
+import {
+  IsAuthenticatedContainer,
+  LeftSide,
+  ManagerContainer,
+  RightSide,
+  Wrap,
+} from './style';
 import { Card, Select } from 'antd';
 import { Link } from 'react-router-dom';
 
@@ -23,28 +29,10 @@ function Manager() {
   return (
     <ManagerContainer>
       {true ? (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            width: '100%',
-            height: '100%',
-            borderTop: '1px solid #dbdbdb',
-          }}
-        >
-          <div style={{ width: '20%', height: '100%' }}>
+        <IsAuthenticatedContainer>
+          <LeftSide>
             <div>
-              <Select
-                defaultValue="0"
-                name="category"
-                style={{
-                  width: '90%',
-                  height: '32px',
-                  marginBottom: '16px',
-                  marginLeft: '5%',
-                  marginTop: '24px',
-                }}
-              >
+              <Select defaultValue="0" name="category">
                 <Select.Option value="0">전체</Select.Option>
                 <Select.Option value="1">충무관</Select.Option>
                 <Select.Option value="2">영실관</Select.Option>
@@ -61,29 +49,13 @@ function Manager() {
               </Select>
             </div>
             <div>
-              <Link
-                to="/manager/place/add"
-                style={{ marginLeft: '10%', color: 'black' }}
-              >
-                시설 추가
-              </Link>
+              <Link to="/manager/place/add">시설 추가</Link>
             </div>
-            <div style={{ marginTop: '16px' }}>
-              <Link
-                to="/manager/place/edit/1"
-                style={{ marginLeft: '10%', color: 'black' }}
-              >
-                시설 편집
-              </Link>
+            <div>
+              <Link to="/manager/place/edit/1">시설 편집</Link>
             </div>
-          </div>
-          <div
-            style={{
-              width: '80%',
-              height: '100%',
-              backgroundColor: 'white',
-            }}
-          >
+          </LeftSide>
+          <RightSide>
             <div
               style={{
                 width: '90%',
@@ -154,8 +126,8 @@ function Manager() {
                 <p>영실관 203호</p>
               </Card>
             </div>
-          </div>
-        </div>
+          </RightSide>
+        </IsAuthenticatedContainer>
       ) : (
         <Wrap>
           <div>로그인이 필요한 서비스입니다.</div>

@@ -1,4 +1,13 @@
-import { RentDetailContainer, Wrap } from './style';
+import {
+  ButtonContainer,
+  CommentButtonContainer,
+  CommentContainer,
+  CommentInput,
+  ContentContainer,
+  RentDetailContainer,
+  TitleContainer,
+  Wrap,
+} from './style';
 import React, { useEffect } from 'react';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
@@ -76,24 +85,18 @@ function InqueryDetail(req) {
   return (
     <RentDetailContainer>
       <Wrap>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <TitleContainer>
           <div>
             {/* {inqueryDetail.title} */}
             <h1>
               New York No. 1 Lake Park, New York No. 1 Lake Park New York No.
             </h1>
           </div>
-          {/* <div style={{ paddingTop: '10px', color: 'gray' }}>{inqueryDetail.register_date}</div> */}
+          {/* <div>{inqueryDetail.register_date}</div> */}
 
-          <div style={{ paddingTop: '10px', color: 'gray' }}>2021-11-09</div>
-        </div>
-        <div
-          style={{
-            width: '100%',
-            borderTop: '1px solid #dbdbdb',
-            padding: '16px 0 32px 0',
-          }}
-        >
+          <div>2021-11-09</div>
+        </TitleContainer>
+        <ContentContainer>
           <div>
             {/* {inqueryDetail.content} */}
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -124,40 +127,19 @@ function InqueryDetail(req) {
             publishing software like Aldus PageMaker including versions of Lorem
             Ipsum.
           </div>
-        </div>
+        </ContentContainer>
         {/* {userId === inqueryDetail.author.id ? EditDeleteButton : <></>} */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'end',
-            marginTop: '32px',
-          }}
-        >
-          <Link to="/inquery/edit/1" style={{ marginRight: '8px' }}>
+        <ButtonContainer>
+          <Link to="/inquery/edit/1">
             <Button>수정하기</Button>
           </Link>
           <Button type="danger">삭제하기</Button>
-        </div>
-        <div
-          style={{
-            width: '100%',
-            borderTop: '1px solid #dbdbdb',
-            marginTop: '32px',
-            paddingTop: '16px',
-          }}
-        >
+        </ButtonContainer>
+        <CommentContainer>
           <h2>
             <b>COMMENTS</b>
           </h2>
-          <input
-            placeholder="댓글을 작성해주세요."
-            style={{
-              padding: '12px',
-              width: '100%',
-              border: '1px solid #dbdbdb',
-              marginBottom: '16px',
-            }}
-          />
+          <CommentInput placeholder="댓글을 작성해주세요." />
           {/* {Array.isArray(comments) ? comments.map(
             ({ content, author, id }) => (
               <div key={id} style={{ padding: "12px" }}>
@@ -173,28 +155,21 @@ function InqueryDetail(req) {
               </div>
             )
           ) : 'Creator'} */}
-          <div style={{ padding: '12px' }}>
+          <div>
             <h3>Author</h3>
             <div>Content</div>
           </div>
-          <div style={{ padding: '12px' }}>
+          <div>
             <h3>Author</h3>
             <div>
               <span>Content</span>
-              <span style={{ float: 'right' }}>
-                <span
-                  style={{
-                    marginRight: '8px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  수정
-                </span>
-                <span style={{ cursor: 'pointer', color: 'red' }}>삭제</span>
-              </span>
+              <CommentButtonContainer>
+                <span>수정</span>
+                <span>삭제</span>
+              </CommentButtonContainer>
             </div>
           </div>
-        </div>
+        </CommentContainer>
       </Wrap>
     </RentDetailContainer>
   );

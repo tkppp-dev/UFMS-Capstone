@@ -9,7 +9,14 @@ import {
   officeDeleteAction,
   officeEditAction,
 } from 'redux/actions/office_actions';
-import { ManageContainer } from './style';
+import {
+  AddButton,
+  ButtonContainer,
+  ColBox,
+  ManageContainer,
+  ModalContainer,
+  Title,
+} from './style';
 
 function ManageOffice() {
   const [isModalVisible, setisModalVisible] = useState(false);
@@ -69,28 +76,23 @@ function ManageOffice() {
 
   return (
     <ManageContainer>
-      <div style={{ borderBottom: '1px solid #dbdbdb', marginBottom: '32px' }}>
+      <Title>
         <h2>사무실 / 연구실 관리</h2>
-      </div>
+      </Title>
       <Row>
         {/* {Array.isArray(office) ? office.map((id, location, startTime, endTime, notice) => (
-            <Col key={id} span={8} style={{ marginBottom: '16px' }}>
+            <ColBox key={id} span={8} style={{ marginBottom: '16px' }}>
               <Card
               title={location}
               extra={
-                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                <ButtonContainer>
                     <div
                     onClick={() => showModal(id, startTime, endTime, notice)}
-                    style={{
-                        color: '#1990ff',
-                        cursor: 'pointer',
-                        marginRight: '8px',
-                    }}
                     >
                     Edit
                     </div>
-                    <div style={{ color: 'red', cursor: 'pointer' }} onClick={() => onDeleteClick(id)}>Delete</div>
-                </div>
+                    <div onClick={() => onDeleteClick(id)}>Delete</div>
+                </ButtonContainer>
               }
               style={{
                 width: 300,
@@ -98,124 +100,68 @@ function ManageOffice() {
             >
                 <div>사용 시간 : {startTime} ~ {endTime}</div>
               <div>공지사항 : {notice}</div>
-            </Card></Col>
+            </Card></ColBox>
           )): "" } */}
-        <Col span={8} style={{ marginBottom: '16px' }}>
+        <ColBox span={8}>
           <Card
             title="율무관 501호"
             extra={
-              <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <div
-                  onClick={showModal}
-                  style={{
-                    color: '#1990ff',
-                    cursor: 'pointer',
-                    marginRight: '8px',
-                  }}
-                >
-                  Edit
-                </div>
-                <div
-                  style={{ color: 'red', cursor: 'pointer' }}
-                  onClick={onDeleteClick}
-                >
-                  Delete
-                </div>
-              </div>
+              <ButtonContainer>
+                <div onClick={showModal}>Edit</div>
+                <div onClick={onDeleteClick}>Delete</div>
+              </ButtonContainer>
             }
           >
             <div>사용 시간 : 13:30 ~ 15:00</div>
             <div>공지사항 : 없음</div>
           </Card>
-        </Col>
-        <Col span={8}>
+        </ColBox>
+        <ColBox span={8}>
           <Card
             title="율무관 501호"
             extra={
-              <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <div
-                  onClick={showModal}
-                  style={{
-                    color: '#1990ff',
-                    cursor: 'pointer',
-                    marginRight: '8px',
-                  }}
-                >
-                  Edit
-                </div>
-                <div
-                  style={{ color: 'red', cursor: 'pointer' }}
-                  onClick={onDeleteClick}
-                >
-                  Delete
-                </div>
-              </div>
+              <ButtonContainer>
+                <div onClick={showModal}>Edit</div>
+                <div onClick={onDeleteClick}>Delete</div>
+              </ButtonContainer>
             }
           >
             <div>사용 시간 : 13:30 ~ 15:00</div>
             <div>공지사항 : 없음</div>
           </Card>
-        </Col>
-        <Col span={8}>
+        </ColBox>
+        <ColBox span={8}>
           <Card
             title="율무관 501호"
             extra={
-              <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <div
-                  onClick={showModal}
-                  style={{
-                    color: '#1990ff',
-                    cursor: 'pointer',
-                    marginRight: '8px',
-                  }}
-                >
-                  Edit
-                </div>
-                <div
-                  style={{ color: 'red', cursor: 'pointer' }}
-                  onClick={onDeleteClick}
-                >
-                  Delete
-                </div>
-              </div>
+              <ButtonContainer>
+                <div onClick={showModal}>Edit</div>
+                <div onClick={onDeleteClick}>Delete</div>
+              </ButtonContainer>
             }
           >
             <div>사용 시간 : 13:30 ~ 15:00</div>
             <div>공지사항 : 없음</div>
           </Card>
-        </Col>
-        <Col span={8}>
+        </ColBox>
+        <ColBox span={8}>
           <Card
             title="율무관 501호"
             extra={
-              <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <div
-                  onClick={showModal}
-                  style={{
-                    color: '#1990ff',
-                    cursor: 'pointer',
-                    marginRight: '8px',
-                  }}
-                >
-                  Edit
-                </div>
-                <div
-                  style={{ color: 'red', cursor: 'pointer' }}
-                  onClick={onDeleteClick}
-                >
-                  Delete
-                </div>
-              </div>
+              <ButtonContainer>
+                <div onClick={showModal}>Edit</div>
+                <div onClick={onDeleteClick}>Delete</div>
+              </ButtonContainer>
             }
           >
             <div>사용 시간 : 13:30 ~ 15:00</div>
             <div>공지사항 : 없음</div>
           </Card>
-        </Col>
+        </ColBox>
       </Row>
-      <Button style={{ marginTop: '32px', float: 'right' }} type="primary">
+      <AddButton type="primary">
         <Link to="/manage/office/add">추가하기</Link>
-      </Button>
+      </AddButton>
       <Modal
         visible={isModalVisible}
         onOk={handleOk}
@@ -223,10 +169,7 @@ function ManageOffice() {
         footer=""
         width={800}
       >
-        <div
-          id="modal-container"
-          style={{ display: 'flex', justifyContent: 'space-between' }}
-        >
+        <ModalContainer id="modal-container">
           <Input
             id="notice"
             name="notice"
@@ -235,8 +178,10 @@ function ManageOffice() {
             style={{ width: '88%' }}
             onChange={onChange}
           />
-          <Button onClick={onEditSubmit}>수정하기</Button>
-        </div>
+          <Button onClick={onEditSubmit} type="primary">
+            수정하기
+          </Button>
+        </ModalContainer>
       </Modal>
     </ManageContainer>
   );

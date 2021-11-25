@@ -1,3 +1,4 @@
+import { Select } from 'antd';
 import styled from 'styled-components';
 
 export const ManagerContainer = styled.div`
@@ -20,13 +21,43 @@ export const Wrap = styled.div`
 
   padding: 3%;
 
-  & > div:nth-child(1) {
+  & > div:nth-child {
     text-align: center;
-
-    & img {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 32px;
-    }
   }
+`;
+
+export const IsAuthenticatedContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  border-top: 1px solid #dbdbdb;
+`;
+
+export const LeftSide = styled.div`
+  width: 20%;
+  height: 100%;
+
+  & > div > div:nth-child(1) {
+    width: 90%;
+    height: 32px;
+    margin-bottom: 16px;
+    margin-left: 5%;
+    margin-top: 24px;
+  }
+
+  & > div:nth-child(3) {
+    margin-top: 16px;
+  }
+
+  & a {
+    margin-left: 10%;
+    color: black;
+  }
+`;
+
+export const RightSide = styled.div`
+  width: 80%;
+  height: 100%;
+  background-color: white;
 `;
