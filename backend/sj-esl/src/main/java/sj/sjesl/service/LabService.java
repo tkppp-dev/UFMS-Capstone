@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sj.sjesl.dto.lab.LabNoticeUpdateRequestDto;
+import sj.sjesl.dto.lab.LabRequestDto;
+import sj.sjesl.dto.lab.LabResponseDto;
 import sj.sjesl.dto.lab.LabSaveRequestDto;
 import sj.sjesl.entity.Lab;
 import sj.sjesl.entity.Member;
@@ -16,9 +17,7 @@ import sj.sjesl.payload.Response;
 import sj.sjesl.repository.LabRepository;
 import sj.sjesl.repository.MemberRepository;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,25 +42,30 @@ public class LabService {
     }
 
     @Transactional
-    public ResponseEntity<?> noticeUpdate(Long id, LabNoticeUpdateRequestDto requestDto) {
+    public ResponseEntity<?> noticeUpdate(Long id, LabRequestDto.noticeLab notice) {
         Optional<Lab> lab = labRepository.findById(id);
         if (lab==null) return response.fail("해당하는 연구실이 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
 
         Lab findLab= lab.get();
-        findLab.noticeUpdate(requestDto.getNotice(),requestDto.getContent(),requestDto.getStartDate(),requestDto.getEndDate());
-
-        return response.success("공지사항 변경이 완료되었습니다.");
+        findLab.noticeUpdate(notice.getNotice());
+        LabResponseDto.noticeLab build = LabResponseDto.noticeLab.builder().
+                notice(notice.getNotice())
+                .memberId(id).build();
+        return response.success(build,"연구실 공지사항 변경이 완료되었습니다.",HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<?> stateUpdate(Long id, String state) {
+    public ResponseEntity<?> stateUpdate(Long id, LabRequestDto.stateLab state) {
         Optional<Lab> lab = labRepository.findById(id);
         if (lab==null) return response.fail("해당하는 연구실이 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
 
         Lab findLab= lab.get();
-        findLab.setState(state);
+        findLab.stateUpdate(state.getState());
+        LabResponseDto.StateLab build = LabResponseDto.StateLab.builder()
+                .state(state.getState())
+                .memberId(id).build();
 
-        return response.success("상태 변경이 완료되었습니다.");
+        return response.success(build,"연구실 상태 변경이 완료되었습니다.",HttpStatus.OK);
     }
 //
 //    public InquiryResponseDto findById(Long id) {

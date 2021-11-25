@@ -11,7 +11,7 @@ const HomeStackNavigator = function () {
       <HomeStack.Screen
         options={{ headerShown: false }}
         name="HomeStack"
-        component={Home}
+        component={React.memo(Home)}
       />
       <HomeStack.Screen name="Facility Usage" component={FacilityUsage} />
     </HomeStack.Navigator>

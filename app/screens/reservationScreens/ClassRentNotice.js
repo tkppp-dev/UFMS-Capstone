@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { Alert, Dimensions, Image, ScrollView, Text, View } from 'react-native';
 import PlacePicker from '../../src/components/PlacePicker';
@@ -20,6 +20,7 @@ const Button = styled.TouchableOpacity`
   border-radius: 4px;
   background-color: #007aff;
 `;
+
 
 const ClassRentNotice = function ({ navigation, route }) {
   const window = Dimensions.get('window');
@@ -76,8 +77,6 @@ const ClassRentNotice = function ({ navigation, route }) {
           </Text>
           <PlacePicker
             buildingData={building}
-            floor={floor}
-            facility={facility}
             setFloor={setFloor}
             setFacility={setFacility}
           />

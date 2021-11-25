@@ -23,7 +23,7 @@ const reducer = function (state = initialState, action) {
       state.title = state.inquiryList[state.selectedIdx].title;
       state.content = state.inquiryList[state.selectedIdx].content;
       return { ...state };
-      case 'SET_INQUIRY_ID':
+    case 'SET_INQUIRY_ID':
       state.inquiryId = action.inquiryId;
       return { ...state };
     case 'SET_TITLE':

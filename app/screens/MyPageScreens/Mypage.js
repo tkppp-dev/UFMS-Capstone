@@ -1,8 +1,15 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { Alert, ScrollView, Text, View, TouchableOpacity } from 'react-native';
+import {
+  Alert,
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
 import { Portal, Provider } from 'react-native-paper';
-import { Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements';
 import { Context } from '../../src/context/index';
 import CustomButton from '../../src/components/CustomButton';
 import InformationItem from '../../src/components/InformationItem';
@@ -10,6 +17,8 @@ import OfficeStatusUpdateModal from '../../src/components/modal/OfficeStatusUpda
 import OfficeNoticeUpdateModal from '../../src/components/modal/OfficeNoticeUpdateModal';
 import CurrentSchduleStatusUpdateModal from '../../src/components/modal/CurrentScheduleStatusUpdateModal';
 import axios from 'axios';
+import { endPoint } from '../../src/endPoint';
+import OfficeInformation from '../../src/components/OfficeInformation';
 
 const Container = styled.View`
   flex: 1;
@@ -55,40 +64,12 @@ const StyledText = styled.Text`
     marginBottom !== undefined ? marginBottom + 'px' : '6px'};
 `;
 
-const ButtonGroup = styled.View`
-  flex-direction: row;
-  justify-content: space-around;
-  margin-top: 10px;
-  border-width: 1px;
-  border-color: gray;
-  border-radius: 6px;
-`;
-
-const ButtonGroupItem = styled.TouchableOpacity`
-  flex: 1;
-  padding: 10px 0 10px 0;
-  background-color: #f7f9fa;
-`;
-
-const LeftButtonGroupItem = styled(ButtonGroupItem)`
-  border-end-width: 1px;
-  border-color: gray;
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-`;
-
-const RigthButtonGroupItem = styled(ButtonGroupItem)`
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-`;
-
-const ProfessorMyPage = function ( { navigation }) {
+const ProfessorMyPage = function ({ navigation }) {
   const { state, dispatch } = useContext(Context);
+  const [previlege, setPrevilege] = useState();
   const [currentSchedule, setCurrentSchedule] = useState({});
-  const [officeStatus, setOfficeStatus] = useState('재실');
-  const [officeNotice, setOfficeNotice] = useState(
-    '11/14~11/15 세미나 참석으로 부재'
-  );
+  const [officeList, setOfficeList] = useState([]);
+  const [selectedLab, setSelectedLab] = useState(null);
   const [currentScheduleStatus, setCurrentScheduleStatus] = useState('수업중');
   const [officeStatusModalVisible, setOfficeStatusModalVisible] =
     useState(false);
@@ -102,16 +83,78 @@ const ProfessorMyPage = function ( { navigation }) {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitleAlign: 'center',
-      title: '마이페이지'
-    })
-  })
+      title: '마이페이지',
+    });
+  });
 
-  const _onPressOfficeStatus = function (value) {
-    setOfficeStatus(value);
+  const getOfficeList = async function () {
+    try {
+      const res = await axios.get(endPoint + `schedule/lab/${state.user.id}`);
+      const temp = [];
+      res.data.data.map((office, index) => {
+        temp.push({
+          officeData: office,
+          isFirst: false,
+          isEnd: false,
+          key: index,
+        });
+      });
+      temp[0].isFirst = true;
+      temp[temp.length - 1].isEnd = true;
+      setOfficeList(temp);
+    } catch (err) {
+      console.error(err);
+      Alert.alert('정보 로드에 실패했습니다');
+    }
   };
 
-  const _onPressOfficeNotice = function (value) {
-    setOfficeNotice(value);
+  const getPrevilege = async function () {
+    try {
+      const res = await axios.get(endPoint + `api/auth/user/${state.user.id}`);
+      setPrevilege(res.data.data.privileges);
+    } catch (err) {
+      console.error(err);
+      Alert.alert('정보 로드에 실패했습니다');
+    }
+  };
+
+  useEffect(() => {
+    getPrevilege();
+    getOfficeList();
+  }, []);
+
+  const _onPressOfficeStatus = async function (value) {
+    try {
+      const res = await axios.put(
+        endPoint + `schedule/lab/state/${selectedLab}`,
+        { state: value }
+      );
+      if (res.status !== 200) {
+        throw new Error();
+      } else {
+        getOfficeList();
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('상태 변경에 실패했습니다');
+    }
+  };
+
+  const _onPressOfficeNotice = async function (value) {
+    try {
+      const res = await axios.put(
+        endPoint + `schedule/lab/notice/${selectedLab}`,
+        { notice: value }
+      );
+      if (res.status !== 200) {
+        throw new Error();
+      } else {
+        getOfficeList();
+      }
+    } catch (err) {
+      console.error(err);
+      Alert.alert('공지사항 변경에 실패했습니다');
+    }
   };
 
   const _onPressScheduleStatus = function (value) {
@@ -120,7 +163,7 @@ const ProfessorMyPage = function ( { navigation }) {
 
   const _onPressLogout = async function () {
     try {
-      await axios.post('http://127.0.0.1:8080/api/auth/logout', {
+      await axios.post(endPoint + 'api/auth/logout', {
         accessToken: state.user.accessToken,
         refreshToken: state.user.refreshToken,
       });
@@ -140,12 +183,12 @@ const ProfessorMyPage = function ( { navigation }) {
             <Content style={{ flexDirection: 'row' }}>
               <View style={{ flex: 1, paddingHorizontal: 4 }}>
                 <StyledText fontSize="22" fontWeight="bold" marginBottom={6}>
-                  박태경
+                  {state.user.username}
                 </StyledText>
                 <StyledText fontSize="17" marginBottom={6}>
-                  17011510
+                  {state.user.email}
                 </StyledText>
-                <StyledText fontSize="17">컴퓨터공학과</StyledText>
+                <StyledText fontSize="17">{previlege}</StyledText>
               </View>
               <View style={{ width: 80, justifyContent: 'center' }}>
                 <CustomButton
@@ -164,44 +207,26 @@ const ProfessorMyPage = function ( { navigation }) {
                   나의 사무실 / 연구실 관리
                 </StyledText>
               </ContentTitle>
-              <ContentBody>
-                <StyledText fontSize="18" fontWeight="bold" marginBottom={12}>
-                  율곡관 501호
-                </StyledText>
-                <InformationItem title="상태" body={officeStatus} />
-                <InformationItem title="공지사항" body={officeNotice} />
-                <ButtonGroup>
-                  <Portal>
-                    <OfficeStatusUpdateModal
-                      visible={officeStatusModalVisible}
-                      onDismiss={() => setOfficeStatusModalVisible(false)}
-                      onPressUpdate={_onPressOfficeStatus}
-                    />
-                  </Portal>
-                  <LeftButtonGroupItem
-                    onPress={() => setOfficeStatusModalVisible(true)}
-                  >
-                    <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                      사용 상태 변경
-                    </Text>
-                  </LeftButtonGroupItem>
-                  <Portal>
-                    <OfficeNoticeUpdateModal
-                      value={officeNotice}
-                      visible={officeNoticeModalVisible}
-                      onDismiss={() => setOfficeNoticeModalVisible(false)}
-                      onPressUpdate={_onPressOfficeNotice}
-                    />
-                  </Portal>
-                  <RigthButtonGroupItem
-                    onPress={() => setOfficeNoticeModalVisible(true)}
-                  >
-                    <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                      공지사항 변경
-                    </Text>
-                  </RigthButtonGroupItem>
-                </ButtonGroup>
-              </ContentBody>
+              <FlatList
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                pagingEnabled={true}
+                keyExtractor={(item, index) => index.toString()}
+                data={officeList}
+                renderItem={({ item, index }) => (
+                  <OfficeInformation
+                    key={item.key}
+                    item={item}
+                    setSelectedLab={setSelectedLab}
+                    showOfficeStatusModal={() =>
+                      setOfficeStatusModalVisible(true)
+                    }
+                    showOfficeNoticeModal={() =>
+                      setOfficeNoticeModalVisible(true)
+                    }
+                  />
+                )}
+              />
             </Content>
           </ContentContainer>
           <ContentContainer>
@@ -241,15 +266,12 @@ const ProfessorMyPage = function ( { navigation }) {
                         body="12:00~13:30"
                         row={true}
                       />
-                      <InformationItem title="상태" body={currentScheduleStatus} row={true} />
+                      <InformationItem
+                        title="상태"
+                        body={currentScheduleStatus}
+                        row={true}
+                      />
                     </View>
-                    <CustomButton
-                      label="현재 스케줄 상태 변경"
-                      color={'#f7f9fa'}
-                      fontColor={'black'}
-                      border={true}
-                      onPress={() => setCurrentScheduleStatusModalVisible(true)}
-                    />
                     <Portal>
                       <CurrentSchduleStatusUpdateModal
                         visible={currentScheduleStatusModalVisible}
@@ -281,6 +303,20 @@ const ProfessorMyPage = function ( { navigation }) {
             </Content>
           </ContentContainer>
         </Container>
+        <Portal>
+          <OfficeStatusUpdateModal
+            visible={officeStatusModalVisible}
+            onDismiss={() => setOfficeStatusModalVisible(false)}
+            onPressUpdate={_onPressOfficeStatus}
+          />
+        </Portal>
+        <Portal>
+          <OfficeNoticeUpdateModal
+            visible={officeNoticeModalVisible}
+            onDismiss={() => setOfficeNoticeModalVisible(false)}
+            onPressUpdate={_onPressOfficeNotice}
+          />
+        </Portal>
       </ScrollView>
     </Provider>
   );
