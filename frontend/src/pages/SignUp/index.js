@@ -14,6 +14,7 @@ function SignUp() {
     email: '',
     password: '',
     passwordCheck: '',
+    mobile: '',
   });
 
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -31,12 +32,12 @@ function SignUp() {
     (e) => {
       e.preventDefault();
 
-      const { name, email, password, passwordCheck } = form;
+      const { name, email, password, passwordCheck, mobile } = form;
 
       if (password !== passwordCheck) {
         alert('비밀번호와 비밀번호 확인은 같아야 합니다.');
       } else {
-        const user = { email, password };
+        const user = { email, password, name, mobile };
 
         dispatch(registerAction(user));
       }
@@ -101,6 +102,8 @@ function SignUp() {
                 <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                   <Input
                     type="text"
+                    id="mobile"
+                    name="mobile"
                     placeholder="Phone Number"
                     style={{ marginRight: '8px' }}
                   />

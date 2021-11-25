@@ -75,13 +75,10 @@ function Inquery() {
       <Table
         columns={columns}
         dataSource={data}
-        style={{ width: '100%' }}
         pagination={{ position: ['none', 'bottomCenter'] }}
       />
       <Link to="/inquery/write">
-        <Button type="primary" style={{ float: 'right', marginTop: '-48px' }}>
-          글 작성
-        </Button>
+        <Button type="primary">글 작성</Button>
       </Link>
     </RentContainer>
   );
