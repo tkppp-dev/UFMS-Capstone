@@ -46,6 +46,8 @@ class MemberRepositoryTest {
     SubjectRepository subjectRepository;
     @Autowired
     ReservationRepository reservationRepository;
+    @Autowired
+    BuildingRepository buildingRepository;
 
     @Test
     public void testMember() {
@@ -77,10 +79,10 @@ class MemberRepositoryTest {
 
             ExcelFacilityDto data = new ExcelFacilityDto();
 
-            data.setName(row.getCell(1,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setBuilding(row.getCell(2,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setFloor(row.getCell(3,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setCategory(row.getCell(6,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setName(row.getCell(1, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setBuilding(row.getCell(2, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setFloor(row.getCell(3, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setCategory(row.getCell(6, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
 
             Facility facility = new Facility(data.getName(), data.getBuilding(), data.getFloor(), 0, 0, data.getCategory());
             facilityRepository.save(facility);
@@ -88,7 +90,7 @@ class MemberRepositoryTest {
 
         }
 
-            //  ==============================과목 삽입 ==============================
+        //  ==============================과목 삽입 ==============================
         em.flush();
         em.clear();
         opcPackage = OPCPackage.open(new File("src\\main\\resources\\subjectComputer.xlsx"));
@@ -103,21 +105,20 @@ class MemberRepositoryTest {
 
             ExcelSubjectDto data = new ExcelSubjectDto();
 
-            data.setMajor(row.getCell(0,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setClassroom(row.getCell(2,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setSubjectName(row.getCell(3,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setCompletionType(row.getCell(5,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setSemester(row.getCell(8,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setProfessor(row.getCell(13,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setLectureDate(row.getCell(14,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setRoom(row.getCell(15,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setMajor(row.getCell(0, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setClassroom(row.getCell(2, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setSubjectName(row.getCell(3, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setCompletionType(row.getCell(5, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setSemester(row.getCell(8, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setProfessor(row.getCell(13, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setLectureDate(row.getCell(14, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setRoom(row.getCell(15, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
 
-            Subject subject = new Subject(data.getMajor(),data.getClassroom(),data.getSubjectName(),data.getCompletionType(),data.getSemester(),data.getProfessor(),data.getLectureDate(),data.getRoom());
+            Subject subject = new Subject(data.getMajor(), data.getClassroom(), data.getSubjectName(), data.getCompletionType(), data.getSemester(), data.getProfessor(), data.getLectureDate(), data.getRoom());
 
             subjectRepository.save(subject);
 
         }
-
 
 
         //  ==============================교양 삽입 ==============================
@@ -135,16 +136,16 @@ class MemberRepositoryTest {
 
             ExcelSubjectDto data = new ExcelSubjectDto();
 
-            data.setMajor(row.getCell(1,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setClassroom(row.getCell(3,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setSubjectName(row.getCell(4,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setCompletionType(row.getCell(6,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setSemester(row.getCell(9,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setProfessor(row.getCell(12,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setLectureDate(row.getCell(13,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
-            data.setRoom(row.getCell(14,Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setMajor(row.getCell(1, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setClassroom(row.getCell(3, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setSubjectName(row.getCell(4, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setCompletionType(row.getCell(6, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setSemester(row.getCell(9, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setProfessor(row.getCell(12, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setLectureDate(row.getCell(13, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
+            data.setRoom(row.getCell(14, Row.CREATE_NULL_AS_BLANK).getStringCellValue());
 
-            Subject subject = new Subject(data.getMajor(),data.getClassroom(),data.getSubjectName(),data.getCompletionType(),data.getSemester(),data.getProfessor(),data.getLectureDate(),data.getRoom());
+            Subject subject = new Subject(data.getMajor(), data.getClassroom(), data.getSubjectName(), data.getCompletionType(), data.getSemester(), data.getProfessor(), data.getLectureDate(), data.getRoom());
 
             subjectRepository.save(subject);
         }
@@ -152,6 +153,34 @@ class MemberRepositoryTest {
     }
 
 
+    @Test
+    public void 빌딩삽입() throws InvalidFormatException, IOException {
 
+        OPCPackage opcPackage = OPCPackage.open(new File("src\\main\\resources\\building.xlsx"));
+
+        XSSFWorkbook workbook = new XSSFWorkbook(opcPackage);
+
+
+        Sheet worksheet = workbook.getSheetAt(0);
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+
+            Row row = worksheet.getRow(i);
+
+            Building build = Building.builder()
+                    .img(row.getCell(0, Row.CREATE_NULL_AS_BLANK).getStringCellValue())
+                    .name(row.getCell(1, Row.CREATE_NULL_AS_BLANK).getStringCellValue())
+                    .description(row.getCell(2, Row.CREATE_NULL_AS_BLANK).getStringCellValue())
+                    .highestFloor((int) row.getCell(3, Row.CREATE_NULL_AS_BLANK).getNumericCellValue())
+                    .lowestFloor((int) row.getCell(4, Row.CREATE_NULL_AS_BLANK).getNumericCellValue()).build();
+            System.out.println("ssssssssssssssssssssssssssssssss");
+            buildingRepository.save(build);
+
+
+
+
+
+
+        }
+    }
 
 }
