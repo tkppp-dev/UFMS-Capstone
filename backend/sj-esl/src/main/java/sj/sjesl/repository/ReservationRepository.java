@@ -15,14 +15,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation,Long> {
-List<Reservation> findAllByFacilityAndReservationStatusAndStartTimeBetween(Facility facility,
+    List<Reservation> findAllByFacilityAndReservationStatusAndStartTimeBetween(Facility facility,
             ReservationStatus reservationStatus, LocalDateTime startDatetime, LocalDateTime endDatetime);
 
-List<Reservation> findByMember(Member member);
+    List<Reservation> findByMember(Member member);
 
-List<Reservation> findByMemberAndStartTimeBetween(Member member, LocalDateTime startTime, LocalDateTime endTime);
+    List<Reservation> findByMemberAndStartTimeBetween(Member member, LocalDateTime startTime, LocalDateTime endTime);
 
-@Query(value = "select p from Reservation  p where p.member = ?1 and p.startTime <= ?2 and p.endTime >= ?2")
-Reservation findNow(Member member, LocalDateTime now);
+    @Query(value = "select p from Reservation  p where p.member = ?1 and p.startTime <= ?2 and p.endTime >= ?2")
+    Reservation findNow(Member member, LocalDateTime now);
 
-Reservation findTopByMemberAndStartTimeAfterOrderByStartTime(Member member, LocalDateTime now);
+    Reservation findTopByMemberAndStartTimeAfterOrderByStartTime(Member member, LocalDateTime now);
+}
