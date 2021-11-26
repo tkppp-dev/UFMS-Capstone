@@ -8,6 +8,18 @@ import { Context } from '../src/context/index';
 import { Icon } from 'react-native-elements';
 
 const Tab = createBottomTabNavigator();
+/**
+  <Tab.Screen
+            name="Notification"
+            component={MyStackNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Icon type="antdesign" name="bells" color={color} size={25} />
+              ),
+              tabBarBadge: 4,
+            }}
+          />
+ */
 
 const TabNavigation = function () {
   const { state } = useContext(Context);
@@ -46,16 +58,6 @@ const TabNavigation = function () {
                   containerStyle={{ marginVertical: 5 }}
                 />
               ),
-            }}
-          />
-          <Tab.Screen
-            name="Notification"
-            component={MyStackNavigator}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <Icon type="antdesign" name="bells" color={color} size={25} />
-              ),
-              tabBarBadge: 4,
             }}
           />
           <Tab.Screen

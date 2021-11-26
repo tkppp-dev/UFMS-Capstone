@@ -1,6 +1,8 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { Dimensions, Image, Text, ScrollView } from 'react-native';
+import axios from 'axios';
+import { endPoint } from '../../src/endPoint';
 
 const Container = styled.View`
   flex: 1;
@@ -20,15 +22,26 @@ const BuildingTitle = styled.TouchableOpacity`
 
 const ClassRentReservation = function ({ navigation }) {
   const width = Dimensions.get('window').width;
-  const buildings = [
-    { id: 1, name: '대양 AI 센터' },
-    { id: 2, name: '광개토관' },
-    { id: 3, name: '율곡관' },
-    { id: 4, name: '영실관' },
-    { id: 5, name: '우정당' },
-    { id: 6, name: '학술정보원' },
-    { id: 7, name: '군자관' },
-  ];
+  const [buildings, setBuildings] = useState([]);
+
+  useEffect(() => {
+    const getBuilding = async function () {
+      try {
+        const res = await axios.get(endPoint + 'reservation/building');
+        res.data.map((building, idx) => {
+          buildings.push({
+            id: idx,
+            name: building,
+          });
+        });
+        setBuildings([...buildings]);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    getBuilding();
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -45,7 +58,7 @@ const ClassRentReservation = function ({ navigation }) {
               key={item.id}
               width={width}
               onPress={() => {
-                navigation.navigate('Class Rent Notice', { name: item.name });
+                navigation.navigate('Class Rent Notice', { building: item });
               }}
             >
               <Image
@@ -61,4 +74,4 @@ const ClassRentReservation = function ({ navigation }) {
   );
 };
 
-export default ClassRentReservation;
+export default React.memo(ClassRentReservation);

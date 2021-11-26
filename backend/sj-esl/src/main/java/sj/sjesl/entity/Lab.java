@@ -34,21 +34,18 @@ public class Lab{
     @Override
     public String toString() {
         return "Lab{" +
-                "id=" + id +
-                ", member=" + member +
                 ", location='" + location + '\'' +
                 ", state='" + state + '\'' +
-                ", scheduleStartDate=" + scheduleStartDate +
-                ", scheduleEndDate=" + scheduleEndDate +
-                ", reason='" + content + '\'' +
+
                 ", notice='" + notice + '\'' +
                 '}';
     }
 
-    public void noticeUpdate(String notice, String content, LocalDateTime scheduleStartDate,LocalDateTime scheduleEndDate){
+    public void noticeUpdate(String notice){
         this.notice=notice;
-        this.content=content;
-        this.scheduleStartDate=scheduleStartDate;
-        this.scheduleEndDate=scheduleEndDate;
+    }
+
+    public void stateUpdate(String state){
+        this.state=state;
     }
 }

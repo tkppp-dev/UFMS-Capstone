@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { Text, View, Button } from 'react-native';
+import { Text, View } from 'react-native';
+import { InquiryContext } from '../context/inquiry';
 import {
   Collapse,
   CollapseHeader,
@@ -24,8 +25,7 @@ const CustomButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   border-radius: 4px;
-  width: 80px;
-  height: 35px;
+  padding: 8px 8px;
 `;
 
 const UpdateButton = styled(CustomButton)`
@@ -36,11 +36,22 @@ const DeleteButton = styled(CustomButton)`
   background-color: red;
 `;
 
-const InquiryAnswer = function ({ onPress, inquiryDetail }) {
+const InquiryAnswer = function ({ inquiryDetail }) {
+  const [inquiryDate, setInquiryDate] = useState(null);
+  const { inquiryState, dispatch } = useContext(InquiryContext);
+
+  useEffect(() => {
+    setInquiryDate(getDateString(inquiryDetail.date));
+  }, []);
+
   const doneLabelColor = [
     { name: 'answerYet', fontColor: '#FF4848' },
     { name: 'answerDone', fontColor: '#007AFF' },
   ];
+
+  const getDateString = function (dt) {
+    return `${dt.getFullYear()}/${dt.getMonth() + 1}/${dt.getDate()}`;
+  };
 
   return (
     <Container>
@@ -84,7 +95,7 @@ const InquiryAnswer = function ({ onPress, inquiryDetail }) {
           }}
         >
           <Text style={{ fontSize: 16, fontWeight: 'bold' }}>문의 내용</Text>
-          <Text style={{ fontSize: 16 }}>작성일 - {inquiryDetail.date}</Text>
+          <Text style={{ fontSize: 16 }}>작성일 - {inquiryDate}</Text>
         </View>
         <Text style={{ fontSize: 16 }}>{inquiryDetail.content}</Text>
         {inquiryDetail.isAnswerDone ? (
@@ -119,12 +130,38 @@ const InquiryAnswer = function ({ onPress, inquiryDetail }) {
           }}
         >
           {!inquiryDetail.isAnswerDone ? (
-            <UpdateButton>
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>문의 수정</Text>
+            <UpdateButton
+              onPress={() => {
+                dispatch({
+                  type: 'SET_INQUIRY',
+                  idx: inquiryDetail.id,
+                  inquiryId: inquiryDetail.inquiryId,
+                  title: inquiryDetail.title,
+                  content: inquiryDetail.content,
+                });
+                dispatch({ type: 'UPDATE_MODAL_VISIBLE' });
+              }}
+            >
+              <Text
+                style={{ color: 'white', fontSize: 13, fontWeight: 'bold' }}
+              >
+                문의 수정
+              </Text>
             </UpdateButton>
           ) : null}
-          <DeleteButton style={{ marginStart: 10}}>
-            <Text style={{ color: 'white', fontWeight: 'bold' }}>문의 삭제</Text>
+          <DeleteButton
+            style={{ marginStart: 10 }}
+            onPress={() => {
+              dispatch({
+                type: 'SET_INQUIRY_ID',
+                inquiryId: inquiryDetail.inquiryId,
+              });
+              dispatch({ type: 'DELETE_MODAL_VISIBLE' });
+            }}
+          >
+            <Text style={{ color: 'white', fontSize: 13, fontWeight: 'bold' }}>
+              문의 삭제
+            </Text>
           </DeleteButton>
         </View>
       </CollapseBody>

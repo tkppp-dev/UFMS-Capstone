@@ -9,7 +9,7 @@ import PlaceContainer from 'components/Main/PlaceContainer';
 
 function Main() {
   return (
-    <div>
+    <div style={{ marginBottom: '64px' }}>
       <Background />
       <Inner />
       <PlaceContainer />

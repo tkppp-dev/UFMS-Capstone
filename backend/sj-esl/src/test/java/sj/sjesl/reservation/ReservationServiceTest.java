@@ -10,6 +10,8 @@ import sj.sjesl.entity.ReservationStatus;
 import sj.sjesl.repository.FacilityRepository;
 import sj.sjesl.repository.ReservationRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,7 +26,8 @@ import java.util.TreeMap;
 @SpringBootTest
 @Rollback
 class ReservationServiceTest {
-
+    @PersistenceContext
+    EntityManager em;
     @Autowired
     private FacilityRepository facilityRepository;
     @Autowired
@@ -152,5 +155,10 @@ class ReservationServiceTest {
     void delete() {
         Long id = Long.valueOf(2);
         reservationService.cancel(id);
+    }
+
+    @Test
+    void update(){
+//        em.createQuery("update Reservation as r set r.member =1 where  r.subjectId =1",Reservation.class)
     }
 }

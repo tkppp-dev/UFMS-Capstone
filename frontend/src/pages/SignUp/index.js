@@ -14,6 +14,7 @@ function SignUp() {
     email: '',
     password: '',
     passwordCheck: '',
+    mobile: '',
   });
 
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -31,12 +32,12 @@ function SignUp() {
     (e) => {
       e.preventDefault();
 
-      const { name, email, password, passwordCheck } = form;
+      const { name, email, password, passwordCheck, mobile } = form;
 
       if (password !== passwordCheck) {
         alert('비밀번호와 비밀번호 확인은 같아야 합니다.');
       } else {
-        const user = { name, email, password };
+        const user = { email, password, name, mobile };
 
         dispatch(registerAction(user));
       }
@@ -101,31 +102,14 @@ function SignUp() {
                 <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                   <Input
                     type="text"
+                    id="mobile"
+                    name="mobile"
                     placeholder="Phone Number"
                     style={{ marginRight: '8px' }}
                   />
                   <Button type="primary">인증하기</Button>
                 </div>
               </Form.Item>
-
-              <Form.Item label="관계자 인증">
-                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                  <Input
-                    type="text"
-                    placeholder="User Id"
-                    style={{ marginRight: '8px' }}
-                  />
-                  <Button type="primary">인증하기</Button>
-                </div>
-              </Form.Item>
-
-              <Form.Item label="Role">
-                <Select defaultValue="student">
-                  <Select.Option value="student">Student</Select.Option>
-                  <Select.Option value="professor">Professor</Select.Option>
-                </Select>
-              </Form.Item>
-
               <Form.Item>
                 <Button style={{ width: '100%' }} type="primary">
                   Register

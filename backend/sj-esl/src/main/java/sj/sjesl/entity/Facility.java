@@ -39,7 +39,7 @@ public class Facility {
     private String purpose;
     private int area;
     private String time;
-//    private String option;
+    //    private String option;
     private String notice;
     private String img;
 

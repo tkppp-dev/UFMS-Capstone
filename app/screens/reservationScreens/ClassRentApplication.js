@@ -1,8 +1,14 @@
 import React, { useLayoutEffect, useEffect, useState } from 'react';
 import { ScrollView, View, Text, Alert, Modal, StyleSheet } from 'react-native';
 import styled from 'styled-components';
+import { Provider, Portal } from 'react-native-paper';
 import Picker from '../../src/components/Picker';
 import CustomInput from '../../src/components/CustomInput';
+import TimeCheckbox from '../../src/components/TimeCheckbox';
+import axios from 'axios';
+import { endPoint } from '../../src/endPoint';
+import ClassTime from '../../src/ClassTime';
+import ReservationCheckingModal from '../../src/components/modal/ReservationCheckingModal';
 
 const Container = styled.View`
   width: 100%;
@@ -67,26 +73,65 @@ const getDayList = function (year, month) {
   }
 };
 
+const AvailableTimeRow = function ({
+  index,
+  availableList,
+  selectedIndex,
+  setSelectedIndex,
+  date,
+}) {
+  return (
+    <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+      <TimeCheckbox
+        index={index}
+        selectedIndex={selectedIndex}
+        setTime={setSelectedIndex}
+        date={date}
+        available={availableList[index]}
+      />
+      <TimeCheckbox
+        index={index + 1}
+        selectedIndex={selectedIndex}
+        setTime={setSelectedIndex}
+        date={date}
+        available={availableList[index + 1]}
+      />
+      <TimeCheckbox
+        index={index + 2}
+        selectedIndex={selectedIndex}
+        setTime={setSelectedIndex}
+        date={date}
+        available={availableList[index + 2]}
+      />
+    </View>
+  );
+};
+
 const ClassRentApplication = function ({ navigation, route }) {
   const dt = new Date();
+  const facility = route.params.facility;
   const [year, setYear] = useState(dt.getFullYear());
   const [month, setMonth] = useState(dt.getMonth() + 1);
   const [day, setDay] = useState(dt.getDate());
   const [showApplication, setShowApplication] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [rentAvailableTimeList, setRentAvailableTimeList] = useState();
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedDate, setSelectedDate] = useState();
+  const [reservationName, setReservatiionName] = useState(null);
+  const [reservationPurpose, setReservatiionPurpose] = useState(null);
+  
   const [dayList, setDayList] = useState(
     getDayList(year, month).map((el) => ({
       label: `${el}`,
       value: el,
     }))
   );
-
-  const [modalVisible, setModalVisible] = useState(false);
-
   const yearList = [
     { label: `${dt.getFullYear()}`, value: dt.getFullYear() },
     { label: `${dt.getFullYear() + 1}`, value: dt.getFullYear() + 1 },
   ];
-
   const monthList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((el) => ({
     label: `${el}`,
     value: el,
@@ -101,115 +146,141 @@ const ClassRentApplication = function ({ navigation, route }) {
     );
   }, [month]);
 
+  useEffect(() => {
+    setSelectedTime(new ClassTime(selectedIndex));
+  }, [selectedIndex]);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitleAlign: 'center',
-      title: '예약하기'
+      title: '예약하기',
     });
   });
 
-  const _onPressSearchButton = function () {
-    setShowApplication(true)
+  const _onPressSearchButton = async function () {
+    try {
+      const res = await axios.post(endPoint + 'reservation/building/date', {
+        date: `${year}-${month}-${day}`,
+        facility,
+      });
+      setRentAvailableTimeList(res.data);
+      setSelectedDate({ year, month, day });
+      setShowApplication(true);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const _onPressApplyButton = function () {
+  const _onPressApplyButton = async function () {
+    console.log(selectedTime);
     setModalVisible(true);
   };
 
   return (
-    <ScrollView style={{ backgroundColor: 'white' }}>
-      <Container>
-        <DatePicker>
-          <PickerContainer>
-            <Picker
-              label="년"
-              items={yearList}
-              value={year}
-              onValueChange={(value) => setYear(value)}
-            />
-          </PickerContainer>
-          <PickerContainer>
-            <Picker
-              label="월"
-              items={monthList}
-              value={month}
-              onValueChange={(value) => setMonth(value)}
-            />
-          </PickerContainer>
-          <PickerContainer>
-            <Picker
-              label="일"
-              items={dayList}
-              value={day}
-              onValueChange={(value) => setDay(value)}
-            />
-          </PickerContainer>
-        </DatePicker>
-        <Content>
-          <Button onPress={_onPressSearchButton}>
-            <Text style={{ color: 'white' }}>조회</Text>
-          </Button>
-          <View
-            style={{
-              marginTop: 15,
-              paddingTop: 15,
-              borderTopWidth: 1,
-              borderTopColor: 'grey',
-            }}
-          >
-            {showApplication === false ? null : (
-              <>
-                <CustomInput label="예약 이름" />
-                <CustomInput label="대상" />
-                <CustomInput label="예약 목적" type="textarea" />
-                <Button onPress={_onPressApplyButton}>
-                  <Text style={{ color: 'white' }}>강의실 예약</Text>
-                </Button>
-                <CenteredView>
-                  <Modal
-                    animationType="fade"
-                    visible={modalVisible}
-                    transparent={true}
-                    onRequestClose={() => {
-                      setModalVisible(false);
-                      navigation.navigate('Home');
+    <Provider>
+      <ScrollView style={{ backgroundColor: 'white' }}>
+        <Container>
+          <DatePicker>
+            <PickerContainer>
+              <Picker
+                label="년"
+                items={yearList}
+                value={year}
+                onValueChange={(value) => setYear(value)}
+              />
+            </PickerContainer>
+            <PickerContainer>
+              <Picker
+                label="월"
+                items={monthList}
+                value={month}
+                onValueChange={(value) => setMonth(value)}
+              />
+            </PickerContainer>
+            <PickerContainer>
+              <Picker
+                label="일"
+                items={dayList}
+                value={day}
+                onValueChange={(value) => setDay(value)}
+              />
+            </PickerContainer>
+          </DatePicker>
+          <Content>
+            <Button onPress={_onPressSearchButton}>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>조회</Text>
+            </Button>
+            <View
+              style={{
+                marginTop: 15,
+                paddingTop: 15,
+                borderTopWidth: 1,
+                borderTopColor: 'grey',
+              }}
+            >
+              {showApplication === false ? null : (
+                <>
+                  <AvailableTimeRow
+                    index={0}
+                    availableList={rentAvailableTimeList}
+                    selectedIndex={selectedIndex}
+                    setSelectedIndex={setSelectedIndex}
+                    date={selectedDate}
+                  />
+                  <AvailableTimeRow
+                    index={3}
+                    availableList={rentAvailableTimeList}
+                    selectedIndex={selectedIndex}
+                    setSelectedIndex={setSelectedIndex}
+                    date={selectedDate}
+                  />
+                  <AvailableTimeRow
+                    index={6}
+                    availableList={rentAvailableTimeList}
+                    selectedIndex={selectedIndex}
+                    setSelectedIndex={setSelectedIndex}
+                    date={selectedDate}
+                  />
+                  <CustomInput
+                    label="예약 이름"
+                    onChangeText={setReservatiionName}
+                  />
+                  <CustomInput
+                    label="예약 목적"
+                    multiline={true}
+                    type="textarea"
+                    onChangeText={setReservatiionPurpose}
+                  />
+                  <Button
+                    style={{ marginTop: 10 }}
+                    onPress={() => {
+                      setModalVisible(true)
                     }}
                   >
-                    <CenteredView>
-                      <View style={styles.modalView}>
-                        <Text
-                          style={{
-                            fontSize: 20,
-                            fontWeight: 'bold',
-                            textAlign: 'center',
-                            marginBottom: 15,
-                          }}
-                        >
-                          예약이 완료되었습니다.
-                        </Text>
-                        <Button
-                          onPress={() => {
-                            setModalVisible(false);
-                            navigation.reset({
-                              routes: [{ name: 'Home', param: {} }],
-                            });
-                          }}
-                        >
-                          <Text style={{ color: 'white' }}>
-                            메인페이지로 돌아가기
-                          </Text>
-                        </Button>
-                      </View>
-                    </CenteredView>
-                  </Modal>
-                </CenteredView>
-              </>
-            )}
-          </View>
-        </Content>
-      </Container>
-    </ScrollView>
+                    <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                      강의실 예약
+                    </Text>
+                  </Button>
+                  <Portal>
+                    <ReservationCheckingModal
+                      visible={modalVisible}
+                      onDismiss={setModalVisible}
+                      facility={facility}
+                      purpose={reservationPurpose}
+                      startTime={selectedTime}
+                      endTime={new ClassTime(selectedIndex + 1)}
+                      date={{year, month, day}}
+                      navigation={navigation}
+                    />
+                  </Portal>
+                </>
+              )}
+            </View>
+          </Content>
+        </Container>
+      </ScrollView>
+    </Provider>
   );
 };
 

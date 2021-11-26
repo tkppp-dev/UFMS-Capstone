@@ -61,6 +61,9 @@ public class MemberService {
         if (memberRepository.existsByEmail(signUp.getEmail())) {
             return response.fail("이미 회원가입된 이메일입니다.", HttpStatus.BAD_REQUEST);
         }
+        if (memberRepository.existsByMobile(signUp.getMobile())){
+            return response.fail("이미 회원가입된 번호입니다.", HttpStatus.BAD_REQUEST);
+        }
         MemberResponseDto.MemberCheckResponse memberCheckResponse =  new MemberResponseDto.MemberCheckResponse();
 
         SchoolMemberDB byMobile = schoolMemberDBRepository.findByMobile(signUp.getMobile());
@@ -212,6 +215,14 @@ public class MemberService {
         // add ROLE_ADMIN
         member.setPrivileges(MemberPrivileges.ADMIN);
         memberRepository.save(member);
+
+        return response.success();
+    }
+
+    @Transactional
+    public ResponseEntity<?> delete(Long id) {
+        // SecurityContext에 담겨 있는 authentication userEamil 정보
+        memberRepository.deleteById(id);
 
         return response.success();
     }

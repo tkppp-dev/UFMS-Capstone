@@ -4,7 +4,7 @@ export const ScheduleContainer = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  height: 100vh;
+  height: 80vh;
   background-color: #eef2f5;
 `;
 

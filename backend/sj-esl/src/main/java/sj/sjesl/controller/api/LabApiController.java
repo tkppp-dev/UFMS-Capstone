@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sj.sjesl.dto.lab.LabNoticeUpdateRequestDto;
+import sj.sjesl.dto.lab.LabRequestDto;
 import sj.sjesl.dto.lab.LabSaveRequestDto;
 import sj.sjesl.entity.Lab;
 import sj.sjesl.entity.Member;
@@ -16,7 +16,6 @@ import sj.sjesl.repository.MemberRepository;
 import sj.sjesl.service.LabService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Api(tags = "연구실 조회/ 공지사항/ 상태 변경 ")
 @RequiredArgsConstructor
@@ -38,8 +37,8 @@ public class LabApiController {
 
 
         System.out.println(byMember);
-
-        return response.success(byMember.toString(),"조회성공",HttpStatus.OK);
+        List<Lab> labs= byMember;
+        return response.success(byMember,"조회성공",HttpStatus.OK);
     }
 
     @GetMapping("/lab/save")    //연구실추가 페이지
@@ -55,19 +54,23 @@ public class LabApiController {
         return labService.save(requestDto);
     }
 
-    @PatchMapping("/lab/notice/{id}")    //공지사항 변경
+    @PutMapping("/lab/notice/{id}")    //공지사항 변경
     @ApiOperation(value = "연구실 공지사항 변경")
 
-    public ResponseEntity<?> Update_1(@PathVariable Long id, @RequestBody LabNoticeUpdateRequestDto requestDto) {
-        return labService.noticeUpdate(id, requestDto);
+    public ResponseEntity<?> Update_1(@PathVariable Long id, @RequestBody LabRequestDto.noticeLab notice) {
+        System.out.println(notice.toString()+"22222222222222222222");
+        return labService.noticeUpdate(id, notice);
     }
 
-    @PatchMapping("/lab/state/{id}")    //상태 변경
+
+    @PutMapping("/lab/state/{id}")    //상태 변경
     @ApiOperation(value = "연구실 상태 변경")
 
-    public ResponseEntity<?> Update_2(@PathVariable Long id, @RequestBody String state) {
+    public ResponseEntity<?> Update_2(@PathVariable Long id, @RequestBody LabRequestDto.stateLab state) {
         return labService.stateUpdate(id, state);
+
     }
+
 
 
     @DeleteMapping("/lab/{id}") //연구실 삭제

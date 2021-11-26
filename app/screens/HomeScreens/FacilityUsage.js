@@ -1,9 +1,13 @@
 import React, { useState, useLayoutEffect, useEffect } from 'react';
 import styled from 'styled-components/native';
+import { View, Text } from 'react-native';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
+import { FAB, Icon } from 'react-native-elements';
 import localeConfig from '../../src/CalendarLocaleConfig';
 import DayUsage from '../../src/components/DayUsage';
-import LoadingSpinner from '../../src/components/LoadingSpinner'
+import { Provider, Portal } from 'react-native-paper';
+import LoadingSpinner from '../../src/components/LoadingSpinner';
+import FacilitySelectModal from '../../src/components/modal/FacilitySelectModal';
 
 LocaleConfig.locales['kr'] = localeConfig;
 LocaleConfig.defaultLocale = 'kr';
@@ -19,6 +23,14 @@ const CalendarHeader = styled.Text`
   font-size: 20px;
   color: #596571;
 `;
+
+const EmptyItemRenderData = function () {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>오른쪽 하단의 버튼을 눌러 시설을 선택하세요</Text>
+    </View>
+  );
+};
 
 const getDateStr = function (dt) {
   const year = dt.getFullYear();
@@ -62,14 +74,15 @@ const getItems = function (min, max) {
 const FacilityUsage = function ({ navigation, route }) {
   const { min, now, max } = getCalendarRange();
   const [selectDate, setSelectDate] = useState(new Date());
-  const [items, setItems] = useState(getItems(min, max));
+  const [items, setItems] = useState([]);
   const [isReady, setIsReady] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitleAlign: 'center',
-      title: `${route.params.buildingName} ${route.params.facilityName} 사용 현황`,
+      title: `${route.params.buildingData.name} 사용 현황`,
     });
   });
 
@@ -96,13 +109,11 @@ const FacilityUsage = function ({ navigation, route }) {
   };
 
   return (
-    <Container>
-      <CalendarHeader>
-        {`${selectDate.getFullYear()} ${selectDate.getMonth() + 1}월`}
-      </CalendarHeader>
-      {!isReady ? (
-        <LoadingSpinner />
-      ) : (
+    <Provider>
+      <Container>
+        <CalendarHeader>
+          {`${selectDate.getFullYear()} ${selectDate.getMonth() + 1}월`}
+        </CalendarHeader>
         <Agenda
           items={items}
           selected={now}
@@ -114,14 +125,31 @@ const FacilityUsage = function ({ navigation, route }) {
           onDayPress={_onDayPress}
           onDayChange={_onDayChange}
           renderItem={_renderItem}
+          renderEmptyData={() => {
+            return <EmptyItemRenderData />;
+          }}
           rowHasChanged={_rowHasChanaged}
           theme={{
             agendaKnobColor: 'gray',
           }}
           style={{}}
         />
-      )}
-    </Container>
+        <FacilitySelectModal 
+          visible={modalVisible}
+          onDismiss={setModalVisible}
+          buildingData={route.params.buildingData}
+        />
+        <FAB
+          placement="right"
+          icon={<Icon name="search1" type="antdesign" color="white" />}
+          buttonStyle={{ backgroundColor: '#00AAFF' }}
+          containterStyle={{ margin: 15 }}
+          onPress={() => {
+            setModalVisible(true);
+          }}
+        />
+      </Container>
+    </Provider>
   );
 };
 

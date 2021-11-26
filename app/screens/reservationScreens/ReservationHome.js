@@ -1,8 +1,9 @@
 import React, { useContext, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components/native';
-import { Text, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { Context } from '../../src/context/index';
+import { InquiryProvider } from '../../src/context/inquiry';
 import ClassRentReservation from './ClassRentReservation';
 import RentReservation from './RentReservation';
 import RentInquiry from './ReservationInquiry';
@@ -31,9 +32,26 @@ const ReservationHome = function ({ navigation }) {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: '시설 예약',
-      headerTitleAlign: 'center'
-    })
-  })
+      headerTitleAlign: 'center',
+    });
+  });
+
+  const renderScene = ({ route }) => {
+    switch (route.key) {
+      case 'classRent':
+        return <ClassRentReservation navigation={navigation} />;
+      case 'rent':
+        return <RentReservation navigation={navigation} />;
+      case 'inquiry':
+        return (
+          <InquiryProvider>
+            <RentInquiry navigation={navigation} />
+          </InquiryProvider>
+        );
+      default:
+        return null;
+    }
+  };
 
   const renderTabBar = (props) => (
     <TabBar
@@ -48,11 +66,7 @@ const ReservationHome = function ({ navigation }) {
     <TabView
       renderTabBar={renderTabBar}
       navigationState={{ index, routes }}
-      renderScene={SceneMap({
-        classRent: () => <ClassRentReservation navigation={navigation} />,
-        rent: () => <RentReservation navigation={navigation} />,
-        inquiry: () => <RentInquiry navigation={navigation} />,
-      })}
+      renderScene={renderScene}
       onIndexChange={(idx) => setIndex(idx)}
       initialLayout={{ width: layout.width }}
     />

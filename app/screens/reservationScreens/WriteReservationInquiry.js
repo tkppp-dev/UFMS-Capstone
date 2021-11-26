@@ -4,6 +4,7 @@ import { Alert } from 'react-native';
 import styled from 'styled-components/native';
 import CustomButton from '../../src/components/CustomButton';
 import { Context } from '../../src/context';
+import { endPoint } from '../../src/endPoint';
 
 const Container = styled.View`
   flex: 1;
@@ -27,6 +28,7 @@ const Label = styled.Text`
 const Input = styled.TextInput.attrs((props) => {
   return {
     autoCapitalize: 'none',
+    autoCorrect: false,
     returnKeyType: 'done',
   };
 })`
@@ -57,17 +59,18 @@ const RentInquiry = function ({ navigation }) {
     navigation.setOptions({
       headerBackTitleVisible: false,
       headerTitleAlign: 'center',
-      title: '문의 작성'
+      title: '문의 작성',
     });
   });
 
   const _onPressButton = async function () {
     try {
-      await axios.post('http://127.0.0.1:8080/inquiry',
+      await axios.post(
+        endPoint + 'inquiry',
         {
           title,
           content,
-          author: 'test.app',
+          memberId: state.user.id
         },
         {
           accessToken: state.user.accessToken,
