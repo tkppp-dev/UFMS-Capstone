@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sj.sjesl.dto.lab.LabRequestDto;
+import sj.sjesl.dto.lab.LabResponseDto;
 import sj.sjesl.dto.lab.LabSaveRequestDto;
 import sj.sjesl.entity.Lab;
 import sj.sjesl.entity.Member;
@@ -15,6 +16,7 @@ import sj.sjesl.repository.LabRepository;
 import sj.sjesl.repository.MemberRepository;
 import sj.sjesl.service.LabService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(tags = "연구실 조회/ 공지사항/ 상태 변경 ")
@@ -79,5 +81,19 @@ public class LabApiController {
     public Long delete(@PathVariable Long id) {
         labRepository.deleteById(id);
         return id;
+    }
+
+    @PostMapping("/lab/professor")
+    @ApiOperation(value = "연구실 현황 조회(교수이름)")
+    public  List<LabResponseDto.Lab> LabSearch(@RequestBody LabRequestDto.LabProfessor labProfessor){
+        Member member = memberRepository.findUsername(labProfessor.getProfessorName());
+        List<Lab> byMember = labRepository.findByMember(member);
+        List<LabResponseDto.Lab> labs=new ArrayList<>();
+        for( Lab l : byMember){
+            labs.add(new LabResponseDto.Lab(l));
+        }
+
+        return labs;
+
     }
 }

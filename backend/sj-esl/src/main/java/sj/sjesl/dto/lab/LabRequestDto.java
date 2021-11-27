@@ -37,4 +37,9 @@ public class LabRequestDto {
                     '}';
         }
     }
+
+    @Data
+    public static class LabProfessor{
+        private String professorName;
+    }
 }
