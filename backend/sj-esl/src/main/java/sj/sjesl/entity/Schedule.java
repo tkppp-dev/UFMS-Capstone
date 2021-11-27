@@ -1,6 +1,7 @@
 package sj.sjesl.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,4 +21,11 @@ public class Schedule {
 
     private Long Subject_id;
     private Long facility_id;
+
+    @Builder
+    public Schedule(Member member, Long subject_id, Long facility_id) {
+        this.member = member;
+        Subject_id = subject_id;
+        this.facility_id = facility_id;
+    }
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import sj.sjesl.entity.Lab;
 import sj.sjesl.entity.MemberPrivileges;
 
 import javax.persistence.EnumType;
@@ -31,7 +32,14 @@ public class LabResponseDto {
                     '}';
         }
 
-        public Lab() {
+        public Lab(sj.sjesl.entity.Lab lab) {
+            this.labId = lab.getId();
+            this.location = lab.getLocation();
+            this.state = lab.getState();
+            this.notice = lab.getNotice();
+        }
+        public Lab(){
+
         }
     }
 

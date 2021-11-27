@@ -2,12 +2,15 @@ package sj.sjesl.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import sj.sjesl.dto.ScheduleAddRequestDto;
 import sj.sjesl.dto.ScheduleDateRequestDto;
 import sj.sjesl.dto.ScheduleResponseDto;
 import sj.sjesl.entity.Member;
 import sj.sjesl.entity.Reservation;
+import sj.sjesl.entity.Schedule;
 import sj.sjesl.repository.MemberRepository;
 import sj.sjesl.repository.ReservationRepository;
+import sj.sjesl.repository.ScheduleRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -23,6 +26,7 @@ public class ScheduleService {
 
     private final ReservationRepository reservationRepository;
     private final MemberRepository memberRepository;
+    private final ScheduleRepository scheduleRepository;
 
     @Transactional
     public ScheduleResponseDto getNow(Long id) {
@@ -86,4 +90,17 @@ public class ScheduleService {
         }
         return weekList;
     }
+
+
+    @Transactional
+    public ScheduleAddRequestDto add(ScheduleAddRequestDto scheduleAddRequestDto) {
+
+        scheduleRepository.save(Schedule.builder()
+                .member(memberRepository.findById(scheduleAddRequestDto.getMemberId()).get())
+                .subject_id(scheduleAddRequestDto.getSubjectId())
+                .build());
+        return scheduleAddRequestDto;
+
+    }
+
 }
