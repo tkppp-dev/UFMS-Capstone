@@ -7,6 +7,9 @@ import {
   FLOOR_LIST_FAILURE,
   FLOOR_LIST_REQUEST,
   FLOOR_LIST_SUCCESS,
+  FLOOR_NUM_LIST_FAILURE,
+  FLOOR_NUM_LIST_REQUEST,
+  FLOOR_NUM_LIST_SUCCESS,
   RESERVATION_FAILURE,
   RESERVATION_REQUEST,
   RESERVATION_SUCCESS,
@@ -38,6 +41,31 @@ function* buildingList() {
 
 function* watchbuildingList() {
   yield takeEvery(BUILDING_LIST_REQUEST, buildingList);
+}
+
+// 해당 빌딩 층 리스트
+const floorNumListAPI = (data) => {
+  return axios.get(`/reservation/building/floor/${data}`);
+};
+
+function* floorNumList(action) {
+  try {
+    const result = yield call(floorNumListAPI, action.payload);
+
+    yield put({
+      type: FLOOR_NUM_LIST_SUCCESS,
+      payload: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: FLOOR_NUM_LIST_FAILURE,
+      payload: e,
+    });
+  }
+}
+
+function* watchfloorNumList() {
+  yield takeEvery(FLOOR_NUM_LIST_REQUEST, floorNumList);
 }
 
 // 건물 층의 강의실 리스트
@@ -119,6 +147,7 @@ export default function* reservationSaga() {
   yield all([
     fork(watchbuildingList),
     fork(watchfloorList),
+    fork(watchfloorNumList),
     fork(watchtimeList),
     fork(watchreservation),
   ]);

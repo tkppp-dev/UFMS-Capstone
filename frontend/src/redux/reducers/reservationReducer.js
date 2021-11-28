@@ -1,3 +1,4 @@
+import { Result } from 'antd';
 import {
   BUILDING_LIST_FAILURE,
   BUILDING_LIST_REQUEST,
@@ -5,6 +6,9 @@ import {
   FLOOR_LIST_FAILURE,
   FLOOR_LIST_REQUEST,
   FLOOR_LIST_SUCCESS,
+  FLOOR_NUM_LIST_FAILURE,
+  FLOOR_NUM_LIST_REQUEST,
+  FLOOR_NUM_LIST_SUCCESS,
   RESERVATION_REQUEST,
   RESERVATION_SUCCESS,
 } from 'redux/types/reservation_types';
@@ -14,6 +18,8 @@ const initialState = {
   buildings: [],
   classes: [],
   timeSet: [],
+  floors: [],
+  classes: [],
 };
 
 export default function (state = initialState, action) {
@@ -21,6 +27,7 @@ export default function (state = initialState, action) {
     case RESERVATION_REQUEST:
     case BUILDING_LIST_REQUEST:
     case FLOOR_LIST_REQUEST:
+    case FLOOR_NUM_LIST_REQUEST:
       return {
         ...state,
         loading: true,
@@ -35,6 +42,19 @@ export default function (state = initialState, action) {
 
     case BUILDING_LIST_FAILURE:
     case FLOOR_LIST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+      };
+
+    case FLOOR_NUM_LIST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        floors: action.payload,
+      };
+
+    case FLOOR_NUM_LIST_FAILURE:
       return {
         ...state,
         loading: false,

@@ -3,6 +3,7 @@ import {
   BUILDING_LIST_REQUEST,
   DELETE_RESERVATION_REQUEST,
   FLOOR_LIST_REQUEST,
+  FLOOR_NUM_LIST_REQUEST,
   RESERVATION_REQUEST,
   RESERVATION_TIME_REQUEST,
 } from 'redux/types/reservation_types';
@@ -19,6 +20,11 @@ export const reservationDeleteAction = (id) => ({
 
 export const buildingListAction = () => ({
   type: BUILDING_LIST_REQUEST,
+});
+
+export const floorNumListAction = (building) => ({
+  type: FLOOR_NUM_LIST_REQUEST,
+  payload: building,
 });
 
 export const floorListAction = (data) => ({

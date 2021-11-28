@@ -17,7 +17,7 @@ function SignUp() {
     mobile: '',
   });
 
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -37,7 +37,7 @@ function SignUp() {
       if (password !== passwordCheck) {
         alert('비밀번호와 비밀번호 확인은 같아야 합니다.');
       } else {
-        const user = { email, password, name, mobile };
+        const user = { email, password, name, mobile: '10144232122' };
 
         dispatch(registerAction(user));
       }
@@ -48,6 +48,7 @@ function SignUp() {
   return (
     <SignUpContainer>
       <Wrap>
+        {console.log(user)}
         {isAuthenticated ? (
           <SignUpSuccess>
             <div>회원가입에 성공했습니다.</div>
@@ -102,8 +103,8 @@ function SignUp() {
                 <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                   <Input
                     type="text"
-                    id="mobile"
                     name="mobile"
+                    id="mobile"
                     placeholder="Phone Number"
                     style={{ marginRight: '8px' }}
                   />
@@ -111,7 +112,11 @@ function SignUp() {
                 </div>
               </Form.Item>
               <Form.Item>
-                <Button style={{ width: '100%' }} type="primary">
+                <Button
+                  style={{ width: '100%' }}
+                  type="primary"
+                  onClick={onSubmit}
+                >
                   Register
                 </Button>
               </Form.Item>

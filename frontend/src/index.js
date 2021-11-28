@@ -5,9 +5,12 @@ import { Provider } from 'react-redux';
 
 import App from 'router/App';
 import store from 'store';
+import loadUser from 'components/auth/loadUser';
 
 import 'antd/dist/antd.css';
 import './index.css';
+
+loadUser();
 
 ReactDOM.render(
   <Provider store={store}>

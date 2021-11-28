@@ -13,20 +13,11 @@ import {
   USER_LOADING_REQUEST,
   USER_LOADING_FAILURE,
   USER_LOADING_SUCCESS,
-  GOOGLE_LOGIN_SUCCESS,
-  GOOGLE_LOGIN_FAILURE,
-  GOOGLE_LOGIN_REQUEST,
 } from 'redux/types/user_types';
 
 // LOGIN
 const loginUserAPI = (data) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  return axios.post('/api/auth/login', data, config);
+  return axios.post('/api/auth/login', data);
 };
 
 function* loginUser(action) {
@@ -38,8 +29,6 @@ function* loginUser(action) {
       payload: result.data,
     });
   } catch (e) {
-    alert(`${e.response.data.msg}`);
-
     yield put({
       type: LOGIN_FAILURE,
       payload: e.response,
@@ -49,37 +38,6 @@ function* loginUser(action) {
 
 function* watchLoginUser() {
   yield takeEvery(LOGIN_REQUEST, loginUser);
-}
-
-// GOOGLE LOGIN
-const googleLoginUserAPI = (data) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  return axios.post('/api/auth/google', data, config);
-};
-
-function* googleLoginUser(action) {
-  try {
-    const result = yield call(googleLoginUserAPI, action.payload);
-
-    yield put({
-      type: GOOGLE_LOGIN_SUCCESS,
-      payload: result.data,
-    });
-  } catch (e) {
-    yield put({
-      type: GOOGLE_LOGIN_FAILURE,
-      payload: e.response,
-    });
-  }
-}
-
-function* watchGoogleLoginUser() {
-  yield takeEvery(GOOGLE_LOGIN_REQUEST, googleLoginUser);
 }
 
 // LOGOUT
@@ -127,8 +85,6 @@ function* registerUser(action) {
       payload: result.data,
     });
   } catch (e) {
-    alert(`${e.response.data.msg}`);
-
     yield put({
       type: REGISTER_FAILURE,
       payload: e.response,
@@ -142,7 +98,7 @@ function* watchregisterUser() {
 
 // User Loading
 const userLoadingAPI = (id) => {
-  return axios.get(`api/auth/user/${id}`);
+  return axios.get(`/api/auth/user/${id}`);
 };
 
 function* userLoading(action) {
@@ -171,6 +127,5 @@ export default function* authSaga() {
     fork(watchLogoutUser),
     fork(watchregisterUser),
     fork(watchuserLoading),
-    fork(watchGoogleLoginUser),
   ]);
 }
