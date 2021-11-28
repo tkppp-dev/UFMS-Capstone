@@ -16,7 +16,7 @@ public class CommentApiController {
     private final CommentService commentService;
 
     @ApiOperation(value = "댓글 리스트 조회")
-    @GetMapping("/inquiry/{id}/comment/")    //모두 조회
+    @GetMapping("/inquiry/{id}/comment")    //모두 조회
     public List<CommentListResponseDto> getCommentList(@PathVariable Long id) {
         return commentService.getCommentList(id);
     }
@@ -28,21 +28,21 @@ public class CommentApiController {
     }
 
     @ApiOperation(value = "댓글 내용 변경")
-    @PutMapping("/inquiry/{id}/comment/{commentId}")    //내용 변경
-    public Long update(@PathVariable Long id, @PathVariable Long commentId, @RequestBody String requestDto) {
+    @PutMapping("/inquiry/comment/{commentId}")    //내용 변경
+    public Long update(@PathVariable Long commentId, @RequestBody String requestDto) {
         return commentService.update(commentId, requestDto);
     }
 
     @ApiOperation(value = "댓글 조회")
-    @GetMapping("/inquiry/{id}/comment/commentId")    //조회
-    public CommentResponseDto findById(@PathVariable Long id, @PathVariable Long commentId) {
+    @GetMapping("/inquiry/comment/{commentId}")    //조회
+    public CommentResponseDto findById(@PathVariable Long commentId) {
         return commentService.findById(commentId);
     }
 
     @ApiOperation(value = "댓글 삭제")
-    @DeleteMapping("/inquiry/{id}/comment/{commentId}") //삭제
-    public Long delete(@PathVariable Long id, @PathVariable Long commentId) {
+    @DeleteMapping("/inquiry/comment/{commentId}") //삭제
+    public Long delete(@PathVariable Long commentId) {
         commentService.delete(commentId);
-        return id;
+        return commentId;
     }
 }

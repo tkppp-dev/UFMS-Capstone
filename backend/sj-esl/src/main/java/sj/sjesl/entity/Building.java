@@ -1,5 +1,6 @@
 package sj.sjesl.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
+
 public class Building {
 
     @Id
@@ -21,4 +23,18 @@ public class Building {
 
     private String img;
 
+    @Column(length = 5000)
+    private String description;
+    private int highestFloor;
+    private int lowestFloor;
+
+
+    @Builder
+    public Building(String name, String img, String description, int highestFloor, int lowestFloor) {
+        this.name = name;
+        this.img = img;
+        this.description = description;
+        this.highestFloor = highestFloor;
+        this.lowestFloor = lowestFloor;
+    }
 }
