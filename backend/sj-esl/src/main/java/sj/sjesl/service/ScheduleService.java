@@ -45,8 +45,9 @@ public class ScheduleService {
     public ScheduleResponseDto getNext(Long id) {
         Member member = memberRepository.findByMemberId(id);
         LocalDateTime now = LocalDateTime.now();
+        LocalDateTime endDateTime = LocalDateTime.of(now.toLocalDate(), LocalTime.of(23, 59, 59));
         Reservation reservation = reservationRepository
-                .findTopByMemberAndStartTimeAfterOrderByStartTime(member, now);
+                .findTopByMemberAndStartTimeBetweenOrderByStartTime(member, now, endDateTime);
 
         if (reservation == null)
             return null;
@@ -78,12 +79,8 @@ public class ScheduleService {
             List<ScheduleResponseDto> dayList = new ArrayList<>();
 
             for (Reservation reservation : reservations) {
-                if (reservation == null) {
-                    continue;
-                } else {
-                    ScheduleResponseDto responseDto = new ScheduleResponseDto(reservation);
-                    dayList.add(responseDto);
-                }
+                ScheduleResponseDto responseDto = new ScheduleResponseDto(reservation);
+                dayList.add(responseDto);
             }
             weekList.add(dayList);
             date = date.plusDays(1);
