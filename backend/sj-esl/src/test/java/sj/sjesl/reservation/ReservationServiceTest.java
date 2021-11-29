@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import sj.sjesl.entity.Building;
 import sj.sjesl.entity.Facility;
 import sj.sjesl.entity.Reservation;
 import sj.sjesl.entity.ReservationStatus;
@@ -46,9 +47,9 @@ class ReservationServiceTest {
 
     @Test
     void getBuildingImg() {
-        String img = reservationService.getBuildingImg("광개토관");
+        Building building = reservationService.getBuildingDetails("광개토관");
 
-        System.out.println(img);
+        System.out.println(building.getDescription());
     }
 
     @Test

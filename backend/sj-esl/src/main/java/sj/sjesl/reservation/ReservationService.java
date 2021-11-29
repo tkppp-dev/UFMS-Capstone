@@ -2,16 +2,14 @@ package sj.sjesl.reservation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import sj.sjesl.entity.Facility;
-import sj.sjesl.entity.Member;
-import sj.sjesl.entity.Reservation;
-import sj.sjesl.entity.ReservationStatus;
+import sj.sjesl.entity.*;
 import sj.sjesl.repository.BuildingRepository;
 import sj.sjesl.repository.FacilityRepository;
 import sj.sjesl.repository.MemberRepository;
 import sj.sjesl.repository.ReservationRepository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -37,8 +35,8 @@ public class ReservationService {
     }
 
     @Transactional
-    public String getBuildingImg(String building) {
-        return buildingRepository.findImgByBuilding(building);
+    public Building getBuildingDetails(String buildingName) {
+        return buildingRepository.findByName(buildingName);
     }
 
     @Transactional
@@ -57,7 +55,7 @@ public class ReservationService {
     @Transactional
     public List<ReservationListResponseDto> getReservationList(FacilityDateRequestDto requestDto) {
         Facility facility = facilityRepository.findByName(requestDto.getFacility());
-        LocalDateTime startDatetime = LocalDateTime.of(requestDto.getDate().minusDays(1), LocalTime.of(0, 0, 0));
+        LocalDateTime startDatetime = LocalDateTime.of(requestDto.getDate(), LocalTime.of(0, 0, 0));
         LocalDateTime endDatetime = LocalDateTime.of(requestDto.getDate(), LocalTime.of(23, 59, 59));
 
         List<Reservation> reservations = reservationRepository
@@ -84,7 +82,6 @@ public class ReservationService {
         }
 
         List<ReservationListResponseDto> list = new ArrayList<>();
-        int n = 1;
 
         for (LocalTime t : timetable.keySet()) {
             ReservationListResponseDto dto = new ReservationListResponseDto(t, timetable.get(t));
@@ -119,5 +116,18 @@ public class ReservationService {
     public void cancel(Long id) {
         Reservation reservation = reservationRepository.findById(id).get();
         reservation.setReservationStatus(ReservationStatus.CANCEL);
+    }
+
+    @Transactional
+    public List<ReservationResponseDto> getHalfYear(String facilityName) {
+        Facility facility = facilityRepository.findByName(facilityName);
+        LocalDateTime today = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
+        LocalDateTime end = LocalDateTime.of(LocalDate.now().plusMonths(6), LocalTime.of(23, 59, 59));
+
+        return reservationRepository
+                .findByFacilityAndReservationStatusAndStartDateBetween(facility, ReservationStatus.COMPLETE, today, end)
+                .stream()
+                .map(ReservationResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
