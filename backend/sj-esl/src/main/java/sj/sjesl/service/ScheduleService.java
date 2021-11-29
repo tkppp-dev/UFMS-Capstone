@@ -8,16 +8,20 @@ import sj.sjesl.dto.ScheduleResponseDto;
 import sj.sjesl.entity.Member;
 import sj.sjesl.entity.Reservation;
 import sj.sjesl.entity.Schedule;
+import sj.sjesl.entity.Subject;
 import sj.sjesl.repository.MemberRepository;
 import sj.sjesl.repository.ReservationRepository;
 import sj.sjesl.repository.ScheduleRepository;
+import sj.sjesl.repository.SubjectRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +31,7 @@ public class ScheduleService {
     private final ReservationRepository reservationRepository;
     private final MemberRepository memberRepository;
     private final ScheduleRepository scheduleRepository;
+    private final SubjectRepository subjectRepository;
 
     @Transactional
     public ScheduleResponseDto getNow(Long id) {
@@ -94,6 +99,14 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleAddRequestDto add(ScheduleAddRequestDto scheduleAddRequestDto) {
+//        if(scheduleAddRequestDto.getSubjectId())
+        Member member = memberRepository.findByMemberId(scheduleAddRequestDto.getMemberId());
+        Schedule byMemberAndSubject_id = scheduleRepository.findByMemberAndSubject_id(member, scheduleAddRequestDto.getSubjectId());
+        if( byMemberAndSubject_id!= null) return new ScheduleAddRequestDto(300L);
+
+        List<Subject> subjects = getSubject(scheduleAddRequestDto.getMemberId());
+
+
 
         scheduleRepository.save(Schedule.builder()
                 .member(memberRepository.findById(scheduleAddRequestDto.getMemberId()).get())
@@ -102,5 +115,21 @@ public class ScheduleService {
         return scheduleAddRequestDto;
 
     }
+
+    @Transactional
+    public  List<Subject> getSubject(Long id) {
+        Optional<Member> member = memberRepository.findById(id);
+
+        List<Schedule> allByMemberId = scheduleRepository.findAllByMember(member.get());
+        List<Long> subjectIdList = allByMemberId.stream()
+                .map(Schedule::getSubject_id)
+                .collect(Collectors.toList());
+
+
+        List<Subject> byId = subjectRepository.findSubjectList(subjectIdList);
+        return byId;
+
+    }
+
 
 }
