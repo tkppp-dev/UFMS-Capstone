@@ -93,6 +93,17 @@ public class RentalService {
         }
     }
 
+    @Transactional
+    public List<RentalResponseDto> getHalfYearList(String facilityName) {
+        Facility facility = facilityRepository.findByName(facilityName);
+        LocalDate today = LocalDate.now();
+        LocalDate end = LocalDate.now().plusMonths(6);
+
+        return rentalRepository.findByFacilityAndStartDateBetween(facility, today, end)
+                .stream()
+                .map(RentalResponseDto::new)
+                .collect(Collectors.toList());
+    }
     //내 대관 리스트 조회
     //대관 상세 조회
     //대관 취소
