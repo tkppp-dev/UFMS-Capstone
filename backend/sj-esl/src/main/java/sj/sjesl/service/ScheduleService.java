@@ -99,9 +99,21 @@ public class ScheduleService {
 //        if(scheduleAddRequestDto.getSubjectId())
         Member member = memberRepository.findByMemberId(scheduleAddRequestDto.getMemberId());
         Schedule byMemberAndSubject_id = scheduleRepository.findByMemberAndSubject_id(member, scheduleAddRequestDto.getSubjectId());
+
         if( byMemberAndSubject_id!= null) return new ScheduleAddRequestDto(300L);
 
-        List<Subject> subjects = getSubject(scheduleAddRequestDto.getMemberId());
+//        Subject subject = subjectRepository.findById(scheduleAddRequestDto.getSubjectId()).get();
+
+        List<Reservation> CurSubject = reservationRepository.findBySubjectId(scheduleAddRequestDto.getSubjectId());
+
+        List<Long> subjects = getSubject(scheduleAddRequestDto.getMemberId()).stream().map(Subject::getId).collect(Collectors.toList());
+
+        for( Reservation r :  CurSubject){
+
+            List<Reservation> reservations = reservationRepository.subjectFindBetween( r.getStartTime(), r.getEndTime(),subjects);
+            if(reservations.size()!=0) return new ScheduleAddRequestDto(400L);
+
+        }
 
 
 

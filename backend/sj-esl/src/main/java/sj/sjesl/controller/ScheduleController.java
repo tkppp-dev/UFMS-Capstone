@@ -42,7 +42,7 @@ public class ScheduleController {
     }
 
 
-    @ApiOperation(value = "스캐줄 추가")
+    @ApiOperation(value = "스캐줄 추가 에러메시지 : memberID에 300은 중복된 과목 400은 겹치는 시간대 중복")
     @PostMapping("/schedule/add")
     public ScheduleAddRequestDto add(@RequestBody ScheduleAddRequestDto scheduleAddRequestDto) {
 
