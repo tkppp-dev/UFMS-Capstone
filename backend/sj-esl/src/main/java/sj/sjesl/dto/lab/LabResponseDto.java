@@ -21,6 +21,7 @@ public class LabResponseDto {
         private String location;
         private String state;
         private String notice;
+        private String name;
 
         @Override
         public String toString() {
@@ -29,6 +30,7 @@ public class LabResponseDto {
                     ", location='" + location + '\'' +
                     ", state='" + state + '\'' +
                     ", notice='" + notice + '\'' +
+                    ", name='" + name + '\'' +
                     '}';
         }
 
@@ -37,6 +39,7 @@ public class LabResponseDto {
             this.location = lab.getLocation();
             this.state = lab.getState();
             this.notice = lab.getNotice();
+            this.name=lab.getName();
         }
         public Lab(){
 
