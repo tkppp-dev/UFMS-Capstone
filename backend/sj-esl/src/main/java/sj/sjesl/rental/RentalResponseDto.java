@@ -17,6 +17,7 @@ public class RentalResponseDto {
     private String purpose;
     private String additionalMobile;
     private String additionalEmail;
+    private String rentalStatus;
 
 
     public RentalResponseDto(Rental rental) {
@@ -31,5 +32,6 @@ public class RentalResponseDto {
         this.purpose = rental.getPurpose();
         this.additionalMobile = rental.getAdditionalMobile();
         this.additionalEmail = rental.getAdditionalEmail();
+        this.rentalStatus = rental.getRentalStatus().toString();
     }
 }

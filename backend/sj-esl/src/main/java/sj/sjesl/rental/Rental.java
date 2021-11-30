@@ -7,6 +7,7 @@ import lombok.Setter;
 import sj.sjesl.entity.BaseEntity;
 import sj.sjesl.entity.Facility;
 import sj.sjesl.entity.Member;
+import sj.sjesl.entity.RentalStatus;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -38,13 +39,15 @@ public class Rental extends BaseEntity {
     private String purpose;
     private String additionalMobile;
     private String additionalEmail;
-//    private String rentalStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RentalStatus rentalStatus;
 
 
     @Builder
-    public Rental(Member member, Facility facility, LocalDate startDate, LocalDate endDate, int rentalDays,
-                  String hirer, String groupName, String purpose, String additionalMobile, String additionalEmail) {
+    public Rental(Member member, Facility facility, LocalDate startDate, LocalDate endDate, int rentalDays, String hirer,
+                  String groupName, String purpose, String additionalMobile, String additionalEmail, RentalStatus rentalStatus) {
         this.member = member;
         this.facility = facility;
         this.startDate = startDate;
@@ -55,6 +58,7 @@ public class Rental extends BaseEntity {
         this.purpose = purpose;
         this.additionalMobile = additionalMobile;
         this.additionalEmail = additionalEmail;
+        this.rentalStatus = rentalStatus;
     }
 
 }
