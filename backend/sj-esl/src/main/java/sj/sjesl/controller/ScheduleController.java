@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import sj.sjesl.dto.ScheduleAddRequestDto;
 import sj.sjesl.dto.ScheduleDateRequestDto;
 import sj.sjesl.dto.ScheduleResponseDto;
+import sj.sjesl.dto.SubjectResponseDto;
 import sj.sjesl.entity.Subject;
 import sj.sjesl.repository.ScheduleRepository;
 import sj.sjesl.repository.SubjectRepository;
@@ -70,7 +71,7 @@ public class ScheduleController {
 
     @ApiOperation(value = "등록한 과목 검색")
     @GetMapping("/schedule/subject/{id}")
-    public List<Subject> getSubjectList(@PathVariable Long id) {
+    public List<SubjectResponseDto> getSubjectList(@PathVariable Long id) {
         return scheduleService.getSubject(id);
     }
 }
