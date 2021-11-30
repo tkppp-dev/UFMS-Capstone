@@ -37,7 +37,7 @@ function SignUp() {
       if (password !== passwordCheck) {
         alert('비밀번호와 비밀번호 확인은 같아야 합니다.');
       } else {
-        const user = { email, password, name, mobile };
+        const user = { email, password, name, mobile: '010' };
 
         dispatch(registerAction(user));
       }
@@ -111,7 +111,11 @@ function SignUp() {
                 </div>
               </Form.Item>
               <Form.Item>
-                <Button style={{ width: '100%' }} type="primary">
+                <Button
+                  style={{ width: '100%' }}
+                  type="primary"
+                  onClick={onSubmit}
+                >
                   Register
                 </Button>
               </Form.Item>

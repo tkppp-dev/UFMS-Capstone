@@ -109,26 +109,20 @@ function* watchLogoutUser() {
 
 // Register
 const registerUserAPI = (data) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  return axios.post('/api/user/register', data, config);
+  return axios.post('/api/user/register', data);
 };
 
 function* registerUser(action) {
   try {
     const result = yield call(registerUserAPI, action.payload);
 
+    console.log(result);
+
     yield put({
       type: REGISTER_SUCCESS,
       payload: result.data,
     });
   } catch (e) {
-    alert(`${e.response.data.msg}`);
-
     yield put({
       type: REGISTER_FAILURE,
       payload: e.response,
