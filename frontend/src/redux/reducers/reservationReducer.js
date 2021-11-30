@@ -9,8 +9,12 @@ import {
   FLOOR_NUM_LIST_FAILURE,
   FLOOR_NUM_LIST_REQUEST,
   FLOOR_NUM_LIST_SUCCESS,
+  RESERVATION_FAILURE,
   RESERVATION_REQUEST,
   RESERVATION_SUCCESS,
+  RESERVATION_TIME_FAILURE,
+  RESERVATION_TIME_REQUEST,
+  RESERVATION_TIME_SUCCESS,
 } from 'redux/types/reservation_types';
 
 const initialState = {
@@ -28,6 +32,7 @@ export default function (state = initialState, action) {
     case BUILDING_LIST_REQUEST:
     case FLOOR_LIST_REQUEST:
     case FLOOR_NUM_LIST_REQUEST:
+    case RESERVATION_TIME_REQUEST:
       return {
         ...state,
         loading: true,
@@ -53,8 +58,15 @@ export default function (state = initialState, action) {
         loading: false,
         floors: action.payload,
       };
+    case RESERVATION_TIME_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        timeSet: action.payload,
+      };
 
     case FLOOR_NUM_LIST_FAILURE:
+    case RESERVATION_TIME_FAILURE:
       return {
         ...state,
         loading: false,
@@ -68,6 +80,15 @@ export default function (state = initialState, action) {
       };
 
     case RESERVATION_SUCCESS:
+      alert('예약이 완료되었습니다.');
+
+      return {
+        ...state,
+        loading: false,
+      };
+    case RESERVATION_FAILURE:
+      alert('예약 실패');
+
       return {
         ...state,
         loading: false,

@@ -19,6 +19,7 @@ import PlaceAdd from 'pages/PlaceAdd';
 import PlaceEdit from 'pages/PlaceEdit';
 import ManageOffice from 'pages/ManageOffice';
 import AddOffice from 'pages/AddOffice';
+import Rental from 'pages/Rental';
 
 // components
 import Navbar from 'components/Navbar';
@@ -36,12 +37,19 @@ function App() {
       <Switch>
         <Route path="/" exact component={Main} />
 
+        <Route
+          path="/place/:facilityname/:capacity"
+          exact
+          component={PlaceDetail}
+        />
+
         <Route path="/user/signup" exact component={SignUp} />
         <Route path="/user/mypage/:id" exact component={MyPage} />
 
         <Route path="/manage/office" exact component={ManageOffice} />
         <Route path="/manage/office/add" exact component={AddOffice} />
-        <Route path="/place/:id" exact component={PlaceDetail} />
+
+        <Route path="/rental" exact component={Rental} />
 
         <Route path="/inquery" exact component={Inquery} />
         <Route path="/inquery/write" exact component={InqueryWrite} />

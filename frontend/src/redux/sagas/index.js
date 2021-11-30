@@ -7,6 +7,7 @@ import inquerySaga from './inquerySaga';
 import commentSaga from './commentSaga';
 import reservationSaga from './reservationSaga';
 import officeSaga from './officeSaga';
+import RentalSaga from './rentalSaga';
 
 import dotenv from 'dotenv';
 
@@ -22,5 +23,6 @@ export default function* rootSaga() {
     fork(commentSaga),
     fork(reservationSaga),
     fork(officeSaga),
+    fork(RentalSaga),
   ]);
 }

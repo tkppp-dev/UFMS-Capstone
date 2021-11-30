@@ -1,8 +1,10 @@
 import {
+  AUTH_NUM_REQUEST,
   GOOGLE_LOGIN_REQUEST,
   LOGIN_REQUEST,
   LOGOUT_REQUEST,
   REGISTER_REQUEST,
+  SEND_REQUEST,
   USER_EMAIL_AUTH_REQUEST,
   USER_LOADING_REQUEST,
 } from 'redux/types/user_types';
@@ -35,4 +37,14 @@ export const loadUserAction = () => ({
 export const emailAuthAction = (email) => ({
   type: USER_EMAIL_AUTH_REQUEST,
   payload: email,
+});
+
+export const sendAction = (mobile) => ({
+  type: SEND_REQUEST,
+  payload: mobile,
+});
+
+export const authAction = (num) => ({
+  type: AUTH_NUM_REQUEST,
+  payload: num,
 });

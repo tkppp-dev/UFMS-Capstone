@@ -1,7 +1,7 @@
 import { Input } from 'antd';
 import styled from 'styled-components';
 
-export const DetailContainer = styled.div`
+export const RentalContainer = styled.div`
   width: 100%;
   min-height: 500px;
   display: flex;

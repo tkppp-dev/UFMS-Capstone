@@ -18,15 +18,8 @@ export const Wrap = styled.div`
   background-color: white;
   border-bottom: 5px solid #1990ff;
 
+  display: flex;
+  justify-content: center;
+
   padding: 3%;
-
-  & > div:nth-child(1) {
-    text-align: center;
-
-    & img {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 32px;
-    }
-  }
 `;

@@ -3,7 +3,7 @@ import { loginAction, logoutAction } from 'redux/actions/user_actions';
 import { useDispatch, useSelector } from 'react-redux';
 
 // antd
-import { Modal, Form, Button, Input, Divider } from 'antd';
+import { Modal, Form, Button, Input } from 'antd';
 
 function LoginModal({ buttonType }) {
   ///////////////////////////////////////////

@@ -120,7 +120,7 @@ function* watchtimeList() {
 
 // 예약
 const reservationAPI = (payload) => {
-  return axios.post('/reservation', payload);
+  return axios.post('/reservation/', payload);
 };
 
 function* reservation(action) {

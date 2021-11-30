@@ -13,6 +13,12 @@ import {
   USER_LOADING_REQUEST,
   USER_LOADING_FAILURE,
   USER_LOADING_SUCCESS,
+  SEND_SUCCESS,
+  SEND_FAILURE,
+  SEND_REQUEST,
+  AUTH_NUM_SUCCESS,
+  AUTH_NUM_FAILURE,
+  AUTH_NUM_REQUEST,
 } from 'redux/types/user_types';
 
 // LOGIN
@@ -121,11 +127,63 @@ function* watchuserLoading() {
   yield takeEvery(USER_LOADING_REQUEST, userLoading);
 }
 
+// 문자 보내기
+const sendAPI = (data) => {
+  return axios.post('/api/user/register/mobile', data);
+};
+
+function* send(action) {
+  try {
+    const result = yield call(sendAPI, action.payload);
+
+    yield put({
+      type: SEND_SUCCESS,
+      payload: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: SEND_FAILURE,
+      payload: e.response,
+    });
+  }
+}
+
+function* watchsend() {
+  yield takeEvery(SEND_REQUEST, send);
+}
+
+// 인증번호 인증
+const authNumAPI = (data) => {
+  return axios.post('/api/user/register/check', data);
+};
+
+function* authNum(action) {
+  try {
+    const result = yield call(authNumAPI, action.payload);
+
+    yield put({
+      type: AUTH_NUM_SUCCESS,
+      payload: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: AUTH_NUM_FAILURE,
+      payload: e.response,
+    });
+  }
+}
+
+function* watchauthNum() {
+  yield takeEvery(AUTH_NUM_REQUEST, authNum);
+}
+
 export default function* authSaga() {
   yield all([
     fork(watchLoginUser),
     fork(watchLogoutUser),
     fork(watchregisterUser),
     fork(watchuserLoading),
+    fork(watchsend),
+    fork(watchauthNum),
   ]);
 }

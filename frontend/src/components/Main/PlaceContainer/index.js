@@ -18,8 +18,8 @@ const columns = [
     align: 'center',
     width: '80%',
     onFilter: (value, record) => record.name.indexOf(value) === 0,
-    render: (name) => (
-      <Link to={`/place/1`} style={{ color: 'black' }}>
+    render: (name, record) => (
+      <Link to={`/place/${name}/${record.capacity}`} style={{ color: 'black' }}>
         {name}
       </Link>
     ),
@@ -68,15 +68,13 @@ function PlaceContainer() {
     setIsFloorSelected(false);
   };
 
-  const onChangeHanlder = (e) => {
-    setIsFloorSelected(true);
-  };
+  const onChangeHanlder = useCallback(
+    (e) => {
+      setIsFloorSelected(true);
 
-  const onClickFloor = useCallback(
-    (floor) => {
       const data = {
         building: buildingName,
-        floor: floor,
+        floor: e,
       };
 
       dispatch(floorListAction(data));
@@ -120,19 +118,37 @@ function PlaceContainer() {
         <div id="modal-container">
           {isFloorSelected ? (
             <div>
-              <Select
-                onChange={onChangeHanlder}
-                value={floors}
-                defaultValue="x"
-              >
-                <Option value="x">층을 선택하세요.</Option>
+              <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                <div style={{ padding: '4px' }}>층을 선택하세요 : </div>
+
+                <Select onChange={onChangeHanlder} defaultValue="x">
+                  <Option value="x">층</Option>
+                  {Array.isArray(floors) ? (
+                    floors.map((floor) => (
+                      <Option key={floor} value={floor}>
+                        {floor}
+                      </Option>
+                    ))
+                  ) : (
+                    <div>해당 건물에 예약 가능한 층이 없습니다.</div>
+                  )}
+                </Select>
+              </div>
+              <h2 style={{ textAlign: 'center' }}>{buildingName}</h2>
+              <Table
+                columns={columns}
+                dataSource={classes}
+                pagination={{ position: ['none', 'none'] }}
+              />
+            </div>
+          ) : (
+            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <div style={{ padding: '4px' }}>층을 선택하세요 : </div>
+              <Select onChange={onChangeHanlder} defaultValue="x">
+                <Option value="x">층</Option>
                 {Array.isArray(floors) ? (
                   floors.map((floor) => (
-                    <Option
-                      key={floor}
-                      value={floor}
-                      onClick={() => onClickFloor(floor)}
-                    >
+                    <Option key={floor} value={floor}>
                       {floor}
                     </Option>
                   ))
@@ -140,26 +156,7 @@ function PlaceContainer() {
                   <div>해당 건물에 예약 가능한 층이 없습니다.</div>
                 )}
               </Select>
-              <h2 style={{ textAlign: 'center' }}>{buildingName}</h2>
-              <Table columns={columns} dataSource={classes} />
             </div>
-          ) : (
-            <Select onChange={onChangeHanlder} value={floors} defaultValue="x">
-              <Option value="x">층을 선택하세요.</Option>
-              {Array.isArray(floors) ? (
-                floors.map((floor) => (
-                  <Option
-                    key={floor}
-                    value={floor}
-                    onClick={() => onClickFloor(floor)}
-                  >
-                    {floor}
-                  </Option>
-                ))
-              ) : (
-                <div>해당 건물에 예약 가능한 층이 없습니다.</div>
-              )}
-            </Select>
           )}
         </div>
       </Modal>

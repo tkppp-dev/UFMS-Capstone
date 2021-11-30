@@ -15,6 +15,7 @@ import {
 // component
 import LoginModal from 'components/LoginModal/LoginModal';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const { Meta } = Card;
 
@@ -38,6 +39,9 @@ function Inner() {
       setThirdButton('primary');
     }
   };
+
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { buildings } = useSelector((state) => state.reservation);
 
   return (
     <InnerContainer>
@@ -63,7 +67,10 @@ function Inner() {
                 />
               }
             >
-              <Meta title="Card title" description="This is the description" />
+              <Meta
+                title={buildings[0]}
+                description="This is the description"
+              />
             </CardContent>
           </Link>
 
@@ -76,7 +83,10 @@ function Inner() {
                 />
               }
             >
-              <Meta title="Card title" description="This is the description" />
+              <Meta
+                title={buildings[2]}
+                description="This is the description"
+              />
             </CardContent>
           </Link>
           <Link to="/place/1">
@@ -88,14 +98,24 @@ function Inner() {
                 />
               }
             >
-              <Meta title="Card title" description="This is the description" />
+              <Meta
+                title={buildings[1]}
+                description="This is the description"
+              />
             </CardContent>
           </Link>
         </CardContainer>
       </div>
 
       <AsideBox>
-        <div>회원 정보가 들어갈 공간입니다.</div>
+        {isAuthenticated ? (
+          <div>
+            <h2>{user.username}</h2>
+            <div>{user.privileges}</div>
+          </div>
+        ) : (
+          <div>로그인이 필요합니다.</div>
+        )}
         <LoginModal buttonType="primary" />
       </AsideBox>
     </InnerContainer>

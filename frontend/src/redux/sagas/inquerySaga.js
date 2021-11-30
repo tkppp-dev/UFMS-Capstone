@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { push } from 'connected-react-router';
 import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import {
   INQUERIES_LOADING_REQUEST,
@@ -20,7 +21,7 @@ import {
 
 // Load All Inqueries
 const loadInqueriesAPI = () => {
-  return axios.get('/inquery');
+  return axios.get('/inquiry');
 };
 
 function* loadInqueries() {
@@ -45,7 +46,7 @@ function* watchloadInqueries() {
 
 // Load Inquery
 const loadInqueryAPI = (id) => {
-  return axios.get(`/inquery/${id}`);
+  return axios.get(`/inquiry/${id}`);
 };
 
 function* loadInquery(action) {
@@ -70,13 +71,7 @@ function* watchloadInquery() {
 
 // Write
 const inqueryWriteAPI = (payload) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  return axios.post('/inquery', payload, config);
+  return axios.post('/inquiry', payload);
 };
 
 function* inqueryWritePlace(action) {
@@ -101,13 +96,8 @@ function* watchinqueryWrite() {
 
 // Edit
 const inqueryEditAPI = (payload) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  return axios.put(`/inquery/${payload.inqueryId}`, payload, config);
+  console.log(payload);
+  return axios.put(`/inquiry/${payload.id}`, payload);
 };
 
 function* inqueryEditPlace(action) {
@@ -132,7 +122,7 @@ function* watchinqueryEdit() {
 
 // Delete
 const inqueryDeleteAPI = (id) => {
-  return axios.delete(`/inquery/${id}`);
+  return axios.delete(`/inquiry/${id}`);
 };
 
 function* inqueryDelete(action) {
@@ -140,19 +130,19 @@ function* inqueryDelete(action) {
     const result = yield call(inqueryDeleteAPI, action.payload);
 
     yield put({
-      type: INQUERY_DELETE_REQUEST,
+      type: INQUERY_DELETE_SUCCESS,
       payload: result.data,
     });
   } catch (e) {
     yield put({
-      type: INQUERY_DELETE_SUCCESS,
+      type: INQUERY_DELETE_FAILURE,
       payload: e,
     });
   }
 }
 
 function* watchinqueryDelete() {
-  yield takeEvery(INQUERY_DELETE_FAILURE, inqueryDelete);
+  yield takeEvery(INQUERY_DELETE_REQUEST, inqueryDelete);
 }
 
 export default function* inquerySaga() {

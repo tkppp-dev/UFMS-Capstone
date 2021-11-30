@@ -17,7 +17,7 @@ import {
 
 // Load All
 const loadCommentsAPI = (id) => {
-  return axios.get(`/inquery/${id}/comment`);
+  return axios.get(`/inquiry/${id}/comment`);
 };
 
 function* loadComments(action) {
@@ -42,15 +42,9 @@ function* watchloadComments() {
 
 // Upload
 const commentUploadAPI = (payload) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
   const { id } = payload;
 
-  return axios.post(`/inquery/${id}/comment`, payload, config);
+  return axios.post(`/inquiry/${id}/comment`, payload);
 };
 
 function* commentUpload(action) {
@@ -75,15 +69,7 @@ function* watchcommentUpload() {
 
 // Edit
 const commentEditAPI = (payload) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const { id, commentId } = payload;
-
-  return axios.put(`/inquery/${id}/comment/${commentId}`, payload, config);
+  return axios.put(`/inquiry/comment/${payload.commentId}`, payload);
 };
 
 function* commentEditPlace(action) {
@@ -108,29 +94,29 @@ function* watchcommentEdit() {
 
 // Delete
 const commentDeleteAPI = (payload) => {
-  const { id, commentId } = payload;
-
-  return axios.delete(`/inquery/${id}/comment/${commentId}`);
+  return axios.delete(`/inquiry/comment/${payload}`);
 };
 
 function* commentDelete(action) {
   try {
     const result = yield call(commentDeleteAPI, action.payload);
 
+    console.log(result.data);
+
     yield put({
-      type: DELETE_COMMENT_REQUEST,
+      type: DELETE_COMMENT_SUCCESS,
       payload: result.data,
     });
   } catch (e) {
     yield put({
-      type: DELETE_COMMENT_SUCCESS,
+      type: DELETE_COMMENT_FAILURE,
       payload: e,
     });
   }
 }
 
 function* watchcommentDelete() {
-  yield takeEvery(DELETE_COMMENT_FAILURE, commentDelete);
+  yield takeEvery(DELETE_COMMENT_REQUEST, commentDelete);
 }
 
 export default function* commentSaga() {
