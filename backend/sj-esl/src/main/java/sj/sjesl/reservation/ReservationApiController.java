@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import sj.sjesl.entity.Building;
 
 import java.util.List;
 
@@ -20,10 +21,10 @@ public class ReservationApiController {
         return reservationService.getBuildingList();
     }
 
-    @ApiOperation(value = "건물의 이미지 리턴")
+    @ApiOperation(value = "건물 정보 리턴")
     @GetMapping("/reservation/building/{building}")
-    public String getBuildingImg(@PathVariable String building) {   //이미지 리턴 타입 바꿔야함
-        return reservationService.getBuildingImg(building);
+    public Building getBuildingDetails(@PathVariable String building) {   //이미지 리턴 타입 바꿔야함
+        return reservationService.getBuildingDetails(building);
     }
 
     @ApiOperation(value = "건물의 층 리스트 리턴")
@@ -45,7 +46,7 @@ public class ReservationApiController {
     }
 
     @ApiOperation(value = "예약 등록")
-    @PostMapping("/reservation/")
+    @PostMapping("/reservation")
     public Long save(@RequestBody ReservationRequestDto requestDto){
         return reservationService.save(requestDto);
     }
@@ -55,5 +56,11 @@ public class ReservationApiController {
     public Long cancel(@PathVariable Long id) {
         reservationService.cancel(id);
         return id;
+    }
+
+    @ApiOperation(value = "예약 현황 조회 (6개월)")
+    @GetMapping("/reservation/check/{facilityname}")
+    public List<ReservationResponseDto> getHalfYear(@PathVariable String facilityname) {
+        return reservationService.getHalfYear(facilityname);
     }
 }

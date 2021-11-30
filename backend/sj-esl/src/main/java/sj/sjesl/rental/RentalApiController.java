@@ -38,6 +38,11 @@ public class RentalApiController {
         return rentalService.save(requestDto);
     }
 
+    @ApiOperation(value = "대관 현황 조회 (6개월)")
+    @GetMapping("/rental/check/{facilityName}")
+    public List<RentalResponseDto> getHalfYearList(@PathVariable String facilityName) {
+        return rentalService.getHalfYearList(facilityName);
+    }
     //내 대관 리스트 조회
     //대관 상세 조회
     //대관 취소
