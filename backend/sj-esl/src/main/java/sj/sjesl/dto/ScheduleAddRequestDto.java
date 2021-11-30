@@ -8,9 +8,18 @@ import sj.sjesl.entity.Reservation;
 import javax.validation.constraints.NotEmpty;
 
 @Data
+
 public class ScheduleAddRequestDto {
     private Long memberId;
     private Long subjectId;
+
+    public ScheduleAddRequestDto(Long memberId) {
+        this.memberId = memberId;
+    }
+
+    public ScheduleAddRequestDto() {
+
+    }
 
     @Data
     public static class DeleteId {

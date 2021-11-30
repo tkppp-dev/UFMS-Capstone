@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sj.sjesl.entity.Facility;
 import sj.sjesl.entity.Member;
+import sj.sjesl.entity.RentalStatus;
 import sj.sjesl.repository.BuildingRepository;
 import sj.sjesl.repository.FacilityRepository;
 import sj.sjesl.repository.MemberRepository;
@@ -83,6 +84,7 @@ public class RentalService {
                     .purpose(requestDto.getPurpose())
                     .additionalMobile(requestDto.getAdditionalMobile())
                     .additionalEmail(requestDto.getAdditionalEmail())
+                    .rentalStatus(RentalStatus.WAIT)
                     .build();
 
             rentalRepository.save(rental);
@@ -93,6 +95,17 @@ public class RentalService {
         }
     }
 
+    @Transactional
+    public List<RentalResponseDto> getHalfYearList(String facilityName) {
+        Facility facility = facilityRepository.findByName(facilityName);
+        LocalDate today = LocalDate.now().minusDays(1);
+        LocalDate end = LocalDate.now().plusMonths(6);
+
+        return rentalRepository.findHalfYear(facility, today, end)
+                .stream()
+                .map(RentalResponseDto::new)
+                .collect(Collectors.toList());
+    }
     //내 대관 리스트 조회
     //대관 상세 조회
     //대관 취소

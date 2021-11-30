@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import sj.sjesl.dto.ScheduleAddRequestDto;
 import sj.sjesl.dto.ScheduleDateRequestDto;
 import sj.sjesl.dto.ScheduleResponseDto;
+import sj.sjesl.dto.SubjectResponseDto;
 import sj.sjesl.entity.Subject;
 import sj.sjesl.repository.ScheduleRepository;
 import sj.sjesl.repository.SubjectRepository;
@@ -42,30 +43,36 @@ public class ScheduleController {
     }
 
 
-    @ApiOperation(value = "스캐줄 추가")
+    @ApiOperation(value = "스캐줄 추가 에러메시지 : memberID에 300은 중복된 과목 400은 겹치는 시간대 중복")
     @PostMapping("/schedule/add")
-    public ScheduleAddRequestDto add(@RequestBody ScheduleAddRequestDto scheduleAddRequestDto){
+    public ScheduleAddRequestDto add(@RequestBody ScheduleAddRequestDto scheduleAddRequestDto) {
 
-        return  scheduleService.add(scheduleAddRequestDto);
+        return scheduleService.add(scheduleAddRequestDto);
     }
 
     @ApiOperation(value = "스캐줄 삭제")
     @PostMapping("/schedule/delete")
-    public ScheduleAddRequestDto.DeleteId delete(@RequestBody ScheduleAddRequestDto.DeleteId deleteId){
+    public ScheduleAddRequestDto.DeleteId delete(@RequestBody ScheduleAddRequestDto.DeleteId deleteId) {
         scheduleRepository.deleteById(deleteId.getScheduleId());
-        return  deleteId;
+        return deleteId;
     }
 
     @ApiOperation(value = "과목 검색(professor or subject)")
     @PostMapping("/schedule/subject")
-    public List<Subject> subjectSearch(@RequestBody ScheduleAddRequestDto.subjectSearch search ){
+    public List<Subject> subjectSearch(@RequestBody ScheduleAddRequestDto.subjectSearch search) {
         System.out.println(search.toString());
-        if( search.getType().equals("professor")) {
+        if (search.getType().equals("professor")) {
             System.out.println(search.getSearchData());
             return subjectRepository.findAllByProfessor(search.getSearchData().toString());
-        }
-        else if( search.getType().equals("subject"))
+        } else if (search.getType().equals("subject"))
             return subjectRepository.findAllBySubjectName(search.getSearchData());
         return null;
     }
+
+    @ApiOperation(value = "등록한 과목 검색")
+    @GetMapping("/schedule/subject/{id}")
+    public List<SubjectResponseDto> getSubjectList(@PathVariable Long id) {
+        return scheduleService.getSubject(id);
+    }
 }
+
