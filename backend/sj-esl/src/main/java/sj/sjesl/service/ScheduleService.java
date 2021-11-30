@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import sj.sjesl.dto.ScheduleAddRequestDto;
 import sj.sjesl.dto.ScheduleDateRequestDto;
 import sj.sjesl.dto.ScheduleResponseDto;
+import sj.sjesl.dto.SubjectResponseDto;
 import sj.sjesl.entity.Member;
 import sj.sjesl.entity.Reservation;
 import sj.sjesl.entity.Schedule;
@@ -99,9 +100,21 @@ public class ScheduleService {
 //        if(scheduleAddRequestDto.getSubjectId())
         Member member = memberRepository.findByMemberId(scheduleAddRequestDto.getMemberId());
         Schedule byMemberAndSubject_id = scheduleRepository.findByMemberAndSubject_id(member, scheduleAddRequestDto.getSubjectId());
+
         if( byMemberAndSubject_id!= null) return new ScheduleAddRequestDto(300L);
 
-        List<Subject> subjects = getSubject(scheduleAddRequestDto.getMemberId());
+//        Subject subject = subjectRepository.findById(scheduleAddRequestDto.getSubjectId()).get();
+
+        List<Reservation> CurSubject = reservationRepository.findBySubjectId(scheduleAddRequestDto.getSubjectId());
+
+        List<Long> subjects = getSubject(scheduleAddRequestDto.getMemberId()).stream().map(SubjectResponseDto::getSubjectId).collect(Collectors.toList());
+
+        for( Reservation r :  CurSubject){
+
+            List<Reservation> reservations = reservationRepository.subjectFindBetween( r.getStartTime(), r.getEndTime(),subjects);
+            if(reservations.size()!=0) return new ScheduleAddRequestDto(400L);
+
+        }
 
 
 
@@ -114,17 +127,23 @@ public class ScheduleService {
     }
 
     @Transactional
-    public  List<Subject> getSubject(Long id) {
+    public  List<SubjectResponseDto> getSubject(Long id) {
         Optional<Member> member = memberRepository.findById(id);
 
         List<Schedule> allByMemberId = scheduleRepository.findAllByMember(member.get());
+
         List<Long> subjectIdList = allByMemberId.stream()
                 .map(Schedule::getSubject_id)
                 .collect(Collectors.toList());
 
 
         List<Subject> byId = subjectRepository.findSubjectList(subjectIdList);
-        return byId;
+        List<SubjectResponseDto> subjectResponseDtos = new ArrayList<>();
+        for( Subject s: byId){
+            Schedule schedule = scheduleRepository.findBySubject_id(s.getId()).get();
+            subjectResponseDtos.add(new SubjectResponseDto(s,schedule.getId()));
+        }
+        return subjectResponseDtos;
 
     }
 
