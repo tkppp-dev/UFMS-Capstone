@@ -11,6 +11,7 @@ const ReservationCheckingModal = function ({
   visible,
   onDismiss,
   facility,
+  reservationName,
   purpose,
   startTime,
   endTime,
@@ -23,6 +24,7 @@ const ReservationCheckingModal = function ({
       const params = {
         memberId: state.user.id,
         facility,
+        reservationName,
         purpose,
         startTime: startTime.getISOString(date),
         endTime: endTime.getISOString(date),

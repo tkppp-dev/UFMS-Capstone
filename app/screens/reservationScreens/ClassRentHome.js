@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 import { Dimensions, Image, Text, ScrollView } from 'react-native';
 import axios from 'axios';
 import { endPoint } from '../../src/endPoint';
+import { buildingImg } from '../../src/images';
 
 const Container = styled.View`
   flex: 1;
@@ -24,22 +25,23 @@ const ClassRentReservation = function ({ navigation }) {
   const width = Dimensions.get('window').width;
   const [buildings, setBuildings] = useState([]);
 
-  useEffect(() => {
-    const getBuilding = async function () {
-      try {
-        const res = await axios.get(endPoint + 'reservation/building');
-        res.data.map((building, idx) => {
-          buildings.push({
-            id: idx,
-            name: building,
-          });
-        });
-        setBuildings([...buildings]);
-      } catch (err) {
-        console.error(err);
-      }
-    };
 
+  const getBuilding = async function () {
+    try {
+      const res = await axios.get(endPoint + 'reservation/building');
+      res.data.map((building, idx) => {
+        buildings.push({
+          id: idx,
+          name: building,
+        });
+      });
+      setBuildings([...buildings]);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
     getBuilding();
   }, []);
 
@@ -63,7 +65,7 @@ const ClassRentReservation = function ({ navigation }) {
             >
               <Image
                 style={{ width: 70, height: 70, marginLeft: 5 }}
-                source={require('../../assets/dummy-image.jpeg')}
+                source={buildingImg[item.name]}
               />
               <Text style={{ marginLeft: 10, fontSize: 20 }}>{item.name}</Text>
             </BuildingTitle>

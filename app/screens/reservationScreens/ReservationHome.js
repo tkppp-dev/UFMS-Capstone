@@ -4,8 +4,8 @@ import { Dimensions } from 'react-native';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { Context } from '../../src/context/index';
 import { InquiryProvider } from '../../src/context/inquiry';
-import ClassRentReservation from './ClassRentReservation';
-import RentReservation from './RentReservation';
+import ClassRentHome from './ClassRentHome';
+import RentHome from './RentHome';
 import RentInquiry from './ReservationInquiry';
 
 const TabBarLabel = styled.Text`
@@ -39,9 +39,9 @@ const ReservationHome = function ({ navigation }) {
   const renderScene = ({ route }) => {
     switch (route.key) {
       case 'classRent':
-        return <ClassRentReservation navigation={navigation} />;
+        return <ClassRentHome navigation={navigation} />;
       case 'rent':
-        return <RentReservation navigation={navigation} />;
+        return <RentHome navigation={navigation} />;
       case 'inquiry':
         return (
           <InquiryProvider>

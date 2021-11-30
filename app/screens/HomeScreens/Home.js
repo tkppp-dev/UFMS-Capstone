@@ -5,6 +5,7 @@ import Header from '../../src/components/Header';
 import { Context } from '../../src/context/index';
 import axios from 'axios';
 import { endPoint } from '../../src/endPoint';
+import { buildingImg } from '../../src/images';
 
 const Container = styled.View`
   flex: 1;
@@ -56,17 +57,18 @@ const Home = function ({ navigation }) {
       >
         <Container>
           {buildings.map((item) => {
+            const img = `app/assets/building-images/${buildingImg[item.name]}`;
             return (
               <BuildingTitle
                 key={item.id}
                 width={width}
                 onPress={() => {
-                  navigation.navigate('Facility Usage', { buildingData: item});
+                  navigation.navigate('Facility Usage', { buildingData: item });
                 }}
               >
                 <Image
                   style={{ width: 70, height: 70, marginLeft: 5 }}
-                  source={require('../../assets/dummy-image.jpeg')}
+                  source={buildingImg[item.name]}
                 />
                 <Text style={{ marginLeft: 10, fontSize: 20 }}>
                   {item.name}
