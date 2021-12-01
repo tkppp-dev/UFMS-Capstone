@@ -7,6 +7,7 @@ import { Button, Form, Input } from 'antd';
 import { FormContainer, SignUpContainer, SignUpSuccess, Wrap } from './style';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerAction } from 'redux/actions/user_actions';
+import axios from 'axios';
 
 function SignUp() {
   const [form, setValues] = useState({
@@ -20,6 +21,7 @@ function SignUp() {
 
   const [isSend, setIsSend] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
+  const [authNumber, setAuthNumber] = useState(0);
 
   const { isAuthenticated } = useSelector((state) => state.auth);
 
@@ -32,17 +34,34 @@ function SignUp() {
     });
   };
 
-  const onSend = useCallback((e) => {
-    e.preventDefault();
+  const onSend = useCallback(
+    (e) => {
+      e.preventDefault();
 
-    setIsSend(true);
-  }, []);
+      axios
+        .post('/api/user/register/mobile', form.mobile)
+        .then((res) => {
+          setIsSend(true);
+          setAuthNumber(res.data);
 
-  const onAuth = useCallback((e) => {
-    e.preventDefault();
+          setValues({
+            mobile: '',
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    [form],
+  );
 
-    setIsAuth(true);
-  }, []);
+  const onAuth = () => {
+    if (authNumber === Number(form.authNum)) {
+      setIsAuth(true);
+    } else {
+      alert('인증번호를 확인해주세요.');
+    }
+  };
 
   const onSubmit = useCallback(
     (e) => {
