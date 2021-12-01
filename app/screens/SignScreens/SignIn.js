@@ -5,6 +5,7 @@ import { images } from '../../src/images';
 import axios from 'axios';
 import { CommonActions } from '@react-navigation/native';
 import { Context } from '../../src/context';
+import { endPoint } from '../../src/endPoint';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -103,7 +104,7 @@ const SignInScreen = function ({ navigation }) {
     }
     if (flag === 0) {
       try {
-        const res = await axios.post('http://127.0.0.1:8080/api/auth/login', {
+        const res = await axios.post(endPoint + 'api/auth/login', {
           email,
           password,
         });
@@ -116,13 +117,13 @@ const SignInScreen = function ({ navigation }) {
         }
       } catch (err) {
         console.log(err);
-        Alert.alert('아이디가 존재하지 않거나 비밀번호가 일치하지 않습니다.');
+        Alert.alert('예상치 못한 에러로 로그인에 실패했습니다');
       }
     } else {
       if (isCompleted.id === 'FORMAT_ERROR') {
-        Alert.alert('이메일 형식이 올바르지 않습니다.');
+        Alert.alert('이메일 형식이 올바르지 않습니다');
       } else {
-        Alert.alert('이메일이 존재하지 않거나 비밀번호가 일치하지 않습니다.');
+        Alert.alert('이메일이 존재하지 않거나 비밀번호가 일치하지 않습니다');
       }
     }
   };

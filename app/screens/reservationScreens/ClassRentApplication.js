@@ -9,6 +9,7 @@ import axios from 'axios';
 import { endPoint } from '../../src/endPoint';
 import ClassTime from '../../src/ClassTime';
 import ReservationCheckingModal from '../../src/components/modal/ReservationCheckingModal';
+import DateFormat from '../../src/DateFormat';
 
 const Container = styled.View`
   width: 100%;
@@ -121,7 +122,7 @@ const ClassRentApplication = function ({ navigation, route }) {
   const [selectedDate, setSelectedDate] = useState();
   const [reservationName, setReservatiionName] = useState(null);
   const [reservationPurpose, setReservatiionPurpose] = useState(null);
-  
+
   const [dayList, setDayList] = useState(
     getDayList(year, month).map((el) => ({
       label: `${el}`,
@@ -160,21 +161,23 @@ const ClassRentApplication = function ({ navigation, route }) {
 
   const _onPressSearchButton = async function () {
     try {
-      const res = await axios.post(endPoint + 'reservation/building/date', {
-        date: `${year}-${month}-${day}`,
+      const date = new DateFormat(year, month, day);
+      const params = {
+        date: date.toString(),
         facility,
-      });
+      };
+      console.log(params);
+      const res = await axios.post(
+        endPoint + 'reservation/building/date',
+        params
+      );
       setRentAvailableTimeList(res.data);
       setSelectedDate({ year, month, day });
       setShowApplication(true);
     } catch (err) {
       console.error(err);
+      Alert.alert('에상치 못한 에러로 정보 로딩에 실패했습니다');
     }
-  };
-
-  const _onPressApplyButton = async function () {
-    console.log(selectedTime);
-    setModalVisible(true);
   };
 
   return (
@@ -244,10 +247,12 @@ const ClassRentApplication = function ({ navigation, route }) {
                   />
                   <CustomInput
                     label="예약 이름"
+                    value={reservationName}
                     onChangeText={setReservatiionName}
                   />
                   <CustomInput
                     label="예약 목적"
+                    value={reservationPurpose}
                     multiline={true}
                     type="textarea"
                     onChangeText={setReservatiionPurpose}
@@ -255,7 +260,7 @@ const ClassRentApplication = function ({ navigation, route }) {
                   <Button
                     style={{ marginTop: 10 }}
                     onPress={() => {
-                      setModalVisible(true)
+                      setModalVisible(true);
                     }}
                   >
                     <Text style={{ color: 'white', fontWeight: 'bold' }}>
@@ -267,10 +272,11 @@ const ClassRentApplication = function ({ navigation, route }) {
                       visible={modalVisible}
                       onDismiss={setModalVisible}
                       facility={facility}
+                      reservationName={reservationName}
                       purpose={reservationPurpose}
                       startTime={selectedTime}
                       endTime={new ClassTime(selectedIndex + 1)}
-                      date={{year, month, day}}
+                      date={{ year, month, day }}
                       navigation={navigation}
                     />
                   </Portal>

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import sj.sjesl.dto.ScheduleAddRequestDto;
 import sj.sjesl.dto.ScheduleDateRequestDto;
 import sj.sjesl.dto.ScheduleResponseDto;
+import sj.sjesl.dto.SubjectResponseDto;
 import sj.sjesl.entity.Subject;
 import sj.sjesl.repository.ScheduleRepository;
 import sj.sjesl.repository.SubjectRepository;
@@ -42,7 +43,7 @@ public class ScheduleController {
     }
 
 
-    @ApiOperation(value = "스캐줄 추가")
+    @ApiOperation(value = "스캐줄 추가 에러메시지 : memberID에 300은 중복된 과목 400은 겹치는 시간대 중복")
     @PostMapping("/schedule/add")
     public ScheduleAddRequestDto add(@RequestBody ScheduleAddRequestDto scheduleAddRequestDto) {
 
@@ -70,7 +71,7 @@ public class ScheduleController {
 
     @ApiOperation(value = "등록한 과목 검색")
     @GetMapping("/schedule/subject/{id}")
-    public List<Subject> getSubjectList(@PathVariable Long id) {
+    public List<SubjectResponseDto> getSubjectList(@PathVariable Long id) {
         return scheduleService.getSubject(id);
     }
 }

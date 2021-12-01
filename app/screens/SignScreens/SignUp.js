@@ -63,7 +63,7 @@ const SignUp = function ({ navigation }) {
 
   const _onPressSumbitButton = async function () {
     try {
-      const res = await axios.post('http://127.0.0.1:8080/api/user/register', {
+      const res = await axios.post(endPoint + 'api/user/register', {
         email,
         password,
         username: name,

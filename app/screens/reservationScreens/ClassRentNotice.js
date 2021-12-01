@@ -2,6 +2,9 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { Alert, Dimensions, Image, ScrollView, Text, View } from 'react-native';
 import PlacePicker from '../../src/components/PlacePicker';
+import { buildingImg } from '../../src/images';
+import axios from 'axios';
+import { endPoint } from '../../src/endPoint';
 
 const Container = styled.View`
   width: 100%;
@@ -21,12 +24,40 @@ const Button = styled.TouchableOpacity`
   background-color: #007aff;
 `;
 
+const NoticeItem = function ({ notice }) {
+  return (
+    <View style={{ flexDirection: 'row' }}>
+      <View>
+        <Text>{' - '}</Text>
+      </View>
+      <Text style={{ flex: 1 }}>{notice}</Text>
+    </View>
+  );
+};
 
 const ClassRentNotice = function ({ navigation, route }) {
   const window = Dimensions.get('window');
   const building = route.params.building;
   const [floor, setFloor] = useState(null);
   const [facility, setFacility] = useState(null);
+  const [buildingData, setBuildingData] = useState('');
+
+  const getBuildingData = async function () {
+    try {
+      const res = await axios.get(endPoint + 'building');
+      res.data.forEach((item) => {
+        if (item.name === building.name) {
+          setBuildingData(item);
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    getBuildingData();
+  });
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -55,35 +86,27 @@ const ClassRentNotice = function ({ navigation, route }) {
             width: window.width * 0.9,
             height: window.height * 0.25,
           }}
-          source={require('../../assets/dummy-image.jpeg')}
+          source={buildingImg[building.name]}
         />
         <Content>
           <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
             {building.name}
           </Text>
+          <Text style={{ marginTop: 10 }}>{buildingData.description}</Text>
           <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>
             강의실 예약 유의 사항
           </Text>
-          <Text style={{ marginTop: 10 }}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently with desktop publishing software like Aldus
-            PageMaker including versions of Lorem Ipsum.
-          </Text>
+          <View style={{ marginTop: 10 }}>
+            <NoticeItem notice="예약 변경시 시간대와 날짜 변경은 불가능하며 필요시 예약 취소호 재예약이 필요합니다."/>
+            <NoticeItem notice="예약은 90분 단위로 가능하며 그 이상 예약이 필요할시 다음 시간대를 같이 예약해야합니다." />
+          </View>
           <PlacePicker
             buildingData={building}
             setFloor={setFloor}
             setFacility={setFacility}
           />
           <View style={{ alignItems: 'center' }}>
-            <Button
-              onPress={_onPressReservation}
-            >
+            <Button onPress={_onPressReservation}>
               <Text style={{ color: 'white', fontWeight: 'bold' }}>
                 강의실 예약
               </Text>

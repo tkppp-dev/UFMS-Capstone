@@ -225,13 +225,13 @@ const RentApplication = function ({ navigation, route }) {
         rentalDays: period,
         additionalMobile: phoneNumber,
         additionalEmail: email,
-        startDate: getDateString(new Date(year, month - 1, day))
+        startDate: getDateString(new Date(year, month - 1, day)),
       };
 
       const res = await axios.post(endPoint + 'rental/r', params);
       if (res.status === 200) {
-        Alert.alert('대관 신청에 성공하였습니다')
-        setModalVisible(false)
+        Alert.alert('대관 신청에 성공하였습니다');
+        setModalVisible(false);
         navigation.reset({
           routes: [{ name: 'Home', param: {} }],
         });
@@ -296,20 +296,34 @@ const RentApplication = function ({ navigation, route }) {
             >
               {showApplication === false ? null : (
                 <>
-                  <CustomInput label="대관자" onChangeText={setRentalPerson} />
-                  <CustomInput label="대관 주체" onChangeText={setGroup} />
+                  <CustomInput
+                    label="대관자"
+                    value={rentalPerson}
+                    onChangeText={setRentalPerson}
+                  />
+                  <CustomInput
+                    label="대관 주체"
+                    value={group}
+                    onChangeText={setGroup}
+                  />
                   <CustomInput
                     label="대관 목적"
+                    value={purpose}
                     onChangeText={setPurpose}
                     multiline={true}
                     type="textarea"
                   />
                   <CustomInput
                     label="연락처"
+                    value={phoneNumber}
                     onChangeText={setPhoneNumber}
                     notice="'-' 제외하고 입력"
                   />
-                  <CustomInput label="이메일" onChangeText={setEmail} />
+                  <CustomInput
+                    label="이메일"
+                    value={email}
+                    onChangeText={setEmail}
+                  />
                   <Button onPress={_onPressSubmitButton}>
                     <Text style={{ color: 'white', fontWeight: 'bold' }}>
                       대관 신청

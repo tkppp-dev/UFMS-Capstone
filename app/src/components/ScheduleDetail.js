@@ -41,18 +41,18 @@ const ScheduleDetail = function ({ schedule }) {
   };
 
   return (
-    <Container key={schedule.id}>
+    <Container>
       <View style={{ flexDirection: 'row', marginBottom: 8 }}>
         <InformationItem
           title="시간"
-          body={`${schedule.startTime}~${schedule.endTime}`}
+          body={schedule.time}
           row={true}
         />
-        <InformationItem title="상태" body={schedule.status} row={true} />
+        <InformationItem title="상태" body={schedule.reservationStatus} row={true} />
       </View>
       <View style={{ flexDirection: 'row' }}>
-        <InformationItem title="이름" body={schedule.name} row={true} />
-        <InformationItem title="위치" body={schedule.location} row={true} />
+        <InformationItem title="이름" body={schedule.reservationName} row={true} />
+        <InformationItem title="위치" body={schedule.facility} row={true} />
       </View>
       <InformationItem title="공지사항" body={schedule.notice !== undefined ? schedule.notice : '없음'} />
       <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>

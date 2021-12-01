@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
 import styled from 'styled-components/native';
@@ -28,34 +28,13 @@ const getCurrentWeekDate = function (date, dayOfWeek) {
   }
 };
 
-const DaySchedule = function ({ referenceDate, setReferenceDate, dayOfWeek }) {
+const DaySchedule = function ({
+  referenceDate,
+  setReferenceDate,
+  dayOfWeek,
+  scheduleData = [],
+}) {
   const [date] = useState(getCurrentWeekDate(referenceDate, dayOfWeek % 7));
-  const schedules = [
-    {
-      id: 1,
-      name: '스케줄 이름',
-      startTime: '12:00',
-      endTime: '13:30',
-      location: '율곡관 301호',
-      status: '대기중',
-    },
-    {
-      id: 2,
-      name: '스케줄 이름',
-      startTime: '13:30',
-      endTime: '15:00',
-      location: '율곡관 301호',
-      status: '대기중',
-    },
-    {
-      id: 3,
-      name: '스케줄 이름',
-      startTime: '15:00',
-      endTime: '16:30',
-      location: '율곡관 301호',
-      status: '대기중',
-    },
-  ];
 
   const _setReferenceDate = function (offset) {
     const dt = new Date(referenceDate);
@@ -87,12 +66,25 @@ const DaySchedule = function ({ referenceDate, setReferenceDate, dayOfWeek }) {
         </TouchableOpacity>
       </DateContainer>
       <ScrollView>
-        {schedules.map((schedule) => {
-          return <ScheduleDetail key={schedule.id} schedule={schedule} />;
-        })}
+        {scheduleData.length === 0 ? (
+          <View
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Text>스케줄이 없습니다</Text>
+          </View>
+        ) : (
+          <View>
+            {scheduleData.map((schedule) => (
+              <ScheduleDetail
+                key={schedule.reservationId}
+                schedule={schedule}
+              />
+            ))}
+          </View>
+        )}
       </ScrollView>
     </View>
   );
 };
 
-export default DaySchedule;
+export default React.memo(DaySchedule);

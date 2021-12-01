@@ -19,6 +19,7 @@ import CurrentSchduleStatusUpdateModal from '../../src/components/modal/CurrentS
 import axios from 'axios';
 import { endPoint } from '../../src/endPoint';
 import OfficeInformation from '../../src/components/OfficeInformation';
+import ScheduleSummary from '../../src/components/ScheduleSummary';
 
 const Container = styled.View`
   flex: 1;
@@ -50,11 +51,6 @@ const ContentTitle = styled.View`
   padding: 0 4px 8px 4px;
 `;
 
-const ContentBody = styled.View`
-  padding: 0 4px 0 4px;
-  margin: 8px 0 8px 0;
-`;
-
 const StyledText = styled.Text`
   font-size: ${({ fontSize }) =>
     fontSize !== undefined ? fontSize + 'px' : '16px'};
@@ -67,18 +63,12 @@ const StyledText = styled.Text`
 const ProfessorMyPage = function ({ navigation }) {
   const { state, dispatch } = useContext(Context);
   const [previlege, setPrevilege] = useState();
-  const [currentSchedule, setCurrentSchedule] = useState({});
   const [officeList, setOfficeList] = useState([]);
   const [selectedLab, setSelectedLab] = useState(null);
-  const [currentScheduleStatus, setCurrentScheduleStatus] = useState('수업중');
   const [officeStatusModalVisible, setOfficeStatusModalVisible] =
     useState(false);
   const [officeNoticeModalVisible, setOfficeNoticeModalVisible] =
     useState(false);
-  const [
-    currentScheduleStatusModalVisible,
-    setCurrentScheduleStatusModalVisible,
-  ] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -157,10 +147,6 @@ const ProfessorMyPage = function ({ navigation }) {
     }
   };
 
-  const _onPressScheduleStatus = function (value) {
-    setCurrentScheduleStatus(value);
-  };
-
   const _onPressLogout = async function () {
     try {
       await axios.post(endPoint + 'api/auth/logout', {
@@ -201,6 +187,21 @@ const ProfessorMyPage = function ({ navigation }) {
           </ContentContainer>
           <ContentContainer>
             <ContentTopColorRow />
+            <TouchableOpacity onPress={() => navigation.navigate('Schedule')}>
+              <Content style={{ flexDirection: 'row' }}>
+                <StyledText style={{ flex: 1 }} fontSize="20" fontWeight="bold">
+                  전체 스케줄 조회
+                </StyledText>
+                <Icon type="material" name="navigate-next" />
+              </Content>
+            </TouchableOpacity>
+          </ContentContainer>
+          <ContentContainer>
+            <ContentTopColorRow />
+            <ScheduleSummary userId={state.user.id} />
+          </ContentContainer>
+          <ContentContainer>
+            <ContentTopColorRow />
             <Content>
               <ContentTitle>
                 <StyledText fontSize="20" fontWeight="bold">
@@ -229,78 +230,33 @@ const ProfessorMyPage = function ({ navigation }) {
               />
             </Content>
           </ContentContainer>
+          {previlege !== 'STUDENT' ? (
+            <ContentContainer>
+              <ContentTopColorRow />
+              <TouchableOpacity onPress={() => navigation.navigate('Schedule Register')}>
+                <Content style={{ flexDirection: 'row' }}>
+                  <StyledText
+                    style={{ flex: 1 }}
+                    fontSize="20"
+                    fontWeight="bold"
+                  >
+                    스케줄 등록 관리
+                  </StyledText>
+                  <Icon type="material" name="navigate-next" />
+                </Content>
+              </TouchableOpacity>
+            </ContentContainer>
+          ) : null}
           <ContentContainer>
             <ContentTopColorRow />
             <TouchableOpacity onPress={() => navigation.navigate('Schedule')}>
               <Content style={{ flexDirection: 'row' }}>
                 <StyledText style={{ flex: 1 }} fontSize="20" fontWeight="bold">
-                  나의 스케줄 관리
+                  대관 예약 관리
                 </StyledText>
                 <Icon type="material" name="navigate-next" />
               </Content>
             </TouchableOpacity>
-          </ContentContainer>
-          <ContentContainer>
-            <ContentTopColorRow />
-            <Content>
-              <ContentTitle>
-                <StyledText fontSize="20" fontWeight="bold">
-                  현재 스케줄
-                </StyledText>
-              </ContentTitle>
-              <ContentBody>
-                {currentSchedule === null ? (
-                  <View style={{ marginTop: 8, marginBottom: 16 }}>
-                    <Text style={{ fontSize: 15 }}>현재 스케줄이 없습니다</Text>
-                  </View>
-                ) : (
-                  <View style={{ marginBottom: 16 }}>
-                    <InformationItem
-                      title="스케줄 이름"
-                      body="컴퓨터공학 캡스톤디자인 2반"
-                    />
-                    <InformationItem title="위치" body="율곡관 301호" />
-                    <View style={{ flexDirection: 'row', marginBottom: 8 }}>
-                      <InformationItem
-                        title="시간"
-                        body="12:00~13:30"
-                        row={true}
-                      />
-                      <InformationItem
-                        title="상태"
-                        body={currentScheduleStatus}
-                        row={true}
-                      />
-                    </View>
-                    <Portal>
-                      <CurrentSchduleStatusUpdateModal
-                        visible={currentScheduleStatusModalVisible}
-                        onDismiss={() =>
-                          setCurrentScheduleStatusModalVisible(false)
-                        }
-                        onPressUpdate={_onPressScheduleStatus}
-                      />
-                    </Portal>
-                  </View>
-                )}
-              </ContentBody>
-              <ContentTitle>
-                <StyledText fontSize="20" fontWeight="bold">
-                  다음 스케줄
-                </StyledText>
-              </ContentTitle>
-              <ContentBody>
-                <InformationItem
-                  title="스케줄 이름"
-                  body="컴퓨터공학 캡스톤디자인 2반"
-                />
-                <InformationItem title="위치" body="율곡관 301호" />
-                <View style={{ flexDirection: 'row' }}>
-                  <InformationItem title="시간" body="13:30~15:00" row={true} />
-                  <InformationItem title="상태" body="수업 대기중" row={true} />
-                </View>
-              </ContentBody>
-            </Content>
           </ContentContainer>
         </Container>
         <Portal>

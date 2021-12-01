@@ -9,6 +9,7 @@ import sj.sjesl.repository.FacilityRepository;
 import sj.sjesl.repository.MemberRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,6 +61,15 @@ class RentalServiceTest {
             System.out.println("대관 신청 완료");
         } else {
             System.out.println("대관 신청 실패");
+        }
+    }
+
+    @Test
+    void getHalf(){
+        List<RentalResponseDto> list = rentalService.getHalfYearList("광1503");
+
+        for (RentalResponseDto a : list) {
+            System.out.println(a.getId());
         }
     }
 }

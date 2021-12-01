@@ -12,10 +12,12 @@ import sj.sjesl.entity.ReservationInquiry;
 public class LabSaveRequestDto {
     private Long memberId;
     private String location;
+    private String name;
     @Builder
-    public LabSaveRequestDto(Long memberId, String location) {
+    public LabSaveRequestDto(Long memberId, String location, String name) {
         this.memberId = memberId;
         this.location = location;
+        this.name = name;
     }
 
     public Lab toEntity() {

@@ -24,6 +24,7 @@ public class Lab{
     private LocalDateTime scheduleEndDate;
     private String content;
     private String notice;
+    private String name;
 
     @Builder
     public Lab(Member member, String location) {
