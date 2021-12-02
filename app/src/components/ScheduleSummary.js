@@ -35,35 +35,64 @@ const StyledText = styled.Text`
 
 const ScheduleSummary = function ({ userId }) {
   const [currentSchedule, setCurrentSchedule] = useState(null);
-  const [nextSchedule, setNextSchedule] = useState(null)
+  const [nextSchedule, setNextSchedule] = useState(null);
+  const [currentScheduleState, setCurrentScheduleState] = useState('');
+  const [nextScheduleState, setNextScheduleState] = useState('');
 
-  const getCurrentSchedule = async function(){
-    try{
-      const res = await axios.get(endPoint + `schedule/now/${userId}`)
-      if(res.data === ""){
-        setCurrentSchedule(null)
+  const getCurrentSchedule = async function () {
+    try {
+      const res = await axios.get(endPoint + `schedule/now/${userId}`);
+      if (res.data === '') {
+        setCurrentSchedule(null);
       }
-    }catch(err){
-      console.error(err)
-      Alert.alert('정보 로딩에 실패했습니다')
+    } catch (err) {
+      console.error(err);
+      Alert.alert('정보 로딩에 실패했습니다');
     }
-  }
+  };
 
-  const getNextSchedule = async function(){
-    try{
-      const res = await axios.get(endPoint + `schedule/next/${userId}`)
-      if(res.data === ""){
-        setNextSchedule(null)
+  const getNextSchedule = async function () {
+    try {
+      const res = await axios.get(endPoint + `schedule/next/${userId}`);
+      if (res.data === '') {
+        setNextSchedule(null);
       }
-    }catch(err){
-      console.error(err)
-      Alert.alert('정보 로딩에 실패했습니다')
+    } catch (err) {
+      console.error(err);
+      Alert.alert('정보 로딩에 실패했습니다');
     }
-  }
+  };
+
+  const getScheduleState = function (state) {
+    switch (state) {
+      case 'BEFORE':
+      case 'WAIT':
+        return '대기 일정';
+      case 'ING':
+        return '현재 일정';
+      case 'END':
+      case 'COMPLETE':
+        return '지난 일정';
+      case 'CANCEL':
+        return '취소 일정';
+      default:
+        return '';
+    }
+  };
 
   useEffect(() => {
-    getCurrentSchedule()
-    getNextSchedule()
+    getCurrentSchedule();
+    getNextSchedule();
+
+    if (currentSchedule !== null) {
+      setCurrentScheduleState(
+        getScheduleState(currentSchedule.reservationStatus)
+      );
+    }
+
+    if (nextSchedule !== null) {
+      setNextScheduleState(getScheduleState(nextSchedule.reservationStatus));
+    }
   }, []);
 
   return (
@@ -114,8 +143,16 @@ const ScheduleSummary = function ({ userId }) {
             />
             <InformationItem title="위치" body={nextSchedule.facility} />
             <View style={{ flexDirection: 'row' }}>
-              <InformationItem title="시간" body={nextSchedule.time} row={true} />
-              <InformationItem title="상태" body={nextSchedule.status} row={true} />
+              <InformationItem
+                title="시간"
+                body={nextSchedule.time}
+                row={true}
+              />
+              <InformationItem
+                title="상태"
+                body={nextSchedule.status}
+                row={true}
+              />
             </View>
           </View>
         )}

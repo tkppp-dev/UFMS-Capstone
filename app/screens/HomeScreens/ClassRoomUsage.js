@@ -24,11 +24,34 @@ const CalendarHeader = styled.Text`
   color: #596571;
 `;
 
-const EmptyItemRenderData = function () {
+const EmptyItemRenderData = function (items) {
+  const [isEmtpy, setIsEmpty] = useState(true)
+
+  useEffect(() => {
+    if(Object.keys(items).length > 0){
+      setIsEmpty(false)
+    }
+    else{
+      setIsEmpty(true)
+    }
+  }, [items])
+
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>오른쪽 하단의 버튼을 눌러 시설을 선택하세요</Text>
-    </View>
+    <>  
+      {isEmtpy ? (
+        <View
+          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        >
+          <Text>오른쪽 하단의 버튼을 눌러 시설을 선택하세요</Text>
+        </View>
+      ) : (
+        <View
+          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        >
+          <Text>해당 날짜의 사용 예약이 없습니다</Text>
+        </View>
+      )}
+    </>
   );
 };
 
@@ -59,23 +82,11 @@ const getCalendarRange = function () {
   };
 };
 
-const getItems = function (min, max) {
-  const date = new Date(min);
-  const endDate = new Date(max);
-  const items = {};
-
-  while (date <= endDate) {
-    items[getDateStr(date)] = [{ name: '123' }];
-    date.setDate(date.getDate() + 1);
-  }
-  return items;
-};
-
-const FacilityUsage = function ({ navigation, route }) {
+const ClassRoomUsage = function ({ navigation, route }) {
   const { min, now, max } = getCalendarRange();
   const [selectDate, setSelectDate] = useState(new Date());
-  const [items, setItems] = useState([]);
-  const [isReady, setIsReady] = useState(false);
+  const [items, setItems] = useState({});
+  const [refresh, setRefresh] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
 
   useLayoutEffect(() => {
@@ -87,11 +98,8 @@ const FacilityUsage = function ({ navigation, route }) {
   });
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsReady(true);
-    }, 1000);
-  }, []);
-
+    console.log(items);
+  }, [items]);
   const _onDayPress = function (day) {
     setSelectDate(new Date(day.dateString));
   };
@@ -101,7 +109,7 @@ const FacilityUsage = function ({ navigation, route }) {
   };
 
   const _renderItem = function (item) {
-    return <DayUsage />;
+    return <DayUsage item={item} />;
   };
 
   const _rowHasChanaged = function (r1, r2) {
@@ -125,8 +133,15 @@ const FacilityUsage = function ({ navigation, route }) {
           onDayPress={_onDayPress}
           onDayChange={_onDayChange}
           renderItem={_renderItem}
+          renderEmptyDate={() => {
+            return (
+              <View>
+                <Text>asd</Text>
+              </View>
+            );
+          }}
           renderEmptyData={() => {
-            return <EmptyItemRenderData />;
+            return <EmptyItemRenderData items={items} />;
           }}
           rowHasChanged={_rowHasChanaged}
           theme={{
@@ -134,9 +149,11 @@ const FacilityUsage = function ({ navigation, route }) {
           }}
           style={{}}
         />
-        <FacilitySelectModal 
+        <FacilitySelectModal
           visible={modalVisible}
           onDismiss={setModalVisible}
+          setItems={setItems}
+          setRefresh={setRefresh}
           buildingData={route.params.buildingData}
         />
         <FAB
@@ -153,4 +170,4 @@ const FacilityUsage = function ({ navigation, route }) {
   );
 };
 
-export default FacilityUsage;
+export default ClassRoomUsage;

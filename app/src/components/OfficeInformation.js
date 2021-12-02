@@ -60,7 +60,7 @@ const OfficeInformation = function ({
           style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
         >
           <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
-            {office.location}
+            {office.location + ' ' + office.name}
           </Text>
         </View>
         {item.isEnd ? null : <Icon type="antdesign" name="right" size={18} />}

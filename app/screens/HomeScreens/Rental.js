@@ -21,7 +21,7 @@ const BuildingTitle = styled.TouchableOpacity`
   background-color: white;
 `;
 
-const RentReservation = function ({ navigation }) {
+const Rental = function ({ navigation }) {
   const width = Dimensions.get('window').width;
   const [rentalFacilities, setRentalFacilities] = useState([]);
 
@@ -45,7 +45,7 @@ const RentReservation = function ({ navigation }) {
       Alert.alert('시설 로딩에 실패했습니다');
     }
   };
-  
+
   useEffect(() => {
     getRentalFacilities();
   }, []);
@@ -66,7 +66,7 @@ const RentReservation = function ({ navigation }) {
               key={item.id}
               width={width}
               onPress={() => {
-                navigation.navigate('Rent Notice', { facilityName: item.name });
+                navigation.navigate('Rental Usage', { facilityName: item.name });
               }}
             >
               <Image
@@ -82,4 +82,4 @@ const RentReservation = function ({ navigation }) {
   );
 };
 
-export default React.memo(RentReservation);
+export default React.memo(Rental);

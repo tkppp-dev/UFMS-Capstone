@@ -297,7 +297,7 @@ const RentApplication = function ({ navigation, route }) {
               {showApplication === false ? null : (
                 <>
                   <CustomInput
-                    label="대관자"
+                    label="행사 이름"
                     value={rentalPerson}
                     onChangeText={setRentalPerson}
                   />

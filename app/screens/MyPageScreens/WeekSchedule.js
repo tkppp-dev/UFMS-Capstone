@@ -41,6 +41,7 @@ const WeekSchdule = function ({ navigation }) {
   const { startDate, endDate } = getWeekStartEndDate(date);
   const [index, setIndex] = useState(date.getDay());
   const [scheduleData, setScheduleData] = useState([]);
+  const [refresh, setRefresh] = useState(true);
   const [routes] = useState(
     dayOfWeek.map((day) => {
       return { key: day, title: day };
@@ -68,6 +69,7 @@ const WeekSchdule = function ({ navigation }) {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: '스케줄',
+      headerTitleAlign: 'center',
     });
   });
 
@@ -76,8 +78,15 @@ const WeekSchdule = function ({ navigation }) {
   }, []);
 
   useEffect(() => {
-    getScheduleData()
-  },[date])
+    if (refresh === true) {
+      getScheduleData();
+      setRefresh(false);
+    }
+  }, [refresh]);
+
+  useEffect(() => {
+    getScheduleData();
+  }, [date]);
 
   const renderScene = function (date, setDate) {
     const components = {};
@@ -121,10 +130,9 @@ const WeekSchdule = function ({ navigation }) {
         renderScene={renderScene(date, setDate)}
         onIndexChange={(idx) => setIndex(idx)}
         initialLayout={{ width: layout.width }}
-        swipeEnabled={false}
       />
-      <ScheduleUpdateModal />
-      <ScheduleDeleteModal />
+      <ScheduleUpdateModal setRefresh={setRefresh}/>
+      <ScheduleDeleteModal setRefresh={setRefresh} />
     </ScheduleProvider>
   );
 };

@@ -45,7 +45,6 @@ const SubjectRegisterModal = function ({ visible, onDismiss, setRefresh }) {
           searchData: input,
           type: searchType,
         });
-        console.log(res.data);
         setSearchResult(res.data);
       } catch (err) {
         console.error(err);
@@ -129,15 +128,14 @@ const pickerStyles = StyleSheet.create({
     color: 'black',
   },
   inputAndroid: {
-    width: 70,
+    width: 100,
     height: 38,
     fontSize: 14,
-    textAlign: 'center',
     marginEnd: 10,
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderWidth: 0.5,
-    borderColor: '#d6dde4',
+    borderColor: 'gray',
     borderRadius: 4,
     color: 'black',
   },

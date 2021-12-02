@@ -10,6 +10,8 @@ const Container = styled.View`
   padding: 15px 15px 10px 15px;
   background-color: white;
   margin-bottom: 8px;
+  border-bottom-width: 1px;
+  border-bottom-color: #d6dde4;
 `;
 
 const RowContainer = styled.View`
@@ -60,8 +62,8 @@ const SubjectInfo = function ({
   const { state } = useContext(Context);
 
   useEffect(() => {
-    console.log(subjectData)
-  },[])
+    console.log(subjectData);
+  }, []);
 
   const _onPressAddButton = async function () {
     try {
@@ -69,14 +71,18 @@ const SubjectInfo = function ({
         memberId: state.user.id,
         subjectId: subjectData.id,
       });
-
       console.log(res.data)
       if (res.data.subjectId !== null) {
         setRefresh(true);
         onDismiss(false);
-      }
-      else{
-        Alert.alert('과목 추가 실패')
+      } else {
+        if (res.data.memberId === 300) {
+          Alert.alert('이미 등록한 과목입니다');
+        } else if (res.data.memberId === 400) {
+          Alert.alert('등록한 스케줄과 시간이 중복되어 등록할 수 없습니다');
+        } else {
+          Alert.alert('과목 추가 실패');
+        }
       }
     } catch (err) {
       console.error(err);
@@ -87,10 +93,9 @@ const SubjectInfo = function ({
   const _onPressDeleteButton = async function () {
     try {
       const params = {
-        memberId: state.user.id,
-        subjectId: subjectData.id,
-      }
-      console.log(params)
+        scheduleId : subjectData.scheduleId
+      };
+      console.log(params);
       const res = await axios.post(endPoint + 'schedule/delete', params);
 
       // 성공 여부 확인 필요

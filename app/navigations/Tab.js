@@ -6,6 +6,7 @@ import SignStackNavigator from './SignStackNavigator';
 import RentStackNavigator from './RentStackNavigator';
 import { Context } from '../src/context/index';
 import { Icon } from 'react-native-elements';
+import HomeTabView from '../screens/HomeScreens/HomeTabView'
 
 const Tab = createBottomTabNavigator();
 /**
