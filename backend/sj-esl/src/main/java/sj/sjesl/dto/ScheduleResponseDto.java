@@ -28,6 +28,7 @@ public class ScheduleResponseDto {
             this.facility = reservation.getFacility().getName();
         }
         this.reservationStatus = reservation.getReservationStatus();
-        this.memberId=reservation.getMember().getId();
+        if(reservation.getMember()!=null)
+            this.memberId=reservation.getMember().getId();
     }
 }
