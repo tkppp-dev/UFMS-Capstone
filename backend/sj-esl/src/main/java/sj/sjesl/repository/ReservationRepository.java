@@ -15,6 +15,10 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
     List<Reservation> findByMemberAndStartTimeBetween(Member member, LocalDateTime startTime, LocalDateTime endTime);
 
+    @Query("select r from Reservation r where r.subjectId in (?1) and  ?2 <= r.startTime and r.startTime <= ?3  order by r.startTime")
+    List<Reservation> findBySubjectIdAndStartTimeBetween(List<Long> subjectId, LocalDateTime startTime, LocalDateTime endTime);
+
+
     @Query(value = "select p from Reservation  p where p.member = ?1 and p.startTime <= ?2 and p.endTime >= ?2")
     Reservation findNow(Member member, LocalDateTime now);
 

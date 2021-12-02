@@ -6,10 +6,7 @@ import sj.sjesl.dto.ScheduleAddRequestDto;
 import sj.sjesl.dto.ScheduleDateRequestDto;
 import sj.sjesl.dto.ScheduleResponseDto;
 import sj.sjesl.dto.SubjectResponseDto;
-import sj.sjesl.entity.Member;
-import sj.sjesl.entity.Reservation;
-import sj.sjesl.entity.Schedule;
-import sj.sjesl.entity.Subject;
+import sj.sjesl.entity.*;
 import sj.sjesl.repository.MemberRepository;
 import sj.sjesl.repository.ReservationRepository;
 import sj.sjesl.repository.ScheduleRepository;
@@ -88,10 +85,25 @@ public class ScheduleService {
                 ScheduleResponseDto responseDto = new ScheduleResponseDto(reservation);
                 dayList.add(responseDto);
             }
+            if (member.getPrivileges() != MemberPrivileges.PROFESSOR){
+                List<Schedule> allByMember = scheduleRepository.findAllByMember(member);
+                List<Long> subjectIdList = allByMember.stream()
+                        .map(Schedule::getSubject_id)
+                        .collect(Collectors.toList());
+                List<Reservation> bySubjectIdAndStartTimeBetween = reservationRepository.findBySubjectIdAndStartTimeBetween(subjectIdList, startDatetime, endDatetime);
+
+                for (Reservation reservation : bySubjectIdAndStartTimeBetween) {
+                    ScheduleResponseDto responseDto = new ScheduleResponseDto(reservation);
+                    dayList.add(responseDto);
+                }
+
+            }
             weekList.add(dayList);
             date = date.plusDays(1);
         }
-        return weekList;
+
+
+            return weekList;
     }
 
 
@@ -128,20 +140,23 @@ public class ScheduleService {
 
     @Transactional
     public  List<SubjectResponseDto> getSubject(Long id) {
+
         Optional<Member> member = memberRepository.findById(id);
 
-        List<Schedule> allByMemberId = scheduleRepository.findAllByMember(member.get());
 
+        List<Schedule> allByMemberId = scheduleRepository.findAllByMember(member.get());
         List<Long> subjectIdList = allByMemberId.stream()
                 .map(Schedule::getSubject_id)
                 .collect(Collectors.toList());
 
-
         List<Subject> byId = subjectRepository.findSubjectList(subjectIdList);
         List<SubjectResponseDto> subjectResponseDtos = new ArrayList<>();
         for( Subject s: byId){
-            Schedule schedule = scheduleRepository.findBySubject_id(s.getId()).get();
-            subjectResponseDtos.add(new SubjectResponseDto(s,schedule.getId()));
+
+            Optional<Schedule> schedule = scheduleRepository.findBySubject_id(s.getId(), member.get());
+
+
+            subjectResponseDtos.add(new SubjectResponseDto(s,schedule.get().getId()));
         }
         return subjectResponseDtos;
 
