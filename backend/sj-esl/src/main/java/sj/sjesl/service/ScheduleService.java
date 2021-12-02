@@ -131,17 +131,18 @@ public class ScheduleService {
         Optional<Member> member = memberRepository.findById(id);
 
         List<Schedule> allByMemberId = scheduleRepository.findAllByMember(member.get());
-
         List<Long> subjectIdList = allByMemberId.stream()
                 .map(Schedule::getSubject_id)
                 .collect(Collectors.toList());
 
-
         List<Subject> byId = subjectRepository.findSubjectList(subjectIdList);
         List<SubjectResponseDto> subjectResponseDtos = new ArrayList<>();
         for( Subject s: byId){
-            Schedule schedule = scheduleRepository.findBySubject_id(s.getId()).get();
-            subjectResponseDtos.add(new SubjectResponseDto(s,schedule.getId()));
+
+            Optional<Schedule> schedule = scheduleRepository.findBySubject_id(s.getId(), member.get());
+
+
+            subjectResponseDtos.add(new SubjectResponseDto(s,schedule.get().getId()));
         }
         return subjectResponseDtos;
 
