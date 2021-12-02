@@ -59,8 +59,7 @@ public class ReservationService {
         LocalDateTime endDatetime = LocalDateTime.of(requestDto.getDate(), LocalTime.of(23, 59, 59));
 
         List<Reservation> reservations = reservationRepository
-                .findAllByFacilityAndReservationStatusAndStartTimeBetween(facility, ReservationStatus.COMPLETE, startDatetime, endDatetime);
-
+                .findAllByFacilityAndReservationStatusIsNotAndStartTimeBetween(facility, ReservationStatus.CANCEL, startDatetime, endDatetime);
 
         Map<LocalTime, Boolean> timetable = new TreeMap<>();
         LocalTime time = LocalTime.of(9, 00);
@@ -106,7 +105,7 @@ public class ReservationService {
                 .endTime(endTime)
                 .reservationName(reservationName)
                 .notice(notice)
-                .reservationStatus(ReservationStatus.COMPLETE)
+                .reservationStatus(ReservationStatus.BEFORE)
                 .build();
 
         return reservationRepository.save(reservation).getId();
@@ -125,7 +124,7 @@ public class ReservationService {
         LocalDateTime end = LocalDateTime.of(LocalDate.now().plusMonths(6), LocalTime.of(23, 59, 59));
 
         return reservationRepository
-                .findByFacilityAndReservationStatusAndStartDateBetween(facility, ReservationStatus.COMPLETE, today, end)
+                .findHalfYear(facility, today, end)
                 .stream()
                 .map(ReservationResponseDto::new)
                 .collect(Collectors.toList());
