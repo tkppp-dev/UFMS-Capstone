@@ -106,6 +106,19 @@ public class RentalService {
                 .map(RentalResponseDto::new)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public List<RentalResponseDto> getMemberRental(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        return rentalRepository.findByMember(member)
+                .stream()
+                .map(RentalResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+
+
+
     //내 대관 리스트 조회
     //대관 상세 조회
     //대관 취소
