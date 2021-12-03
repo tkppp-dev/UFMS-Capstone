@@ -24,6 +24,7 @@ import Rental from 'pages/Rental';
 // components
 import Navbar from 'components/Navbar';
 import Footer from 'components/Footer/index';
+import ScheduleAdd from 'pages/ScheduleAdd';
 
 function App() {
   let Navigation =
@@ -57,6 +58,8 @@ function App() {
         <Route path="/inquery/detail/:id" exact component={InqueryDetail} />
 
         <Route path="/schedule" exact component={Schedule} />
+        <Route path="/schedule/add" exact component={ScheduleAdd} />
+
         <Route path="/manager" exact component={Manager} />
         <Route path="/manager/place/add" exact component={PlaceAdd} />
         <Route path="/manager/place/edit/:id" exact component={PlaceEdit} />

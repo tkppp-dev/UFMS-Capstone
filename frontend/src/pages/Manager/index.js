@@ -1,19 +1,30 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import {
-  IsAuthenticatedContainer,
-  LeftSide,
-  ManagerContainer,
-  RightSide,
-  Wrap,
-} from './style';
-import { Card, Select } from 'antd';
+import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { ManagerContainer, Wrap } from './style';
+import { Button, Card, Input, Select } from 'antd';
+import Modal from 'antd/lib/modal/Modal';
+import { getOfficeAction } from 'redux/actions/office_actions';
+import Form from 'antd/lib/form/Form';
 import { Link } from 'react-router-dom';
 
 function Manager() {
+  const [value, setForm] = useState({
+    professor: '',
+  });
+
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { offices } = useSelector((state) => state.office);
 
   const [isModalVisible, setisModalVisible] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const onChange = (e) => {
+    setForm({
+      ...value,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const showModal = () => {
     setisModalVisible(true);
@@ -26,108 +37,43 @@ function Manager() {
     setisModalVisible(false);
   };
 
+  const getOffice = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      dispatch(getOfficeAction(value.professor));
+    },
+    [dispatch, value],
+  );
+
   return (
     <ManagerContainer>
-      {true ? (
-        <IsAuthenticatedContainer>
-          <LeftSide>
-            <div>
-              <Select defaultValue="0" name="category">
-                <Select.Option value="0">전체</Select.Option>
-                <Select.Option value="1">충무관</Select.Option>
-                <Select.Option value="2">영실관</Select.Option>
-                <Select.Option value="3">융덕관</Select.Option>
-                <Select.Option value="4">광개토관</Select.Option>
-                <Select.Option value="5">이당관</Select.Option>
-                <Select.Option value="6">군자관</Select.Option>
-                <Select.Option value="7">집현관</Select.Option>
-                <Select.Option value="8">세종관</Select.Option>
-                <Select.Option value="9">율곡관</Select.Option>
-                <Select.Option value="10">대양AI센터</Select.Option>
-                <Select.Option value="11">다산관</Select.Option>
-                <Select.Option value="12">학생회관</Select.Option>
-              </Select>
-            </div>
-            <div>
-              <Link to="/manager/place/add">시설 추가</Link>
-            </div>
-            <div>
-              <Link to="/manager/place/edit/1">시설 편집</Link>
-            </div>
-          </LeftSide>
-          <RightSide>
-            <div
-              style={{
-                width: '90%',
-                marginLeft: '5%',
-                marginTop: '64px',
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Card
-                title="영실관"
-                extra={
-                  <div
-                    onClick={showModal}
-                    style={{ color: '#1990ff', cursor: 'pointer' }}
-                  >
-                    More
-                  </div>
-                }
-                style={{
-                  width: 300,
-                  height: '213px',
-                  borderBottom: '2px solid #1990ff',
-                }}
-              >
-                <p>영실관 201호</p>
-                <p>영실관 202호</p>
-                <p>영실관 203호</p>
-              </Card>
-              <Card
-                title="영실관"
-                extra={
-                  <div
-                    onClick={showModal}
-                    style={{ color: '#1990ff', cursor: 'pointer' }}
-                  >
-                    More
-                  </div>
-                }
-                style={{
-                  width: 300,
-                  height: '213px',
-                  borderBottom: '2px solid #1990ff',
-                }}
-              >
-                <p>영실관 201호</p>
-                <p>영실관 202호</p>
-                <p>영실관 203호</p>
-              </Card>
-              <Card
-                title="영실관"
-                extra={
-                  <div
-                    onClick={showModal}
-                    style={{ color: '#1990ff', cursor: 'pointer' }}
-                  >
-                    More
-                  </div>
-                }
-                style={{
-                  width: 300,
-                  height: '213px',
-                  borderBottom: '2px solid #1990ff',
-                }}
-              >
-                <p>영실관 201호</p>
-                <p>영실관 202호</p>
-                <p>영실관 203호</p>
-              </Card>
-            </div>
-          </RightSide>
-        </IsAuthenticatedContainer>
+      {isAuthenticated ? (
+        <div style={{ width: '90%' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              marginTop: '32px',
+              marginBottom: '16px',
+            }}
+          >
+            <Input
+              id="professor"
+              name="professor"
+              placeholder="조회할 교수 이름을 입력하세요."
+              style={{ marginRight: '8px' }}
+              onChange={onChange}
+            />
+            <Button type="primary" onClick={getOffice}>
+              연구실 조회
+            </Button>
+          </div>
+
+          <Button>
+            <Link to="/manage/office/add">연구실 추가</Link>
+          </Button>
+        </div>
       ) : (
         <Wrap>
           <div>로그인이 필요한 서비스입니다.</div>

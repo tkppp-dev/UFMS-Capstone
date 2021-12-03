@@ -38,9 +38,6 @@ export const AddButton = styled(Button)`
 `;
 
 export const ModalContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-
   & input {
     width: 88%;
   }

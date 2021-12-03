@@ -10,6 +10,12 @@ import {
   EDIT_OFFICE_FAILURE,
   EDIT_OFFICE_REQUEST,
   EDIT_OFFICE_SUCCESS,
+  EDIT_STATE_FAILURE,
+  EDIT_STATE_REQUEST,
+  EDIT_STATE_SUCCESS,
+  GET_OFFICE_FAILURE,
+  GET_OFFICE_REQUEST,
+  GET_OFFICE_SUCCESS,
   LOADING_OFFICE_FAILURE,
   LOADING_OFFICE_REQUEST,
   LOADING_OFFICE_SUCCESS,
@@ -38,6 +44,30 @@ function* loadOffice(action) {
 
 function* watchloadOffice() {
   yield takeEvery(LOADING_OFFICE_REQUEST, loadOffice);
+}
+
+const getOfficeAPI = (payload) => {
+  return axios.post('/schedule/lab/professor', payload);
+};
+
+function* getOffice(action) {
+  try {
+    const result = yield call(getOfficeAPI, action.payload);
+
+    yield put({
+      type: GET_OFFICE_SUCCESS,
+      payload: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: GET_OFFICE_FAILURE,
+      payload: e,
+    });
+  }
+}
+
+function* watchgetOffice() {
+  yield takeEvery(GET_OFFICE_REQUEST, getOffice);
 }
 
 // Add
@@ -73,13 +103,7 @@ function* watchofficeAdd() {
 
 // Edit
 const editOfficeAPI = (payload) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  return axios.patch(`/schedule/lab/notice/${payload.id}`, payload, config);
+  return axios.put(`/schedule/lab/notice/${payload.id}`, payload.notice);
 };
 
 function* editOffice(action) {
@@ -100,6 +124,31 @@ function* editOffice(action) {
 
 function* watcheditOffice() {
   yield takeEvery(EDIT_OFFICE_REQUEST, editOffice);
+}
+
+// Edit State
+const editStateAPI = (payload) => {
+  return axios.put(`/schedule/lab/state/${payload.id}`, payload.notice);
+};
+
+function* editState(action) {
+  try {
+    const result = yield call(editStateAPI, action.payload);
+
+    yield put({
+      type: EDIT_STATE_SUCCESS,
+      payload: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: EDIT_STATE_FAILURE,
+      payload: e,
+    });
+  }
+}
+
+function* watcheditState() {
+  yield takeEvery(EDIT_STATE_REQUEST, editState);
 }
 
 // Delete
@@ -131,7 +180,9 @@ export default function* officeSaga() {
   yield all([
     fork(watchloadOffice),
     fork(watchofficeAdd),
+    fork(watchgetOffice),
     fork(watcheditOffice),
     fork(watchdeleteOffice),
+    fork(watcheditState),
   ]);
 }
