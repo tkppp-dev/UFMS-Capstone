@@ -7,11 +7,12 @@ import sj.sjesl.entity.Facility;
 @Getter
 @NoArgsConstructor
 public class FacilityResponseDto {
-
+    private Long facilityId;
     private String name;
     private int capacity;
 
     public FacilityResponseDto(Facility entity) {
+        this.facilityId=entity.getId();
         this.name = entity.getName();
         this.capacity = entity.getCapacity();
     }
