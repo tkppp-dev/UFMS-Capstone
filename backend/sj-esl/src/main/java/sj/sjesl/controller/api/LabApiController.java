@@ -59,7 +59,7 @@ public class LabApiController {
     @PutMapping("/lab/notice/{id}")    //공지사항 변경
     @ApiOperation(value = "연구실 공지사항 변경")
 
-    public ResponseEntity<?> Update_1(@PathVariable Long id, @RequestBody LabRequestDto.noticeLab notice) {
+    public ResponseEntity<?> Update_1(@PathVariable Long id, @RequestBody LabRequestDto.noticeLab notice) throws Exception {
         System.out.println(notice.toString()+"22222222222222222222");
         return labService.noticeUpdate(id, notice);
     }
@@ -68,7 +68,7 @@ public class LabApiController {
     @PutMapping("/lab/state/{id}")    //상태 변경
     @ApiOperation(value = "연구실 상태 변경")
 
-    public ResponseEntity<?> Update_2(@PathVariable Long id, @RequestBody LabRequestDto.stateLab state) {
+    public ResponseEntity<?> Update_2(@PathVariable Long id, @RequestBody LabRequestDto.stateLab state) throws Exception {
         return labService.stateUpdate(id, state);
 
     }

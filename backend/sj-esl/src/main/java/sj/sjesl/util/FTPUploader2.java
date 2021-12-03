@@ -7,19 +7,19 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import sj.sjesl.entity.Facility;
-import sj.sjesl.entity.Reservation;
-import sj.sjesl.entity.ReservationStatus;
+import sj.sjesl.entity.*;
 import sj.sjesl.repository.FacilityRepository;
+import sj.sjesl.repository.LabRepository;
+import sj.sjesl.repository.MemberRepository;
 import sj.sjesl.repository.ReservationRepository;
 import sj.sjesl.reservation.FacilityDateRequestDto;
 
+import javax.transaction.Transactional;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -27,21 +27,31 @@ public class FTPUploader2 {
 
     final ReservationRepository reservationRepository ;
     final FacilityRepository facilityRepository;
+    final LabRepository labRepository;
+    final MemberRepository memberRepository;
     //저장할 파일을 target에 넣은 부분은 생략(각자 환경에 맞게 파일을 읽어서 넣어주시면 됩니다.)
+
+
+
+
 
 
     FTPClient ftp = null;
 
-    public FTPUploader2(ReservationRepository reservationRepository, FacilityRepository facilityRepository) {
+    public FTPUploader2(ReservationRepository reservationRepository, FacilityRepository facilityRepository, LabRepository labRepository, MemberRepository memberRepository) {
         this.reservationRepository = reservationRepository;
         this.facilityRepository = facilityRepository;
+        this.labRepository = labRepository;
+        this.memberRepository = memberRepository;
     }
 
 
     @Scheduled(cron = "*/10 * * * * *")
-    public void printDate() throws Exception {
+    @Transactional
+    public void ESL_FTP() throws Exception {
         String facility = "센B206";
         LocalDate date = LocalDate.of(2021, 12, 16);
+        LocalDateTime localDateTime= LocalDateTime.of(date,LocalTime.of(12,30)).plusMinutes(7);
 
         FacilityDateRequestDto requestDto = new FacilityDateRequestDto(facility, date);
 
@@ -53,34 +63,116 @@ public class FTPUploader2 {
         List<Reservation> reservations = reservationRepository
                 .findAllByFacilityAndReservationStatusAndStartTimeBetween(facility1, ReservationStatus.COMPLETE, startDatetime, endDatetime);
 
+        ReservationComparator reservationComparator = new ReservationComparator();
+        Collections.sort(reservations,reservationComparator);
+
+
+
+
+        /*
+        isBefore() : 인자보다 과거일 때 true가 리턴   a.isBefore(b)   a < b
+        isAfter() : 인자보다 미래일 때 true가 리턴    a.isAfter(b)    a > b
+        isEqual() : 인자와 같은 시간일 때 true가 리턴
+        */
+
+
         LocalTime time= LocalTime.now();
-        System.out.println(time);
-        for( Reservation r: reservations) {
+
+
+        System.out.println(localDateTime);
+        Iterator<Reservation> iterator = reservations.iterator();
+        Reservation[] reservationsArr = new Reservation[2];
+        reservationsArr[0]=new Reservation();
+        reservationsArr[1]=new Reservation();
+        boolean flag=false;
+        while( iterator.hasNext()){
+            Reservation r=  iterator.next();
             System.out.println(r.toString());
+            if(r.getStartTime().isBefore(localDateTime) && localDateTime.isBefore(r.getEndTime())  ) {
+                reservationsArr[0]=r;
+                flag=true;
+                break;
+            }
         }
+
+        if (flag) {
+            if(iterator.hasNext()){
+                reservationsArr[1]=iterator.next();
+            }
+        }
+        else{
+            iterator=reservations.iterator();
+            while(iterator.hasNext()){
+                Reservation r= iterator.next();
+                if(localDateTime.isBefore(r.getStartTime())){
+                    reservationsArr[1]=r;
+                    break;
+                }
+            }
+        }
+
+        System.out.println(reservationsArr[0]);
+        System.out.println(reservationsArr[1]);
 
 
 
         Optional<Reservation> byId = reservationRepository.findById(1L);
 //        reservations.get(0).getStartTime().get()
-        System.out.println(reservations.get(0).getStartTime().getHour()+" "+String.format("%02d",reservations.get(0).getStartTime().getMinute()));
-        System.out.println(reservations.get(0).getEndTime().getHour()+" "+reservations.get(0).getEndTime().getMinute());
-        String startTime=reservations.get(0).getStartTime().getHour()+":"+String.format("%02d",reservations.get(0).getStartTime().getMinute());
-        String endTime=reservations.get(0).getEndTime().getHour()+":"+String.format("%02d",reservations.get(0).getEndTime().getMinute());
+//        System.out.println(reservationsArr[0].getStartTime().getHour()+" "+String.format("%02d",reservationsArr[0].getStartTime().getMinute()));
+//        System.out.println(reservationsArr[0].getEndTime().getHour()+" "+reservationsArr[0].getEndTime().getMinute());
+        String startTime="";
+        String endTime="";
+        String username="";
+        String name="";
+        String status="";
+        String startTime2="";
+        String endTime2="";
+        String username2="";
+        String name2="";
+        String status2="";
+
+
+        if(reservationsArr[0].getStartTime()!=null) {
+            startTime = reservationsArr[0].getStartTime().getHour() + ":" + String.format("%02d", reservationsArr[0].getStartTime().getMinute());
+            endTime = reservationsArr[0].getEndTime().getHour() + ":" + String.format("%02d", reservationsArr[0].getEndTime().getMinute());
+            startTime=startTime+"~"+endTime;
+            username=reservationsArr[0].getMember().getUsername();
+            name=reservationsArr[0].getReservationName();
+            status="사용 중";
+
+        }
+        if(reservationsArr[1].getStartTime()!=null) {
+            startTime2 = reservationsArr[1].getStartTime().getHour() + ":" + String.format("%02d", reservationsArr[1].getStartTime().getMinute());
+            endTime2 = reservationsArr[1].getEndTime().getHour() + ":" + String.format("%02d", reservationsArr[1].getEndTime().getMinute());
+            startTime2=startTime2+"~"+endTime2;
+
+            username2 = reservationsArr[1].getMember().getUsername();
+            name2=reservationsArr[1].getReservationName();
+            status2="대기 중";
+        }
 //        String professor=reservations.
-        System.out.println("2222222222222222222");
-        System.out.println(byId.get().toString());
-        System.out.println("33333333333333333");
-        String createfile = "C:\\Users\\vnddn\\OneDrive\\바탕 화면\\im\\import_20211111163004.csv";
+
+        /*     연구실 업데이트   */
+        Lab lab = labRepository.findByLocation("센426");
+        System.out.println(lab);
+        Member member = lab.getMember();
+        System.out.println(member.getUsername());
+
+        String createfile = "src\\main\\resources\\esl\\import_20211111163004.csv";
         FileWriter fw = new FileWriter(createfile);
         fw.append("room_id,time,subject,prof,status,time2,subect2,prof2,status2\n" +
-                "센B206,"+startTime+"~"+endTime+",컴퓨터공학과-캡스톤 디자인,권기학,수업 중,15:30~17:30,컴퓨터공학과-캡스톤 디자인,문현준,휴강");
+                "센B206,"+startTime+","+name+","+username+
+                ","+status+","+startTime2+","+name2+","+username2+","+status2+"\n"+
+                ""+lab.getLocation()+",,"+lab.getNotice()+","+lab.getMember().getUsername()+","+lab.getState()+",,,,");
+
+
+
 
 
         fw.flush();
         fw.close();
 
-        String host="192.168.0.15";
+        String host="112.146.86.42";
         String user="cgESLUser";
         String pwd="cgESLPassword";
         File target =new File(createfile);
@@ -93,7 +185,7 @@ public class FTPUploader2 {
         ftp = new FTPClient();
         ftp.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
         int reply;
-        ftp.connect(host,2121);//호스트 연결
+        ftp.connect(host,8484);//호스트 연결
         reply = ftp.getReplyCode();
         if (!FTPReply.isPositiveCompletion(reply)) {
             ftp.disconnect();
@@ -103,7 +195,7 @@ public class FTPUploader2 {
         ftp.setFileType(FTP.BINARY_FILE_TYPE);
         ftp.enterLocalPassiveMode();
 
-        String localFileFullName="C:\\Users\\vnddn\\OneDrive\\바탕 화면\\im\\import_20211111163004.csv";
+        String localFileFullName="src\\main\\resources\\esl\\import_20211111163004.csv";
         String fileName = "import_20211111163004.csv";
         String hostDir="/Import/";
         try(InputStream input = new FileInputStream(new File(localFileFullName))){
@@ -118,11 +210,33 @@ public class FTPUploader2 {
         ftp.disconnect();
         System.out.println("Done");
 
+        System.out.println("===========당일 수업 목록 ============");
+
+        for( Reservation rr: reservations)
+            System.out.println(rr.toString()+"ch");
+        System.out.println("===========ESL 표시 될 항목 ============");
+
+        System.out.println(reservationsArr[0]);
+        System.out.println(reservationsArr[1]);
+
 
     }
 
 
 
+    class ReservationComparator implements Comparator<Reservation>{
+        @Override
+        public int compare(Reservation r1, Reservation r2){
+                if (r1.getStartTime().isBefore(r2.getStartTime()))
+                    return -1;
+                else if (r2.getStartTime().isBefore(r1.getStartTime())){
+                    return 1;
+                }
+                else return 0;
+
+        }
+    }
 }
 
-
+//a.isBefore(b)   a < b
+//        isAfter() : 인자보다 미래일 때 true가 리턴    a.isAfter(b)    a > b

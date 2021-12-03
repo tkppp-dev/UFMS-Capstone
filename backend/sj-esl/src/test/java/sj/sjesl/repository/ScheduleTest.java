@@ -5,19 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import sj.sjesl.entity.Reservation;
-import sj.sjesl.entity.ReservationStatus;
-import sj.sjesl.entity.Subject;
+import sj.sjesl.entity.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SpringBootTest
 @Transactional
@@ -41,6 +36,33 @@ class ScheduleTest {
 
     @Autowired
     ReservationRepository reservationRepository;
+
+    @Test
+    public void 스케줄3() {
+        System.out.println(LocalDateTime.now().isBefore(LocalDateTime.now()));
+    }
+
+    @Test
+    public void 스케줄2() {
+        Optional<Member> byId = memberRepository.findById(14L);
+
+        Optional<Facility> byId1 = facilityRepository.findById(3L);
+        Reservation build = Reservation.builder()
+                .member(byId.get())
+                .facility(byId1.get())
+                .startTime(LocalDateTime.now())
+                .endTime(LocalDateTime.now().plusMinutes(10))
+                .notice("")
+                .reservationName("Asdasd")
+                .reservationStatus(ReservationStatus.COMPLETE)
+                .subjectId(12L)
+                .build();
+
+
+        reservationRepository.save(build);
+
+
+    }
 
     @Test
     public void 스케줄() {
@@ -97,7 +119,15 @@ class ScheduleTest {
                         LocalDateTime startDateTime = LocalDateTime.of(dayTable.get(list.get(j)), startLocalTime);
                         LocalDateTime endDateTime = LocalDateTime.of(dayTable.get(list.get(j)), endLocalTime);
                         for (int k = 0; k < 4; k++) {
+//                            Reservation reservation = new Reservation(startDateTime.plusWeeks(k), endDateTime.plusWeeks(k), subject.getSubjectName(), "", ReservationStatus.COMPLETE, subject.getId());
+//                            LocalDateTime startTime, LocalDateTime endTime, String reservationName, String notice, ReservationStatus reservationStatus, Long subjectId
+////
+                            Facility facility = facilityRepository.findByName(subject.getRoom());
+                            String[] split = subject.getProfessor().split(",");
+                            Member member= memberRepository.findUsername(split[0]);
                             Reservation build = Reservation.builder()
+                                    .member(member)
+                                    .facility(facility)
                                     .startTime(startDateTime.plusWeeks(k))
                                     .endTime(endDateTime.plusWeeks(k))
                                     .notice("")
