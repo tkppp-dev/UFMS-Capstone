@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface LabRepository extends JpaRepository<Lab,Long> {
     List<Lab> findByMember(Member member);
+    Lab findByLocation(String location);
 }

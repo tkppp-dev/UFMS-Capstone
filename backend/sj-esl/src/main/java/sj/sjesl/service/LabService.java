@@ -14,8 +14,11 @@ import sj.sjesl.entity.Lab;
 import sj.sjesl.entity.Member;
 
 import sj.sjesl.payload.Response;
+import sj.sjesl.repository.FacilityRepository;
 import sj.sjesl.repository.LabRepository;
 import sj.sjesl.repository.MemberRepository;
+import sj.sjesl.repository.ReservationRepository;
+import sj.sjesl.util.FTPUploader2;
 
 import java.util.Optional;
 
@@ -26,6 +29,9 @@ public class LabService {
     private final LabRepository labRepository;
     private final MemberRepository memberRepository;
     private final Response response;
+    private final ReservationRepository reservationRepository ;
+    private final FacilityRepository facilityRepository;
+
 
     @Transactional
     public ResponseEntity<?> save(LabSaveRequestDto requestDto) {
@@ -42,7 +48,7 @@ public class LabService {
     }
 
     @Transactional
-    public ResponseEntity<?> noticeUpdate(Long id, LabRequestDto.noticeLab notice) {
+    public ResponseEntity<?> noticeUpdate(Long id, LabRequestDto.noticeLab notice) throws Exception {
         Optional<Lab> lab = labRepository.findById(id);
         if (lab==null) return response.fail("해당하는 연구실이 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
 
@@ -51,11 +57,14 @@ public class LabService {
         LabResponseDto.noticeLab build = LabResponseDto.noticeLab.builder().
                 notice(notice.getNotice())
                 .memberId(id).build();
+        FTPUploader2 ftpUploader2 = new FTPUploader2(reservationRepository,  facilityRepository,  labRepository,  memberRepository);
+        ftpUploader2.ESL_FTP();
+
         return response.success(build,"연구실 공지사항 변경이 완료되었습니다.",HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<?> stateUpdate(Long id, LabRequestDto.stateLab state) {
+    public ResponseEntity<?> stateUpdate(Long id, LabRequestDto.stateLab state) throws Exception {
         Optional<Lab> lab = labRepository.findById(id);
         if (lab==null) return response.fail("해당하는 연구실이 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
 
@@ -64,6 +73,8 @@ public class LabService {
         LabResponseDto.StateLab build = LabResponseDto.StateLab.builder()
                 .state(state.getState())
                 .memberId(id).build();
+        FTPUploader2 ftpUploader2 = new FTPUploader2(reservationRepository,  facilityRepository,  labRepository,  memberRepository);
+        ftpUploader2.ESL_FTP();
 
         return response.success(build,"연구실 상태 변경이 완료되었습니다.",HttpStatus.OK);
     }
