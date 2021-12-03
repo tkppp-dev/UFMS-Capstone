@@ -4,10 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import schemasMicrosoftComVml.impl.CTHandlesImpl;
 import sj.sjesl.entity.BaseEntity;
 import sj.sjesl.entity.Facility;
 import sj.sjesl.entity.Member;
 import sj.sjesl.entity.ReservationStatus;
+import sj.sjesl.reservation.ReservationRequestDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -69,7 +71,10 @@ public class Reservation extends BaseEntity {
         this.reservationStatus = reservationStatus;
         this.subjectId = subjectId;
     }
-
+    public void update(ReservationRequestDto.update dto){
+        this.reservationName=dto.getReservationName();
+        this.notice= dto.getNotice();
+    }
     @Override
     public String toString() {
         return "Reservation{" +
