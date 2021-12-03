@@ -77,6 +77,13 @@ const ProfessorMyPage = function ({ navigation }) {
     });
   });
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('Refreshed!');
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   const getOfficeList = async function () {
     try {
       const res = await axios.post(endPoint + `schedule/lab/professor`, {
@@ -205,7 +212,7 @@ const ProfessorMyPage = function ({ navigation }) {
           <ContentContainer>
             <ContentTopColorRow />
             <Content>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate('Lab Management')}>
                 <ContentTitle style={{ flexDirection: 'row' }}>
                   <StyledText
                     style={{ flex: 1 }}
@@ -239,7 +246,7 @@ const ProfessorMyPage = function ({ navigation }) {
               />
             </Content>
           </ContentContainer>
-          {previlege !== 'STUDENT' ? (
+          {previlege === 'STUDENT' ? (
             <ContentContainer>
               <ContentTopColorRow />
               <TouchableOpacity

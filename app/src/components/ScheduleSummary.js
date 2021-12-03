@@ -44,6 +44,8 @@ const ScheduleSummary = function ({ userId }) {
       const res = await axios.get(endPoint + `schedule/now/${userId}`);
       if (res.data === '') {
         setCurrentSchedule(null);
+      } else {
+        await setCurrentSchedule(res.data);
       }
     } catch (err) {
       console.error(err);
@@ -56,6 +58,8 @@ const ScheduleSummary = function ({ userId }) {
       const res = await axios.get(endPoint + `schedule/next/${userId}`);
       if (res.data === '') {
         setNextSchedule(null);
+      } else {
+        await setNextSchedule(res.data);
       }
     } catch (err) {
       console.error(err);
@@ -76,7 +80,7 @@ const ScheduleSummary = function ({ userId }) {
       case 'CANCEL':
         return '취소 일정';
       default:
-        return '';
+        return '에러';
     }
   };
 
@@ -94,6 +98,20 @@ const ScheduleSummary = function ({ userId }) {
       setNextScheduleState(getScheduleState(nextSchedule.reservationStatus));
     }
   }, []);
+
+  useEffect(() => {
+    if (currentSchedule !== null) {
+      setCurrentScheduleState(
+        getScheduleState(currentSchedule.reservationStatus)
+      );
+    }
+  }, [currentSchedule]);
+
+  useEffect(() => {
+    if (nextSchedule !== null) {
+      setNextScheduleState(getScheduleState(nextSchedule.reservationStatus));
+    }
+  }, [nextSchedule]);
 
   return (
     <Container>
@@ -118,7 +136,7 @@ const ScheduleSummary = function ({ userId }) {
               <InformationItem title="시간" body="12:00~13:30" row={true} />
               <InformationItem
                 title="상태"
-                body={currentSchedule.reservationStatus}
+                body={currentScheduleState}
                 row={true}
               />
             </View>
@@ -150,7 +168,7 @@ const ScheduleSummary = function ({ userId }) {
               />
               <InformationItem
                 title="상태"
-                body={nextSchedule.status}
+                body={nextScheduleState}
                 row={true}
               />
             </View>
