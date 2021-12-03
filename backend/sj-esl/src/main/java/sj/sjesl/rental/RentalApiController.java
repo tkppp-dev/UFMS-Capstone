@@ -66,6 +66,7 @@ public class RentalApiController {
                 .reservationName(byId.get().getPurpose())
                 .reservationUserName(byId.get().getHirer())
                 .reservationTime(LocalDateTime.of(byId.get().getStartDate(), LocalTime.now()))
+                .type("RentalCOMPLETE")
                 .build());
 
         return new RentalResponseDto(byId.get());
