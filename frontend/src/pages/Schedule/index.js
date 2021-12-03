@@ -1,13 +1,238 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ScheduleContainer, Wrap } from './style';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  scheduleDeleteAction,
+  scheduleListAction,
+} from 'redux/actions/schedule_actions';
+import { Card, Col, Row, Select } from 'antd';
+
+const { Option } = Select;
 
 function Schedule() {
   const [data, setData] = useState('');
+  const [week, setWeek] = useState(['일', '월', '화', '수', '목', '금', '토']);
+  const [selectWeek, setSelectWeek] = useState('');
+
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { schedules } = useSelector((state) => state.schedule);
+
+  const dispatch = useDispatch();
+
+  const handleChange = (value) => {
+    setSelectWeek(value);
+  };
+
+  const onDeleteSchedule = useCallback(
+    (scheduleId) => {
+      dispatch(scheduleDeleteAction(scheduleId));
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    let today = new Date();
+
+    const data = {
+      memberId: 0,
+      startDate: today.toISOString().slice(0, 10),
+      endDate: today.toISOString().slice(0, 10),
+    };
+
+    dispatch(scheduleListAction(data));
+  }, [dispatch]);
+
+  // const information = Array.isArray(schedules)
+  //   ? schedules.map(
+  //       (
+  //         date,
+  //         reservationName,
+  //         facility,
+  //         time,
+  //         reservationStatus,
+  //         reservationId,
+  //       ) =>
+  //         week[new Date(schedules.data).getDay()] === selectWeek ? (
+  //           <Col span={6} style={{ marginBottom: '16px' }} key={reservationId}>
+  //             <Card
+  //               title={reservationName}
+  //               extra={
+  //                 <div
+  //                   // onClick={() => showModal(building)}
+  //                   style={{ color: '#1990ff', cursor: 'pointer' }}
+  //                 >
+  //                   More
+  //                 </div>
+  //               }
+  //               style={{
+  //                 width: 300,
+  //                 height: '200px',
+  //               }}
+  //             >
+  //               <div>날짜 : {date}</div>
+  //               <div>시간 : {time}</div>
+  //               <div>장소 : {facility}</div>
+  //               <div>상태 : {reservationStatus}</div>
+  //             </Card>
+  //           </Col>
+  //         ) : (
+  //           ''
+  //         ),
+  //     )
+  //   : '';
 
   return (
     <ScheduleContainer>
+      {isAuthenticated ? (
+        <div
+          style={{
+            marginTop: '32px',
+            marginBottom: '32px',
+            display: 'flex',
+            marginLeft: '5%',
+          }}
+        >
+          <Select defaultValue="월" onChange={handleChange}>
+            <Option value="월">월요일</Option>
+            <Option value="화">화요일</Option>
+            <Option value="수">수요일</Option>
+            <Option value="목">목요일</Option>
+            <Option value="금">금요일</Option>
+            <Option value="토">토요일</Option>
+            <Option value="일">일요일</Option>
+          </Select>
+        </div>
+      ) : (
+        ''
+      )}
+
+      <div style={{ width: '90%', marginLeft: '5%' }}>
+        <Row>
+          {/* {isAuthenticated ? (
+            information
+          ) : (
+            <Wrap>로그인이 필요한 서비스입니다.</Wrap>
+          )} */}
+          {isAuthenticated ? (
+            week[new Date(schedules.date).getDay()] === selectWeek ? (
+              <Col span={6} style={{ marginBottom: '16px' }}>
+                <Card
+                  title={schedules.reservationName}
+                  extra={
+                    <div
+                      onClick={() => onDeleteSchedule(schedules.reservationId)}
+                      style={{ color: 'red', cursor: 'pointer' }}
+                    >
+                      삭제
+                    </div>
+                  }
+                  style={{
+                    width: 300,
+                    height: '200px',
+                  }}
+                >
+                  <div>날짜 : {schedules.date}</div>
+                  <div>시간 : {schedules.time}</div>
+                  <div>장소 : {schedules.facility}</div>
+                  <div>상태 : {schedules.reservationStatus}</div>
+                </Card>
+              </Col>
+            ) : (
+              ''
+            )
+          ) : (
+            ''
+          )}
+          <Col span={6}>
+            <Card
+              title={schedules.reservationName}
+              extra={
+                <div
+                  // onClick={() => showModal(building)}
+                  style={{ color: '#1990ff', cursor: 'pointer' }}
+                >
+                  More
+                </div>
+              }
+              style={{
+                width: 300,
+                height: '200px',
+              }}
+            >
+              <div>날짜 : {schedules.date}</div>
+              <div>시간 : {schedules.time}</div>
+              <div>장소 : {schedules.facility}</div>
+              <div>상태 : {schedules.reservationStatus}</div>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card
+              title={schedules.reservationName}
+              extra={
+                <div
+                  // onClick={() => showModal(building)}
+                  style={{ color: '#1990ff', cursor: 'pointer' }}
+                >
+                  More
+                </div>
+              }
+              style={{
+                width: 300,
+                height: '200px',
+              }}
+            >
+              <div>날짜 : {schedules.date}</div>
+              <div>시간 : {schedules.time}</div>
+              <div>장소 : {schedules.facility}</div>
+              <div>상태 : {schedules.reservationStatus}</div>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card
+              title={schedules.reservationName}
+              extra={
+                <div
+                  // onClick={() => showModal(building)}
+                  style={{ color: '#1990ff', cursor: 'pointer' }}
+                >
+                  More
+                </div>
+              }
+              style={{
+                width: 300,
+                height: '200px',
+              }}
+            >
+              <div>날짜 : {schedules.date}</div>
+              <div>시간 : {schedules.time}</div>
+              <div>장소 : {schedules.facility}</div>
+              <div>상태 : {schedules.reservationStatus}</div>
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card
+              title={schedules.reservationName}
+              extra={
+                <div
+                  // onClick={() => showModal(building)}
+                  style={{ color: '#1990ff', cursor: 'pointer' }}
+                >
+                  More
+                </div>
+              }
+              style={{
+                width: 300,
+                height: '200px',
+              }}
+            >
+              <div>날짜 : {schedules.date}</div>
+              <div>시간 : {schedules.time}</div>
+              <div>장소 : {schedules.facility}</div>
+              <div>상태 : {schedules.reservationStatus}</div>
+            </Card>
+          </Col>
+        </Row>
+      </div>
       {isAuthenticated ? '' : <Wrap>로그인이 필요한 서비스입니다.</Wrap>}
     </ScheduleContainer>
   );

@@ -8,6 +8,7 @@ import commentReducer from './commentReducer';
 import reservationReducer from './reservationReducer';
 import officeReducer from './officeReducer';
 import rentalReducer from './rentalReducer';
+import scheduleReducer from './scheduleReducer';
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -19,6 +20,7 @@ const createRootReducer = (history) =>
     reservation: reservationReducer,
     office: officeReducer,
     rental: rentalReducer,
+    schedule: scheduleReducer,
   });
 
 export default createRootReducer;

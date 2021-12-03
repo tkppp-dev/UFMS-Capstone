@@ -119,7 +119,7 @@ function* watchrent() {
 }
 
 ///////////////////////////////////////
-export default function* RentalSaga() {
+export default function* rentalSaga() {
   yield all([
     fork(watchloadRentalList),
     fork(watchfacilityDetail),
