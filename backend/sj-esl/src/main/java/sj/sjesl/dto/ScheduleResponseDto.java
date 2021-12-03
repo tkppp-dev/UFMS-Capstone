@@ -13,6 +13,7 @@ public class ScheduleResponseDto {
     private LocalDate date;
     private String time;
     private String facility;
+    private String notice;
     private ReservationStatus reservationStatus;
     private Long memberId;
     public ScheduleResponseDto(Reservation reservation) {
@@ -30,5 +31,6 @@ public class ScheduleResponseDto {
         this.reservationStatus = reservation.getReservationStatus();
         if(reservation.getMember()!=null)
             this.memberId=reservation.getMember().getId();
+        this.notice=reservation.getNotice();
     }
 }

@@ -22,7 +22,9 @@ public class ReservationResponseDto {
         } else {
             this.memberName = reservation.getMember().getUsername();
         }
-        this.facility = reservation.getFacility().getName();
+        if(reservation.getFacility()!=null)
+            this.facility = reservation.getFacility().getName();
+
         this.startTime = reservation.getStartTime();
         this.endTime = reservation.getEndTime();
         this.reservationName = reservation.getReservationName();
