@@ -93,6 +93,17 @@ public class Response {
     }
 
 
+    public ResponseEntity<?> success( String msg, HttpStatus status) {
+
+        Body body = Body.builder()
+                .state(status.value())
+                .result("success")
+                .massage(msg)
+                .error(Collections.emptyList())
+                .build();
+        return ResponseEntity.ok(body);
+    }
+
 
     public ResponseEntity<?> success(Object data, Member member, String msg, HttpStatus status) {
         Body body = Body.builder()

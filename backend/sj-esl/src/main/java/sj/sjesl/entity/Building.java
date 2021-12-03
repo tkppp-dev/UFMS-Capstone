@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import sj.sjesl.dto.building.BuildingDto;
 
 import javax.persistence.*;
 
@@ -36,5 +37,21 @@ public class Building {
         this.description = description;
         this.highestFloor = highestFloor;
         this.lowestFloor = lowestFloor;
+    }
+
+    public Building(BuildingDto.Request dto) {
+        this.name = dto.getName();
+        this.img = dto.getImg();
+        this.description = dto.getDescription();
+        this.highestFloor = dto.getHighestFloor();
+        this.lowestFloor = dto.getLowestFloor();
+    }
+
+    public void update(BuildingDto.Request dto){
+        this.name = dto.getName();
+        this.img = dto.getImg();
+        this.description = dto.getDescription();
+        this.highestFloor = dto.getHighestFloor();
+        this.lowestFloor = dto.getLowestFloor();
     }
 }

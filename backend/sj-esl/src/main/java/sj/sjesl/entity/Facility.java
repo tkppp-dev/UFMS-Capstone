@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
+import sj.sjesl.dto.facility.FacilityDto;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -59,6 +60,8 @@ public class Facility {
         this.category = category;
     }
 
+
+
     public void update(String name, String building, String floor, int capacity, int cost, String category){
         this.name = name;
         this.building = building;
@@ -67,6 +70,27 @@ public class Facility {
         this.cost = cost;
         this.category = category;
     }
+
+    public void updateApi(FacilityDto.Request dto){
+        this.name = dto.getName();
+        this.building = dto.getBuilding();
+        this.floor = dto.getFloor();
+        this.capacity = dto.getCapacity();
+        this.cost = dto.getCost();
+        this.category= dto.getCategory();
+
+    }
+
+    public  Facility(FacilityDto.Request dto){
+        this.name = dto.getName();
+        this.building = dto.getBuilding();
+        this.floor = dto.getFloor();
+        this.capacity = dto.getCapacity();
+        this.cost = dto.getCost();
+        this.category= dto.getCategory();
+
+    }
+
 
     @Override
     public String toString() {

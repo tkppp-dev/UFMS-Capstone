@@ -3,9 +3,12 @@ package sj.sjesl.rental;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import sj.sjesl.entity.RentalStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 @Api(tags = "대관 API")
 @RequiredArgsConstructor
@@ -13,6 +16,8 @@ import java.util.List;
 public class RentalApiController {
 
     private final RentalService rentalService;
+    private final RentalRepository rentalRepository;
+
 
     @ApiOperation(value = "대관 가능한 시설물 조회")
     @GetMapping("/rental")
@@ -43,6 +48,18 @@ public class RentalApiController {
     public List<RentalResponseDto> getHalfYearList(@PathVariable String facilityName) {
         return rentalService.getHalfYearList(facilityName);
     }
+
+    @ApiOperation(value = "대관 예약 승인")
+    @GetMapping("/rental/complete/{id}")
+    @Transactional
+    public RentalResponseDto RentalComplete(@PathVariable Long id) {
+        Optional<Rental> byId = rentalRepository.findById(id);
+        byId.get().setRentalStatus(RentalStatus.COMPLETE);
+        return new RentalResponseDto(byId.get());
+    }
+
+
+//    COMPLETE, WAIT, CANCEL
     //내 대관 리스트 조회
     //대관 상세 조회
     //대관 취소
