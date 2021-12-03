@@ -43,10 +43,10 @@ const DaySchedule = function ({
   };
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <DateContainer style={{ alignItems: 'center' }}>
         <TouchableOpacity
-          style={{ flexDirection: 'row', alignItems: 'center' }}
+          style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 6}}
           onPress={() => _setReferenceDate(-1)}
         >
           <Icon type="antdesign" name="left" size={18} />
@@ -58,31 +58,26 @@ const DaySchedule = function ({
           </DateText>
         </View>
         <TouchableOpacity
-          style={{ flexDirection: 'row', alignItems: 'center' }}
+          style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 6 }}
           onPress={() => _setReferenceDate(1)}
         >
           <Text>다음주</Text>
           <Icon type="antdesign" name="right" size={18} />
         </TouchableOpacity>
       </DateContainer>
-      <ScrollView>
-        {scheduleData.length === 0 ? (
-          <View
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-          >
-            <Text>스케줄이 없습니다</Text>
-          </View>
-        ) : (
-          <View>
-            {scheduleData.map((schedule) => (
-              <ScheduleDetail
-                key={schedule.reservationId}
-                schedule={schedule}
-              />
-            ))}
-          </View>
-        )}
-      </ScrollView>
+      {scheduleData.length === 0 ? (
+        <View
+          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        >
+          <Text>스케줄이 없습니다</Text>
+        </View>
+      ) : (
+        <ScrollView>
+          {scheduleData.map((schedule) => (
+            <ScheduleDetail key={schedule.reservationId} schedule={schedule}/>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };

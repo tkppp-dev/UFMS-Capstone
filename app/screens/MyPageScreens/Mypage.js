@@ -79,9 +79,11 @@ const ProfessorMyPage = function ({ navigation }) {
 
   const getOfficeList = async function () {
     try {
-      const res = await axios.get(endPoint + `schedule/lab/${state.user.id}`);
+      const res = await axios.post(endPoint + `schedule/lab/professor`, {
+        professorName: state.user.username,
+      });
       const temp = [];
-      res.data.data.map((office, index) => {
+      res.data.map((office, index) => {
         temp.push({
           officeData: office,
           isFirst: false,
@@ -203,11 +205,18 @@ const ProfessorMyPage = function ({ navigation }) {
           <ContentContainer>
             <ContentTopColorRow />
             <Content>
-              <ContentTitle>
-                <StyledText fontSize="20" fontWeight="bold">
-                  나의 사무실 / 연구실 관리
-                </StyledText>
-              </ContentTitle>
+              <TouchableOpacity>
+                <ContentTitle style={{ flexDirection: 'row' }}>
+                  <StyledText
+                    style={{ flex: 1 }}
+                    fontSize="20"
+                    fontWeight="bold"
+                  >
+                    나의 사무실 / 연구실 관리
+                  </StyledText>
+                  <Icon type="material" name="navigate-next" />
+                </ContentTitle>
+              </TouchableOpacity>
               <FlatList
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
@@ -233,7 +242,9 @@ const ProfessorMyPage = function ({ navigation }) {
           {previlege !== 'STUDENT' ? (
             <ContentContainer>
               <ContentTopColorRow />
-              <TouchableOpacity onPress={() => navigation.navigate('Schedule Register')}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Schedule Register')}
+              >
                 <Content style={{ flexDirection: 'row' }}>
                   <StyledText
                     style={{ flex: 1 }}

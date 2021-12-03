@@ -23,34 +23,32 @@ const BuildingTitle = styled.TouchableOpacity`
   background-color: white;
 `;
 
-const Home = function ({ navigation }) {
-  const { state } = useContext(Context);
+const ClassRoom = function ({ navigation }) {
   const width = Dimensions.get('window').width;
   const [buildings, setBuildings] = useState([]);
 
-  useEffect(() => {
-    const getBuilding = async function () {
-      try {
-        const res = await axios.get(endPoint + 'reservation/building');
-        res.data.map((building, idx) => {
-          buildings.push({
-            id: idx + 1,
-            name: building,
-          });
+  const getBuilding = async function () {
+    try {
+      const res = await axios.get(endPoint + 'reservation/building');
+      const temp = []
+      res.data.map((building, idx) => {
+        temp.push({
+          id: idx + 1,
+          name: building,
         });
-        setBuildings([...buildings]);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+      });
+      setBuildings(temp);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
+  useEffect(() => {
     getBuilding();
   }, []);
-  console.log(state);
 
   return (
     <Container>
-      <Header />
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{ width: '100%', height: '100%' }}
@@ -63,7 +61,7 @@ const Home = function ({ navigation }) {
                 key={item.id}
                 width={width}
                 onPress={() => {
-                  navigation.navigate('Facility Usage', { buildingData: item });
+                  navigation.navigate('ClassRoom Usage', { buildingData: item });
                 }}
               >
                 <Image
@@ -82,4 +80,4 @@ const Home = function ({ navigation }) {
   );
 };
 
-export default Home;
+export default React.memo(ClassRoom);

@@ -1,59 +1,48 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { View, Text } from 'react-native'
-import { Card, Title, Paragraph } from 'react-native-paper'
+import { Card, Title } from 'react-native-paper';
 
-const Container = styled.View`
-  
-`
+const Container = styled.View``;
 
-const UsageDetail = function(){
+const RowContainer = styled.View`
+  flex-direction: row;
+  margin-bottom: 3px;
+`;
+
+const RowTitle = styled.Text`
+  width: 60px;
+  font-weight: bold;
+`;
+const RowBody = styled.Text`
+  flex: 7;
+`;
+
+const DayUsage = function ({ item }) {
   return (
     <Container>
-      <Card style={{marginVertical: 5}}>
+      <Card style={{ marginVertical: 5 }}>
         <Card.Content>
-          <Title>10:30AM~12:00PM</Title>
-          <Paragraph>
-          <View>
-            <Text>asdfasdf</Text>
-          </View>
-        </Paragraph>
-        </Card.Content>
-      </Card>
-      <Card style={{marginVertical: 5}}>
-        <Card.Content>
-          <Title>12:00PM~13:30PM</Title>
-          <Paragraph>
-            Reservation Information
-          </Paragraph>
-        </Card.Content>
-      </Card>
-      <Card style={{marginVertical: 5}}>
-        <Card.Content>
-          <Title>13:30PM~15:00PM</Title>
-          <Paragraph>
-            Reservation Information
-          </Paragraph>
-        </Card.Content>
-      </Card>
-      <Card style={{marginVertical: 5}}>
-        <Card.Content>
-          <Title>17:00PM~18:00PM</Title>
-          <Paragraph>
-            Reservation Information
-          </Paragraph>
-        </Card.Content>
-      </Card>
-      <Card style={{marginVertical: 5}}>
-        <Card.Content>
-          <Title>18:00PM~20:00PM</Title>
-          <Paragraph>
-            Reservation Information
-          </Paragraph>
+          <Title style={{ marginBottom: 4 }}>{item.time}</Title>
+          <RowContainer>
+            <RowTitle>예약명</RowTitle>
+            <RowBody>{item.reservationName}</RowBody>
+          </RowContainer>
+          <RowContainer>
+            <RowTitle>예약자</RowTitle>
+            <RowBody>{item.memberName}</RowBody>
+          </RowContainer>
+          <RowContainer>
+            <RowTitle>위치</RowTitle>
+            <RowBody>{item.facility}</RowBody>
+          </RowContainer>
+          <RowContainer>
+            <RowTitle>공지사항</RowTitle>
+            <RowBody>{item.notice.length === 0 ? '없음' : item.notice}</RowBody>
+          </RowContainer>
         </Card.Content>
       </Card>
     </Container>
-  )
-}
+  );
+};
 
-export default UsageDetail
+export default DayUsage;

@@ -14,7 +14,7 @@ public class ScheduleResponseDto {
     private String time;
     private String facility;
     private ReservationStatus reservationStatus;
-
+    private Long memberId;
     public ScheduleResponseDto(Reservation reservation) {
         this.reservationId = reservation.getId();
         this.reservationName = reservation.getReservationName();
@@ -28,5 +28,7 @@ public class ScheduleResponseDto {
             this.facility = reservation.getFacility().getName();
         }
         this.reservationStatus = reservation.getReservationStatus();
+        if(reservation.getMember()!=null)
+            this.memberId=reservation.getMember().getId();
     }
 }

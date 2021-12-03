@@ -42,22 +42,24 @@ const ClassRentNotice = function ({ navigation, route }) {
   const [facility, setFacility] = useState(null);
   const [buildingData, setBuildingData] = useState('');
 
-  const getBuildingData = async function () {
+  const getBuilding = async function () {
     try {
       const res = await axios.get(endPoint + 'building');
-      res.data.forEach((item) => {
-        if (item.name === building.name) {
-          setBuildingData(item);
+      console.log(res.data)
+      const temp = []
+      res.data.map((item, idx) => {
+        if(item.name === building.name){
+          setBuildingData(item)
         }
       });
     } catch (err) {
       console.error(err);
     }
   };
-
+  
   useEffect(() => {
-    getBuildingData();
-  });
+    getBuilding();
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({

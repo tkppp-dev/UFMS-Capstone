@@ -1,5 +1,5 @@
 package sj.sjesl.entity;
 
 public enum ReservationStatus {
-    COMPLETE, WAIT, CANCEL
+    BEFORE, ING, END, COMPLETE, WAIT, CANCEL
 }

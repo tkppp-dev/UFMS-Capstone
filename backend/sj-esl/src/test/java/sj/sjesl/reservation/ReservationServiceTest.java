@@ -88,40 +88,10 @@ class ReservationServiceTest {
         LocalDateTime startDatetime = LocalDateTime.of(requestDto.getDate().minusDays(1), LocalTime.of(0, 0, 0));
         LocalDateTime endDatetime = LocalDateTime.of(requestDto.getDate(), LocalTime.of(23, 59, 59));
 
-        List<Reservation> reservations = reservationRepository
-                .findAllByFacilityAndReservationStatusAndStartTimeBetween(facility1, ReservationStatus.COMPLETE, startDatetime, endDatetime);
+        List<ReservationListResponseDto> responseDtos = reservationService.getReservationList(requestDto);
 
-
-        Map<LocalTime, Boolean> timetable = new TreeMap<>();
-        LocalTime time = LocalTime.of(9, 00);
-
-        for (int i = 0; i < 8; i++) {
-            timetable.put(time, true);
-            time = time.plusMinutes(90);
-        }
-
-        for (Reservation reservation : reservations) {
-            LocalTime startTime = reservation.getStartTime().toLocalTime();
-            LocalTime endTime = reservation.getEndTime().toLocalTime();
-            time = startTime;
-
-            while (time.isBefore(endTime)) {
-                timetable.put(time, false);
-                time = time.plusMinutes(90);
-            }
-        }
-
-        List<ReservationListResponseDto> list = new ArrayList<>();
-        int n = 1;
-        for (LocalTime t : timetable.keySet()) {
-//            System.out.println(t + " " + timetable.get(t));
-//            String cls = n++ + "교시";
-//            Boolean tf = timetable.get(t);
-//            System.out.println(cls + " " + tf);
-//            ReservationListResponseDto dto = new ReservationListResponseDto(cls, tf);
-            ReservationListResponseDto dto = new ReservationListResponseDto(t, timetable.get(t));
-            System.out.println(dto.get시간대()+ " " + dto.get예약가능());
-            list.add(dto);
+        for (ReservationListResponseDto a : responseDtos) {
+            System.out.println(a.get시간대() + " " + a.get예약가능());
         }
     }
 

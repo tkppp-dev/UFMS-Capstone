@@ -1,7 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Home from '../screens/HomeScreens/Home';
-import FacilityUsage from '../screens/HomeScreens/FacilityUsage';
+import HomeTabView from '../screens/HomeScreens/HomeTabView'
+import ClassRoomUsage from '../screens/HomeScreens/ClassRoomUsage';
+import RentalUsage from '../screens/HomeScreens/RentalUsage'
 
 const HomeStack = createStackNavigator();
 
@@ -10,10 +11,11 @@ const HomeStackNavigator = function () {
     <HomeStack.Navigator initialRouteName="HomeStack">
       <HomeStack.Screen
         options={{ headerShown: false }}
-        name="HomeStack"
-        component={Home}
+        name="HomeTabView"
+        component={HomeTabView}
       />
-      <HomeStack.Screen name="Facility Usage" component={FacilityUsage} />
+      <HomeStack.Screen name="ClassRoom Usage" component={ClassRoomUsage} />
+      <HomeStack.Screen name="Rental Usage" component={RentalUsage} />
     </HomeStack.Navigator>
   );
 };
