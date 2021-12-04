@@ -41,6 +41,7 @@ public class LabService {
         Lab lab = Lab.builder()
                 .member(member)
                 .location(requestDto.getLocation())
+                .name(requestDto.getName())
                 .build();
 
         labRepository.save(lab);

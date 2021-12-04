@@ -1,5 +1,6 @@
 package sj.sjesl.rental;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,4 +14,8 @@ public class RentalDaysRequestDto {
     private LocalDate startDate;
     private int rentalDays;
 
+    @Data
+    public static class rentalId {
+        private Long rentalId;
+    }
 }

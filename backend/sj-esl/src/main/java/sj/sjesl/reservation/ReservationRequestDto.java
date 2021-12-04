@@ -1,6 +1,7 @@
 package sj.sjesl.reservation;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,5 +29,12 @@ public class ReservationRequestDto {
         this.endTime = endTime;
         this.reservationName = reservationName;
         this.notice = notice;
+    }
+
+    @Data
+    public static class update {
+        private String notice;
+        private String reservationName;
+
     }
 }

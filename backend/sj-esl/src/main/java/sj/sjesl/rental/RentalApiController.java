@@ -59,6 +59,23 @@ public class RentalApiController {
     }
 
 
+    @ApiOperation(value = "대관 조회(개인)")
+    @GetMapping("/rental/member/{id}")
+    @Transactional
+    public List<RentalResponseDto> RentalMember(@PathVariable Long id) {
+       return rentalService.getMemberRental(id);
+    }
+
+    @ApiOperation(value = "대관 취소(삭제)")
+    @PostMapping("/rental/delete")
+    @Transactional
+    public String delete(@RequestBody RentalDaysRequestDto.rentalId deleteId) {
+        rentalRepository.deleteById(deleteId.getRentalId());
+        return "삭제 완료";
+    }
+
+
+
 //    COMPLETE, WAIT, CANCEL
     //내 대관 리스트 조회
     //대관 상세 조회

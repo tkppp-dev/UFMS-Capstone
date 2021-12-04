@@ -3,6 +3,7 @@ package sj.sjesl.rental;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import sj.sjesl.entity.Facility;
+import sj.sjesl.entity.Member;
 import sj.sjesl.entity.RentalStatus;
 
 import java.time.LocalDate;
@@ -18,4 +19,6 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             "where p.facility=?1 and p.rentalStatus <> 'CANCEL' and p.startDate>=?2 and p.endDate<?3 " +
             "order by p.startDate")
     List<Rental> findHalfYear(Facility facility, LocalDate today, LocalDate end);
+
+    List<Rental> findByMember(Member member);
 }

@@ -27,9 +27,10 @@ public class Lab{
     private String name;
 
     @Builder
-    public Lab(Member member, String location) {
+    public Lab(Member member, String location,String name) {
         this.member = member;
         this.location = location;
+        this.name=name;
     }
 
     @Override

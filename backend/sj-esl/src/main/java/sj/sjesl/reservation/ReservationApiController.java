@@ -3,7 +3,10 @@ package sj.sjesl.reservation;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import sj.sjesl.dto.lab.LabRequestDto;
 import sj.sjesl.entity.Building;
 
 import java.util.List;
@@ -62,5 +65,16 @@ public class ReservationApiController {
     @GetMapping("/reservation/check/{facilityname}")
     public List<ReservationResponseDto> getHalfYear(@PathVariable String facilityname) {
         return reservationService.getHalfYear(facilityname);
+    }
+
+
+
+
+    @PutMapping("/reservation/{id}")    //상태 변경
+    @ApiOperation(value = "예약 변경")
+    public ReservationResponseDto update(@PathVariable Long id, @RequestBody ReservationRequestDto.update update)  {
+
+        return reservationService.update(id, update);
+
     }
 }

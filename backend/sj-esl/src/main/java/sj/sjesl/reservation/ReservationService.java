@@ -12,10 +12,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -128,5 +125,12 @@ public class ReservationService {
                 .stream()
                 .map(ReservationResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public ReservationResponseDto update(Long id,ReservationRequestDto.update update){
+        Optional<Reservation> byId = reservationRepository.findById(id);
+        byId.get().update(update);
+        return new ReservationResponseDto(byId.get());
     }
 }
