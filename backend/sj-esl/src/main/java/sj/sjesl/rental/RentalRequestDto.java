@@ -15,20 +15,20 @@ public class RentalRequestDto {
     private LocalDate startDate;
     private int rentalDays;
     private String purpose;
-    private String hirer;
+    private String eventName;
     private String group;
     private String additionalMobile;
     private String additionalEmail;
 
     @Builder
     public RentalRequestDto(Long memberId, String facility,LocalDate startDate, int rentalDays, String purpose,
-                            String hirer, String group, String additionalMobile, String additionalEmail) {
+                            String eventName, String group, String additionalMobile, String additionalEmail) {
         this.memberId = memberId;
         this.facility = facility;
         this.startDate = startDate;
         this.rentalDays = rentalDays;
         this.purpose = purpose;
-        this.hirer = hirer;
+        this.eventName = eventName;
         this.group = group;
         this.additionalMobile = additionalMobile;
         this.additionalEmail = additionalEmail;

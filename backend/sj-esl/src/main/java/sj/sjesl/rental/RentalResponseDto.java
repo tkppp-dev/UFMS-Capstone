@@ -12,7 +12,7 @@ public class RentalResponseDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private int rentalDays;
-    private String hirer;
+    private String eventName;
     private String groupName;
     private String purpose;
     private String additionalMobile;
@@ -27,7 +27,7 @@ public class RentalResponseDto {
         this.startDate = rental.getStartDate();
         this.endDate = rental.getEndDate();
         this.rentalDays = rental.getRentalDays();
-        this.hirer = rental.getHirer();
+        this.eventName = rental.getEventName();
         this.groupName = rental.getGroupName();
         this.purpose = rental.getPurpose();
         this.additionalMobile = rental.getAdditionalMobile();

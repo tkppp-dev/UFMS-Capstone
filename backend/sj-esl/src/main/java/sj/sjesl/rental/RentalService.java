@@ -79,7 +79,7 @@ public class RentalService {
                     .startDate(startDate)
                     .endDate(endDate)
                     .rentalDays(rentalDays)
-                    .hirer(requestDto.getHirer())
+                    .eventName(requestDto.getEventName())
                     .groupName(requestDto.getGroup())
                     .purpose(requestDto.getPurpose())
                     .additionalMobile(requestDto.getAdditionalMobile())
