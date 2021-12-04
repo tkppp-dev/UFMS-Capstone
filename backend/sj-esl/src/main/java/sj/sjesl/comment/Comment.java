@@ -18,7 +18,7 @@ public class Comment extends BaseEntity {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name="Id")
+    @JoinColumn(name="inquiryId")
     private ReservationInquiry reservationInquiry;
 
     @ManyToOne
