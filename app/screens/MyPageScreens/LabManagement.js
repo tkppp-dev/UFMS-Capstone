@@ -27,7 +27,7 @@ const LabManagement = function ({ navigation }) {
       const res = await axios.post(endPoint + `schedule/lab/professor`, {
         professorName: state.user.username,
       });
-      console.log(res.data);
+      
       if (res.status === 200) {
         await setLabData(res.data);
         setRefresh(false);

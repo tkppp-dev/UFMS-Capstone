@@ -64,7 +64,7 @@ public class RentalApiController {
         notificationRepository.save(Notification.builder()
                 .member(byId.get().getMember())
                 .reservationName(byId.get().getPurpose())
-                .reservationUserName(byId.get().getHirer())
+                .reservationUserName(byId.get().getEventName())
                 .reservationTime(LocalDateTime.of(byId.get().getStartDate(), LocalTime.now()))
                 .type("RentalCOMPLETE")
                 .build());

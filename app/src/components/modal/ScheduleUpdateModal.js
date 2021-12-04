@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { View, TextInput, Text, Alert } from 'react-native';
 import { Modal } from 'react-native-paper';
@@ -10,12 +10,12 @@ const CustomButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   border-radius: 4px;
-  background-color: red;
+  background-color: #007aff;
   width: 50px;
   height: 33px;
 `;
 
-const Input = function ({ label, value, editable = true, multiline = false }) {
+const Input = function ({ label, value, onChangeText,editable = true, multiline = false }) {
   return (
     <View
       style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}
@@ -33,19 +33,28 @@ const Input = function ({ label, value, editable = true, multiline = false }) {
         autoCapitalize={'none'}
         autoCorrect={false}
         value={value}
+        onChangeText={onChangeText}
         multiline={multiline}
       />
     </View>
   );
 };
 
-const ScheduleUpdateModal = function () {
+const ScheduleUpdateModal = function ({ setRefresh }) {
   const { state, dispatch } = useContext(ScheduleContext);
+  const [reservationName, setReservationName] = useState(
+    state.schedule.reservationName
+  );
+  const [notice, setNotice] = useState(state.schedule.notice);
 
   const onPressUpdate = async function () {
     try {
-      const res = await axios.delete(
-        endPoint + `reservation/${state.schedule.reservationId}`
+      const res = await axios.put(
+        endPoint + `reservation/${state.schedule.reservationId}`,
+        {
+          notice,
+          reservationName
+        }
       );
 
       if (res.status === 200) {
@@ -56,7 +65,7 @@ const ScheduleUpdateModal = function () {
       }
     } catch (err) {
       console.error(err);
-      Alert.alert('스케줄 삭제에 실패했습니다');
+      Alert.alert('스케줄 변경에 실패했습니다');
     }
   };
 
@@ -82,12 +91,20 @@ const ScheduleUpdateModal = function () {
             editable={false}
             value={state.schedule.facility}
           />
-          <Input label="이름" value={state.schedule.reservationName} />
-          <Input label="공지사항" value={state.schedule.notice} />
+          <Input
+            label="이름"
+            value={reservationName}
+            onChangeText={(text) => setReservationName(text)}
+          />
+          <Input
+            label="공지사항"
+            value={notice}
+            onChangeText={(text) => setNotice(text)}
+          />
         </View>
         <View style={{ alignSelf: 'flex-end', marginTop: 20 }}>
           <CustomButton onPress={onPressUpdate}>
-            <Text style={{ fontWeight: 'bold', color: 'white' }}>삭제</Text>
+            <Text style={{ fontWeight: 'bold', color: 'white' }}>변경</Text>
           </CustomButton>
         </View>
       </View>
