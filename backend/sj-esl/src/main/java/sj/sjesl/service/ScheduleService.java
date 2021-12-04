@@ -50,7 +50,7 @@ public class ScheduleService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime endDateTime = LocalDateTime.of(now.toLocalDate(), LocalTime.of(23, 59, 59));
         Reservation reservation = reservationRepository
-                .findTopByMemberAndStartTimeBetweenOrderByStartTime(member, now, endDateTime);
+                .findTopByMemberAndReservationStatusIsNotAndStartTimeBetweenOrderByStartTime(member, ReservationStatus.CANCEL, now, endDateTime);
 
         if (reservation == null)
             return null;
