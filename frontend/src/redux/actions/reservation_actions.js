@@ -1,4 +1,5 @@
 import {
+  BUILDING_DATA_REQUEST,
   BUILDING_IMAGE_REQUEST,
   BUILDING_LIST_REQUEST,
   DELETE_RESERVATION_REQUEST,
@@ -20,6 +21,10 @@ export const reservationDeleteAction = (id) => ({
 
 export const buildingListAction = () => ({
   type: BUILDING_LIST_REQUEST,
+});
+
+export const buildingListDataAction = () => ({
+  type: BUILDING_DATA_REQUEST,
 });
 
 export const floorNumListAction = (building) => ({

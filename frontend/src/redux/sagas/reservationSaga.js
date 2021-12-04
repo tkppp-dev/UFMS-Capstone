@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import {
+  BUILDING_DATA_FAILURE,
+  BUILDING_DATA_REQUEST,
+  BUILDING_DATA_SUCCESS,
   BUILDING_LIST_FAILURE,
   BUILDING_LIST_REQUEST,
   BUILDING_LIST_SUCCESS,
@@ -41,6 +44,31 @@ function* buildingList() {
 
 function* watchbuildingList() {
   yield takeEvery(BUILDING_LIST_REQUEST, buildingList);
+}
+
+// 예약 가능한 빌딩 리스트
+const buildingDataAPI = () => {
+  return axios.get('/building');
+};
+
+function* buildingData() {
+  try {
+    const result = yield call(buildingDataAPI);
+
+    yield put({
+      type: BUILDING_DATA_SUCCESS,
+      payload: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: BUILDING_DATA_FAILURE,
+      payload: e,
+    });
+  }
+}
+
+function* watchbuildingData() {
+  yield takeEvery(BUILDING_DATA_REQUEST, buildingData);
 }
 
 // 해당 빌딩 층 리스트
@@ -150,5 +178,6 @@ export default function* reservationSaga() {
     fork(watchfloorNumList),
     fork(watchtimeList),
     fork(watchreservation),
+    fork(watchbuildingData),
   ]);
 }

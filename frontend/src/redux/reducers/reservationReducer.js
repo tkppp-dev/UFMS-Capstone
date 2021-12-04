@@ -1,5 +1,8 @@
 import { Result } from 'antd';
 import {
+  BUILDING_DATA_FAILURE,
+  BUILDING_DATA_REQUEST,
+  BUILDING_DATA_SUCCESS,
   BUILDING_LIST_FAILURE,
   BUILDING_LIST_REQUEST,
   BUILDING_LIST_SUCCESS,
@@ -20,6 +23,7 @@ import {
 const initialState = {
   loading: false,
   buildings: [],
+  buildingData: [],
   classes: [],
   timeSet: [],
   floors: [],
@@ -33,6 +37,7 @@ export default function (state = initialState, action) {
     case FLOOR_LIST_REQUEST:
     case FLOOR_NUM_LIST_REQUEST:
     case RESERVATION_TIME_REQUEST:
+    case BUILDING_DATA_REQUEST:
       return {
         ...state,
         loading: true,
@@ -44,9 +49,16 @@ export default function (state = initialState, action) {
         loading: false,
         buildings: action.payload,
       };
+    case BUILDING_DATA_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        buildingData: action.payload,
+      };
 
     case BUILDING_LIST_FAILURE:
     case FLOOR_LIST_FAILURE:
+    case BUILDING_DATA_FAILURE:
       return {
         ...state,
         loading: false,

@@ -1,17 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ManagerContainer, Wrap } from './style';
+import { ManagerContainer, Wrap } from '../style';
 import { Button, Input, Form, Select, Table } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import {
   addFacilityAction,
   deleteFacilityAction,
-  editFacilityAction,
 } from 'redux/actions/manager_actions';
 import {
   buildingListAction,
-  floorListAction,
-  floorNumListAction,
+  buildingListDataAction,
 } from 'redux/actions/reservation_actions';
 import { Link } from 'react-router-dom';
 
@@ -36,14 +34,10 @@ function Manager() {
     editfloor: '',
   });
 
-  const [isFloorSelected, setIsFloorSelected] = useState(false);
-  const [buildingName, setBuildingName] = useState('');
   const [classData, setClassData] = useState('');
 
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const { buildings, floors, classes } = useSelector(
-    (state) => state.reservation,
-  );
+  const { buildingData, classes } = useSelector((state) => state.reservation);
 
   const [isModalVisible, setisModalVisible] = useState(false);
   const [isEditModalVisible, setisEditModalVisible] = useState(false);
@@ -134,30 +128,8 @@ function Manager() {
   );
 
   useEffect(() => {
-    dispatch(buildingListAction());
+    dispatch(buildingListDataAction());
   }, [dispatch]);
-
-  const onChangeBuilding = useCallback(
-    (e) => {
-      dispatch(floorNumListAction(e));
-      setBuildingName(e);
-    },
-    [dispatch],
-  );
-
-  const onChangeFloor = useCallback(
-    (e) => {
-      setIsFloorSelected(true);
-
-      const data = {
-        building: buildingName,
-        floor: e,
-      };
-
-      dispatch(floorListAction(data));
-    },
-    [dispatch, buildingName],
-  );
 
   const onDeleteClick = useCallback(
     (e) => {
@@ -168,10 +140,10 @@ function Manager() {
 
   const columns = [
     {
-      title: '강의실 명',
+      title: '건물명',
       dataIndex: 'name',
       align: 'center',
-      width: '65%',
+      width: '15%',
       onFilter: (value, record) => record.name.indexOf(value) === 0,
       render: (name, record) => (
         <Link
@@ -183,12 +155,11 @@ function Manager() {
       ),
     },
     {
-      title: '인원',
-      dataIndex: 'capacity',
+      title: '설명',
+      dataIndex: 'description',
       align: 'center',
-      width: '23%',
-      defaultSortOrder: 'descend',
-      sorter: (a, b) => a.capacity - b.capacity,
+      width: '73%',
+      render: (description) => <div>{description.slice(0, 80)}...</div>,
     },
     {
       title: 'Action',
@@ -214,55 +185,20 @@ function Manager() {
             marginLeft: '5%',
           }}
         >
-          <Button onClick={showModal}>시설물 추가</Button>
+          <Button onClick={showModal} style={{ marginBottom: '32px' }}>
+            건물 추가
+          </Button>
 
-          <div
-            style={{
-              marginTop: '24px',
-              marginBottom: '16px',
-            }}
-          >
-            <label for="selector" style={{ marginRight: '8px' }}>
-              수정 및 삭제할 시설을 선택하세요 :
-            </label>
-            <Select
-              defaultValue="x"
-              onChange={onChangeBuilding}
-              id="selector"
-              style={{ marginRight: '4px' }}
-            >
-              <Option value="x">건물을 선택하세요</Option>
-              {Array.isArray(buildings)
-                ? buildings.map((building, index) => (
-                    <Option key={index} value={building}>
-                      {building}
-                    </Option>
-                  ))
-                : ''}
-            </Select>
-            <Select onChange={onChangeFloor} defaultValue="x">
-              <Option value="x">층을 선택하세요</Option>
-              {Array.isArray(floors) ? (
-                floors.map((floor) => (
-                  <Option key={floor} value={floor}>
-                    {floor}
-                  </Option>
-                ))
-              ) : (
-                <div>해당 건물에 예약 가능한 층이 없습니다.</div>
-              )}
-            </Select>
-          </div>
           <Table
             columns={columns}
-            dataSource={classes}
+            dataSource={buildingData}
             pagination={{ position: ['none', 'none'] }}
           />
           <div
             style={{ float: 'right', marginTop: '16px', marginBottom: '32px' }}
           >
             <Button>
-              <Link to="/manager/building">건물 관리하기</Link>
+              <Link to="/manager">시설 관리하기</Link>
             </Button>
             <Button>
               <Link to="/manager/rent">대관 승인하기</Link>

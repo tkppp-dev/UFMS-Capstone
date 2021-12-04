@@ -11,12 +11,13 @@ import {
 function PlaceDetail(req) {
   const [date, setDate] = useState('');
   const [form, setValues] = useState({
-    name: '',
     notice: '',
     startTime: '',
     time: '',
+    reservationName: '',
   });
-  const { userId } = useSelector((state) => state.auth);
+
+  const { user, userId } = useSelector((state) => state.auth);
   const { timeSet } = useSelector((state) => state.reservation);
 
   const onChange = (e) => {
@@ -74,7 +75,7 @@ function PlaceDetail(req) {
     (e) => {
       e.preventDefault();
 
-      const { name, notice, startTime, time } = form;
+      const { notice, startTime, time, reservationName } = form;
 
       time.setHours(time.getHours() + 1);
       time.setMinutes(time.getMinutes() + 30);
@@ -85,7 +86,7 @@ function PlaceDetail(req) {
         facility: facilityname,
         memberId: userId,
         notice,
-        reservationName: name,
+        reservationName,
       };
 
       dispatch(reservationAction(data));
@@ -117,7 +118,7 @@ function PlaceDetail(req) {
           width={800}
         >
           <div id="modal-container">
-            <h2 style={{ textAlign: 'center' }}>예약</h2>
+            <h2 style={{ textAlign: 'center' }}>강의실 예약</h2>
             <ModalContent>
               <div>
                 <label for="date">날짜를 선택하세요 : </label>
@@ -156,12 +157,12 @@ function PlaceDetail(req) {
             </ModalContent>
 
             <form onSubmit={onSubmit}>
-              <label for="name">예약자 : </label>
+              <label for="reservationName">강의명 : </label>
               <ContentInput
-                type="name"
-                name="name"
-                id="name"
-                placeholder="공지사항을 입력하세요"
+                type="text"
+                name="reservationName"
+                id="reservationName"
+                placeholder="강의명을 입력하세요"
                 onChange={onChange}
               />
               <label for="notice">공지사항 : </label>
@@ -169,7 +170,7 @@ function PlaceDetail(req) {
                 type="text"
                 name="notice"
                 id="notice"
-                placeholder="대관 주체를 입력하세요"
+                placeholder="공지사항을 입력하세요"
                 onChange={onChange}
               />
               <Button
@@ -177,7 +178,7 @@ function PlaceDetail(req) {
                 style={{ width: '100%' }}
                 onClick={onSubmit}
               >
-                대관 신청
+                예약 신청
               </Button>
             </form>
           </div>
