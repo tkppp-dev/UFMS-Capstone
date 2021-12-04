@@ -25,7 +25,7 @@ const ReservationCheckingModal = function ({
         memberId: state.user.id,
         facility,
         reservationName,
-        purpose,
+        notice: purpose,
         startTime: startTime.getISOString(date),
         endTime: endTime.getISOString(date),
       };

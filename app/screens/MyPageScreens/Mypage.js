@@ -12,14 +12,12 @@ import { Portal, Provider } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
 import { Context } from '../../src/context/index';
 import CustomButton from '../../src/components/CustomButton';
-import InformationItem from '../../src/components/InformationItem';
 import OfficeStatusUpdateModal from '../../src/components/modal/OfficeStatusUpdateModal';
 import OfficeNoticeUpdateModal from '../../src/components/modal/OfficeNoticeUpdateModal';
-import CurrentSchduleStatusUpdateModal from '../../src/components/modal/CurrentScheduleStatusUpdateModal';
-import axios from 'axios';
-import { endPoint } from '../../src/endPoint';
 import OfficeInformation from '../../src/components/OfficeInformation';
 import ScheduleSummary from '../../src/components/ScheduleSummary';
+import axios from 'axios';
+import { endPoint } from '../../src/endPoint';
 
 const Container = styled.View`
   flex: 1;
@@ -76,14 +74,7 @@ const ProfessorMyPage = function ({ navigation }) {
       title: '마이페이지',
     });
   });
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      console.log('Refreshed!');
-    });
-    return unsubscribe;
-  }, [navigation]);
-
+  
   const getOfficeList = async function () {
     try {
       const res = await axios.post(endPoint + `schedule/lab/professor`, {
@@ -100,13 +91,13 @@ const ProfessorMyPage = function ({ navigation }) {
       });
       temp[0].isFirst = true;
       temp[temp.length - 1].isEnd = true;
-      setOfficeList(temp);
+      await setOfficeList(temp);
     } catch (err) {
       console.error(err);
       Alert.alert('정보 로드에 실패했습니다');
     }
   };
-
+  
   const getPrevilege = async function () {
     try {
       const res = await axios.get(endPoint + `api/auth/user/${state.user.id}`);
@@ -116,11 +107,19 @@ const ProfessorMyPage = function ({ navigation }) {
       Alert.alert('정보 로드에 실패했습니다');
     }
   };
-
+  
   useEffect(() => {
     getPrevilege();
     getOfficeList();
   }, []);
+  
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('Refreshed!');
+      getOfficeList();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const _onPressOfficeStatus = async function (value) {
     try {
@@ -267,7 +266,7 @@ const ProfessorMyPage = function ({ navigation }) {
           ) : null}
           <ContentContainer>
             <ContentTopColorRow />
-            <TouchableOpacity onPress={() => navigation.navigate('Schedule')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Rental Management')}>
               <Content style={{ flexDirection: 'row' }}>
                 <StyledText style={{ flex: 1 }} fontSize="20" fontWeight="bold">
                   대관 예약 관리
