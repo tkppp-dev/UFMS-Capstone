@@ -34,7 +34,7 @@ public class Rental extends BaseEntity {
     private LocalDate startDate;
     private LocalDate endDate;
     private int rentalDays;
-    private String hirer;
+    private String eventName;
     private String groupName;
     private String purpose;
     private String additionalMobile;
@@ -46,14 +46,14 @@ public class Rental extends BaseEntity {
 
 
     @Builder
-    public Rental(Member member, Facility facility, LocalDate startDate, LocalDate endDate, int rentalDays, String hirer,
+    public Rental(Member member, Facility facility, LocalDate startDate, LocalDate endDate, int rentalDays, String eventName,
                   String groupName, String purpose, String additionalMobile, String additionalEmail, RentalStatus rentalStatus) {
         this.member = member;
         this.facility = facility;
         this.startDate = startDate;
         this.endDate = endDate;
         this.rentalDays = rentalDays;
-        this.hirer = hirer;
+        this.eventName = eventName;
         this.groupName = groupName;
         this.purpose = purpose;
         this.additionalMobile = additionalMobile;

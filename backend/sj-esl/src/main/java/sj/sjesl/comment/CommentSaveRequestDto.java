@@ -8,13 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentSaveRequestDto {
 
-    private Long reservationInquiryId;
     private Long adminId;
     private String content;
 
     @Builder
-    public CommentSaveRequestDto(Long reservationInquiryId, Long adminId, String content) {
-        this.reservationInquiryId = reservationInquiryId;
+    public CommentSaveRequestDto(Long adminId, String content) {
         this.adminId = adminId;
         this.content = content;
     }
