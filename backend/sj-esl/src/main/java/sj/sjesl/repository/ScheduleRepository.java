@@ -16,4 +16,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Long> {
 
     @Query(value = "select s from Schedule  s where s.Subject_id = ?1 and s.member = ?2")
     Optional<Schedule> findBySubject_id(Long id,Member member);
+
+    @Query(value = "select s from Schedule s where s.Subject_id = ?1 ")
+    List<Schedule> findAllBySubject_id(Long subjectId);
 }

@@ -3,10 +3,15 @@ package sj.sjesl.rental;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.jni.Time;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import sj.sjesl.entity.Notification;
 import sj.sjesl.entity.RentalStatus;
+import sj.sjesl.repository.NotificationRepository;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +22,7 @@ public class RentalApiController {
 
     private final RentalService rentalService;
     private final RentalRepository rentalRepository;
+    private final NotificationRepository notificationRepository;
 
 
     @ApiOperation(value = "대관 가능한 시설물 조회")
@@ -55,6 +61,14 @@ public class RentalApiController {
     public RentalResponseDto RentalComplete(@PathVariable Long id) {
         Optional<Rental> byId = rentalRepository.findById(id);
         byId.get().setRentalStatus(RentalStatus.COMPLETE);
+        notificationRepository.save(Notification.builder()
+                .member(byId.get().getMember())
+                .reservationName(byId.get().getPurpose())
+                .reservationUserName(byId.get().getHirer())
+                .reservationTime(LocalDateTime.of(byId.get().getStartDate(), LocalTime.now()))
+                .type("RentalCOMPLETE")
+                .build());
+
         return new RentalResponseDto(byId.get());
     }
 
@@ -63,7 +77,7 @@ public class RentalApiController {
     @GetMapping("/rental/member/{id}")
     @Transactional
     public List<RentalResponseDto> RentalMember(@PathVariable Long id) {
-       return rentalService.getMemberRental(id);
+        return rentalService.getMemberRental(id);
     }
 
     @ApiOperation(value = "대관 취소(삭제)")
@@ -73,7 +87,6 @@ public class RentalApiController {
         rentalRepository.deleteById(deleteId.getRentalId());
         return "삭제 완료";
     }
-
 
 
 //    COMPLETE, WAIT, CANCEL

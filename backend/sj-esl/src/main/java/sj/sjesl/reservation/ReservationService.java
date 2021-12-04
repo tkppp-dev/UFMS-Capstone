@@ -3,10 +3,7 @@ package sj.sjesl.reservation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sj.sjesl.entity.*;
-import sj.sjesl.repository.BuildingRepository;
-import sj.sjesl.repository.FacilityRepository;
-import sj.sjesl.repository.MemberRepository;
-import sj.sjesl.repository.ReservationRepository;
+import sj.sjesl.repository.*;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -23,6 +20,8 @@ public class ReservationService {
     private final FacilityRepository facilityRepository;
     private final BuildingRepository buildingRepository;
     private final MemberRepository memberRepository;
+    private final NotificationRepository notificationRepository;
+    private final ScheduleRepository scheduleRepository;
 
     @Transactional
     public List<String> getBuildingList() {
@@ -112,6 +111,27 @@ public class ReservationService {
     public void cancel(Long id) {
         Reservation reservation = reservationRepository.findById(id).get();
         reservation.setReservationStatus(ReservationStatus.CANCEL);
+        if( reservation.getSubjectId()==null) {
+            notificationRepository.save(Notification.builder()
+                    .reservationTime(reservation.getStartTime())
+                    .reservationName(reservation.getReservationName())
+                    .reservationUserName(reservation.getMember().getUsername())
+                    .member(reservation.getMember())
+                    .type("ReservationCancel")
+                    .build());
+        }
+        else{
+            List<Schedule> allBySubjectMember = scheduleRepository.findAllBySubject_id(reservation.getSubjectId());
+            for( Schedule s: allBySubjectMember){
+                notificationRepository.save(Notification.builder()
+                        .reservationTime(reservation.getStartTime())
+                        .reservationName(reservation.getReservationName())
+                        .reservationUserName(reservation.getMember().getUsername())
+                        .member(s.getMember())
+                        .type("ReservationCancel")
+                        .build());
+            }
+        }
     }
 
     @Transactional
@@ -129,8 +149,15 @@ public class ReservationService {
 
     @Transactional
     public ReservationResponseDto update(Long id,ReservationRequestDto.update update){
-        Optional<Reservation> byId = reservationRepository.findById(id);
-        byId.get().update(update);
-        return new ReservationResponseDto(byId.get());
+        Reservation reservation = reservationRepository.findById(id).get();
+        reservation.update(update);
+        notificationRepository.save(Notification.builder()
+                .reservationTime(reservation.getStartTime())
+                .reservationUserName(reservation.getMember().getUsername())
+                .reservationName(reservation.getReservationName())
+                .member(reservation.getMember())
+                .type("ReservationUpdate")
+                .build());
+        return new ReservationResponseDto(reservation);
     }
 }
