@@ -4,7 +4,7 @@ import { OfficeContainer, CardItem } from './style';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  buildingListAction,
+  buildingListDataAction,
   floorListAction,
   floorNumListAction,
 } from 'redux/actions/reservation_actions';
@@ -39,14 +39,14 @@ function PlaceContainer() {
   const [isFloorSelected, setIsFloorSelected] = useState(false);
   const [buildingName, setBuildingName] = useState('');
 
-  const { buildings, floors, classes } = useSelector(
+  const { buildings, buildingData, floors, classes } = useSelector(
     (state) => state.reservation,
   );
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(buildingListAction());
+    dispatch(buildingListDataAction());
   }, [dispatch]);
 
   const showModal = useCallback(
@@ -85,14 +85,14 @@ function PlaceContainer() {
   return (
     <OfficeContainer>
       <Row>
-        {Array.isArray(buildings)
-          ? buildings.map((building) => (
-              <Col span={8} style={{ marginBottom: '16px' }} key={building}>
+        {Array.isArray(buildingData)
+          ? buildingData.map((building) => (
+              <Col span={8} style={{ marginBottom: '16px' }} key={building.id}>
                 <CardItem
-                  title={building}
+                  title={building.name}
                   extra={
                     <div
-                      onClick={() => showModal(building)}
+                      onClick={() => showModal(building.name)}
                       style={{ color: '#1990ff', cursor: 'pointer' }}
                     >
                       More
@@ -102,7 +102,7 @@ function PlaceContainer() {
                     width: 300,
                   }}
                 >
-                  <img src="https://placeimg.com/300/200/arch" />
+                  <img src={building.img} />
                 </CardItem>
               </Col>
             ))

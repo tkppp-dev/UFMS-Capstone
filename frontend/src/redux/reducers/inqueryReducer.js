@@ -2,6 +2,9 @@ import {
   INQUERIES_LOADING_FAILURE,
   INQUERIES_LOADING_REQUEST,
   INQUERIES_LOADING_SUCCESS,
+  INQUERY_DELETE_FAILURE,
+  INQUERY_DELETE_REQUEST,
+  INQUERY_DELETE_SUCCESS,
   INQUERY_EDIT_FAILURE,
   INQUERY_EDIT_REQUEST,
   INQUERY_EDIT_SUCCESS,
@@ -27,6 +30,7 @@ export default function (state = initialState, action) {
     case INQUERIES_LOADING_REQUEST:
     case INQUERY_LOADING_REQUEST:
     case INQUERY_EDIT_REQUEST:
+    case INQUERY_DELETE_REQUEST:
       return {
         ...state,
         loading: true,
@@ -57,7 +61,32 @@ export default function (state = initialState, action) {
         loading: true,
       };
     case INQUERY_WRITE_SUCCESS:
+      alert('문의글이 작성이 완료되었습니다.');
+
+      return {
+        ...state,
+        loading: false,
+      };
+
     case INQUERY_EDIT_SUCCESS:
+      alert('문의글이 수정이 완료되었습니다.');
+
+      return {
+        ...state,
+        loading: false,
+      };
+
+    case INQUERY_DELETE_SUCCESS:
+      alert('삭제가 완료되었습니다.');
+
+      return {
+        ...state,
+        loading: false,
+      };
+
+    case INQUERY_DELETE_FAILURE:
+      alert('문의글 삭제에 실패했습니다.');
+
       return {
         ...state,
         loading: false,

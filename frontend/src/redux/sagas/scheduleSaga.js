@@ -48,16 +48,12 @@ function* watchscheduleList() {
 
 // 스케줄 추가
 const scheduleAddAPI = (payload) => {
-  console.log(payload);
-
   return axios.post('/schedule/add', payload);
 };
 
 function* scheduleAdd(action) {
   try {
     const result = yield call(scheduleAddAPI, action.payload);
-
-    console.log(result.data);
 
     yield put({
       type: SCHEDULE_ADD_SUCCESS,

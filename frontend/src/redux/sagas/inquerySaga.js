@@ -96,7 +96,6 @@ function* watchinqueryWrite() {
 
 // Edit
 const inqueryEditAPI = (payload) => {
-  console.log(payload);
   return axios.put(`/inquiry/${payload.id}`, payload);
 };
 

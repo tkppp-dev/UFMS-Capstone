@@ -68,6 +68,8 @@ function InqueryEdit(req) {
     let data = { title, content: content.replace(/(<([^>]+)>)/gi, ''), id };
 
     dispatch(inqueryEditAction(data));
+
+    req.history.push('/inquery');
   };
 
   return (

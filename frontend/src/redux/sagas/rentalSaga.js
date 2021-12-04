@@ -19,7 +19,7 @@ const loadRentalListAPI = () => {
   return axios.get(`/rental`);
 };
 
-function* loadRentalList(action) {
+function* loadRentalList() {
   try {
     const result = yield call(loadRentalListAPI);
 

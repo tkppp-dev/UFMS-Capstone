@@ -45,7 +45,7 @@ const formats = [
   'background',
 ];
 
-function InqueryWrite() {
+function InqueryWrite(req) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
@@ -73,6 +73,8 @@ function InqueryWrite() {
     };
 
     dispatch(inqueryWriteAction(data));
+
+    req.history.push('/inquery');
   };
 
   return (

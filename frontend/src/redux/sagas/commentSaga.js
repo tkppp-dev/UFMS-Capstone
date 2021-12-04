@@ -101,8 +101,6 @@ function* commentDelete(action) {
   try {
     const result = yield call(commentDeleteAPI, action.payload);
 
-    console.log(result.data);
-
     yield put({
       type: DELETE_COMMENT_SUCCESS,
       payload: result.data,

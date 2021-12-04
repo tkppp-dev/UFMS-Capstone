@@ -78,15 +78,15 @@ function InqueryDetail(req) {
       e.preventDefault();
 
       const data = {
-        id: inqueryId,
+        id: Number(inqueryId),
         adminId: userId,
         content: comment,
-        reservationInquiryId: inqueryId,
+        reservationInquiryId: Number(inqueryId),
       };
 
       dispatch(commentUploadAction(data));
     },
-    [dispatch, inqueryId, userId, comment],
+    [dispatch, userId, comment],
   );
 
   const EditDeleteButton = (
@@ -124,7 +124,11 @@ function InqueryDetail(req) {
               value={comment}
               onChange={onCommentChange}
               placeholder="댓글을 작성해주세요."
-              disabled={user.privileges === 'ADMIN' ? false : true}
+              disabled={
+                user.privileges === 'ADMIN' || userId === inqueryDetail.memberId
+                  ? false
+                  : true
+              }
             />
             <Button type="primary" onClick={onCommentSubmit}>
               작성

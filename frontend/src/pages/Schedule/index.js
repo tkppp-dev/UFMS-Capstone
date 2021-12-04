@@ -15,7 +15,7 @@ function Schedule() {
   const [week, setWeek] = useState(['일', '월', '화', '수', '목', '금', '토']);
   const [selectWeek, setSelectWeek] = useState('');
 
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { schedules } = useSelector((state) => state.schedule);
 
   const dispatch = useDispatch();
@@ -34,10 +34,16 @@ function Schedule() {
   useEffect(() => {
     let today = new Date();
 
+    // const data = {
+    //   memberId: user.memberId,
+    //   startDate: today.toISOString().slice(0, 10),
+    //   endDate: today.toISOString().slice(0, 10),
+    // };
+
     const data = {
+      endDate: '2021-12-04',
       memberId: 0,
-      startDate: today.toISOString().slice(0, 10),
-      endDate: today.toISOString().slice(0, 10),
+      startDate: '2021-12-04',
     };
 
     dispatch(scheduleListAction(data));
@@ -84,6 +90,7 @@ function Schedule() {
 
   return (
     <ScheduleContainer>
+      {console.log(schedules)}
       {isAuthenticated ? (
         <div
           style={{

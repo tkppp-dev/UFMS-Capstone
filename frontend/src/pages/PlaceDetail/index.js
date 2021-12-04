@@ -157,12 +157,12 @@ function PlaceDetail(req) {
             </ModalContent>
 
             <form onSubmit={onSubmit}>
-              <label for="reservationName">강의명 : </label>
+              <label for="reservationName">예약명 : </label>
               <ContentInput
                 type="text"
                 name="reservationName"
                 id="reservationName"
-                placeholder="강의명을 입력하세요"
+                placeholder="예약명을 입력하세요"
                 onChange={onChange}
               />
               <label for="notice">공지사항 : </label>

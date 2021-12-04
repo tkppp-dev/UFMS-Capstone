@@ -27,18 +27,18 @@ function Manager() {
     floor: '',
   });
 
+  const [isFloorSelected, setIsFloorSelected] = useState(false);
+  const [buildingName, setBuildingName] = useState('');
+  const [classData, setClassData] = useState('');
+
   const [editData, setEdit] = useState({
     editbuilding: '',
-    editname: '',
-    editcapacity: 0,
+    editname: classData ? classData.name : '',
+    editcapacity: classData ? classData.capacity : 0,
     editcategory: '',
     editcost: 0,
     editfloor: '',
   });
-
-  const [isFloorSelected, setIsFloorSelected] = useState(false);
-  const [buildingName, setBuildingName] = useState('');
-  const [classData, setClassData] = useState('');
 
   const { isAuthenticated } = useSelector((state) => state.auth);
   const { buildings, floors, classes } = useSelector(
@@ -126,9 +126,10 @@ function Manager() {
         category: editcategory,
         cost: editcost,
         floor: editfloor,
+        id: classData.facilityId,
       };
 
-      // dispatch(editFacilityAction(data));
+      dispatch(editFacilityAction(data));
     },
     [editData, dispatch],
   );
