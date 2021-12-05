@@ -110,11 +110,17 @@ public class MemberService {
     }
 
     public ResponseEntity<?> login(MemberRequestDto.Login login) {
-
+        Member member1 = memberRepository.findByEmail(login.getEmail()).get();
+        System.out.println(member1.getPassword()+"sssssssssssssss");
+        System.out.println(login.getPassword()+"sssssssssssssss");
+        System.out.println(encoder.encode(login.getPassword())+"sssssssssssssss");
         if (memberRepository.findByEmail(login.getEmail()).orElse(null) == null) {
             return response.fail("해당하는 유저가 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
         }
+        if(!encoder.matches(login.getPassword(),member1.getPassword())){
+            return response.fail("비밀번호가 틀렸습니다.", HttpStatus.BAD_REQUEST);
 
+        }
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = login.toAuthentication();
