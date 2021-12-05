@@ -10,7 +10,7 @@ import {
   Wrap,
 } from './style';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button } from 'antd';
+import { Button, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -23,6 +23,7 @@ import {
   commentUploadAction,
   loadCommentsAction,
 } from 'redux/actions/comment_actions';
+import Modal from 'antd/lib/modal/Modal';
 
 function InqueryDetail(req) {
   const { user, userId, userName } = useSelector((state) => state.auth);
@@ -31,6 +32,14 @@ function InqueryDetail(req) {
   const inqueryId = req.match.params.id;
 
   const [comment, setComment] = useState('');
+  const [commentId, setCommentId] = useState(0);
+
+  const [isModalVisible, setisModalVisible] = useState(false);
+
+  const showModal = (id) => {
+    setisModalVisible(true);
+    setCommentId(id);
+  };
 
   const dispatch = useDispatch();
 
@@ -39,12 +48,21 @@ function InqueryDetail(req) {
     dispatch(loadCommentsAction(inqueryId));
   }, [dispatch, inqueryId]);
 
+  const handleOk = () => {
+    setisModalVisible(false);
+  };
+  const handleCancel = () => {
+    setisModalVisible(false);
+  };
+
   const onDeleteClick = (e) => {
     e.preventDefault();
     var result = window.confirm('글을 삭제하시겠습니까?');
 
     if (result) {
-      dispatch(inqueryDeleteAction(inqueryId));
+      const id = Number(inqueryId);
+
+      dispatch(inqueryDeleteAction(id));
 
       req.history.push('/inquery');
     }
@@ -61,17 +79,14 @@ function InqueryDetail(req) {
     [dispatch],
   );
 
-  const onCommentEditClick = useCallback(
-    (commentId) => {
-      const data = {
-        commentId,
-        comment,
-      };
+  const onCommentEditClick = useCallback(() => {
+    const data = {
+      commentId,
+      comment,
+    };
 
-      dispatch(commentEditAction(data));
-    },
-    [dispatch, comment],
-  );
+    dispatch(commentEditAction(data));
+  }, [dispatch, comment]);
 
   const onCommentSubmit = useCallback(
     (e) => {
@@ -124,11 +139,7 @@ function InqueryDetail(req) {
               value={comment}
               onChange={onCommentChange}
               placeholder="댓글을 작성해주세요."
-              disabled={
-                user.privileges === 'ADMIN' || userId === inqueryDetail.memberId
-                  ? false
-                  : true
-              }
+              disabled={user.privileges === 'ADMIN' ? false : true}
             />
             <Button type="primary" onClick={onCommentSubmit}>
               작성
@@ -137,12 +148,12 @@ function InqueryDetail(req) {
           {Array.isArray(comments)
             ? comments.map(({ content, memberName, id }) => (
                 <div key={id}>
-                  <h3>{memberName}</h3>
                   <div>
+                    <h2>답변</h2>
                     <span>{content}</span>
-                    {memberName === userName ? (
+                    {user.privileges === 'ADMIN' ? (
                       <CommentButtonContainer>
-                        <span onClick={() => onCommentEditClick(id)}>수정</span>
+                        <span onClick={() => showModal(id)}>수정</span>
                         <span onClick={() => onCommentDeleteClick(id)}>
                           삭제
                         </span>
@@ -156,6 +167,29 @@ function InqueryDetail(req) {
             : 'Creator'}
         </CommentContainer>
       </Wrap>
+      <Modal
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer=""
+        width={800}
+      >
+        <div id="modal-container">
+          <Input
+            type="text"
+            value={comment}
+            onChange={onCommentChange}
+            placeholder="변경할 댓글을 입력하세요."
+          />
+          <Button
+            onClick={onCommentEditClick}
+            type="primary"
+            style={{ marginTop: '16px', width: '100%' }}
+          >
+            수정하기
+          </Button>
+        </div>
+      </Modal>
     </RentDetailContainer>
   );
 }

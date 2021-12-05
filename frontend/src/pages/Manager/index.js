@@ -162,7 +162,11 @@ function Manager() {
 
   const onDeleteClick = useCallback(
     (e) => {
-      dispatch(deleteFacilityAction(e));
+      const data = {
+        facilityId: e,
+      };
+
+      dispatch(deleteFacilityAction(data));
     },
     [dispatch],
   );
@@ -197,7 +201,10 @@ function Manager() {
       render: (record) => (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button onClick={() => showEditModal(record)}>수정</Button>
-          <Button type="danger" onClick={() => onDeleteClick(record)}>
+          <Button
+            type="danger"
+            onClick={() => onDeleteClick(record.facilityId)}
+          >
             삭제
           </Button>
         </div>
@@ -417,7 +424,7 @@ function Manager() {
               style={{ width: '100%' }}
               onClick={onEditSubmit}
             >
-              추가하기
+              수정하기
             </Button>
           </Form>
         </div>

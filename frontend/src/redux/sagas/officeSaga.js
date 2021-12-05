@@ -22,14 +22,15 @@ import {
 } from 'redux/types/office_types';
 
 // Load Office
-const loadOfficeAPI = (id) => {
-  return axios.get(`/schedule/lab/${id}`);
+const loadOfficeAPI = (payload) => {
+  return axios.post(`/schedule/lab/professor`, payload);
 };
 
 function* loadOffice(action) {
   try {
     const result = yield call(loadOfficeAPI, action.payload);
 
+    console.log(result.data);
     yield put({
       type: LOADING_OFFICE_SUCCESS,
       payload: result.data,
@@ -72,13 +73,7 @@ function* watchgetOffice() {
 
 // Add
 const officeAddAPI = (payload) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  return axios.post('/schedule/lab', payload, config);
+  return axios.post('/schedule/lab', payload);
 };
 
 function* officeAdd(action) {
@@ -103,12 +98,14 @@ function* watchofficeAdd() {
 
 // Edit
 const editOfficeAPI = (payload) => {
-  return axios.put(`/schedule/lab/notice/${payload.id}`, payload.notice);
+  return axios.put(`/schedule/lab/notice/${payload.id}`, payload);
 };
 
 function* editOffice(action) {
   try {
     const result = yield call(editOfficeAPI, action.payload);
+
+    console.log(result.data);
 
     yield put({
       type: EDIT_OFFICE_SUCCESS,
@@ -128,7 +125,7 @@ function* watcheditOffice() {
 
 // Edit State
 const editStateAPI = (payload) => {
-  return axios.put(`/schedule/lab/state/${payload.id}`, payload.notice);
+  return axios.put(`/schedule/lab/state/${payload.id}`, payload);
 };
 
 function* editState(action) {
@@ -160,20 +157,22 @@ function* deleteOffice(action) {
   try {
     const result = yield call(deleteOfficeAPI, action.payload);
 
+    console.log(result.data);
+
     yield put({
-      type: DELETE_OFFICE_REQUEST,
+      type: DELETE_OFFICE_SUCCESS,
       payload: result.data,
     });
   } catch (e) {
     yield put({
-      type: DELETE_OFFICE_SUCCESS,
+      type: DELETE_OFFICE_FAILURE,
       payload: e,
     });
   }
 }
 
 function* watchdeleteOffice() {
-  yield takeEvery(DELETE_OFFICE_FAILURE, deleteOffice);
+  yield takeEvery(DELETE_OFFICE_REQUEST, deleteOffice);
 }
 
 export default function* officeSaga() {

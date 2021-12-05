@@ -36,7 +36,7 @@ function Rental() {
 
   const [date, setDate] = useState('');
   const [form, setValues] = useState({
-    name: '',
+    eventName: '',
     group: '',
     purpose: '',
     phone: '',
@@ -91,19 +91,21 @@ function Rental() {
     (e) => {
       e.preventDefault();
 
-      const { name, group, purpose, phone, email, duration } = form;
+      const { eventName, group, purpose, phone, email, duration } = form;
 
       const data = {
         additionalEmail: email,
         additionalMobile: phone,
-        facility: facility.facilityName,
+        facility: facility.name,
         group,
-        hirer: name,
+        eventName,
         memberId: userId,
         purpose,
         rentalDays: duration,
         startDate: date,
       };
+
+      console.log(data);
 
       dispatch(rentAction(data));
     },
@@ -208,18 +210,18 @@ function Rental() {
             <form onSubmit={onSubmit}>
               <label for="name">대관자 : </label>
               <ContentInput
-                type="name"
-                name="name"
-                id="name"
-                placeholder="대관자를 입력하세요"
+                type="text"
+                name="eventName"
+                id="eventName"
+                placeholder="이벤트명을 입력하세요"
                 onChange={onChange}
               />
-              <label for="group">인원 : </label>
+              <label for="group">그룹명 : </label>
               <ContentInput
                 type="text"
                 name="group"
                 id="group"
-                placeholder="인원을 입력해주세요(Ex. 3명)"
+                placeholder="그룹명을 입력해주세요"
                 onChange={onChange}
               />
               <label for="purpose">대관 목적 : </label>

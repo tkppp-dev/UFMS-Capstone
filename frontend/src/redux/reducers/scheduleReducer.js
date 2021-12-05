@@ -1,10 +1,14 @@
 import {
+  NOTICE_FAILURE,
+  NOTICE_REQUEST,
+  NOTICE_SUCCESS,
   SCHEDULE_ADD_FAILURE,
   SCHEDULE_ADD_REQUEST,
   SCHEDULE_ADD_SUCCESS,
   SCHEDULE_DELETE_FAILURE,
   SCHEDULE_DELETE_REQUEST,
   SCHEDULE_DELETE_SUCCESS,
+  SCHEDULE_FAILURE,
   SCHEDULE_LIST_FAILURE,
   SCHEDULE_LIST_REQUEST,
   SCHEDULE_LIST_SUCCESS,
@@ -14,6 +18,8 @@ import {
   SCHEDULE_NOW_FAILURE,
   SCHEDULE_NOW_REQUEST,
   SCHEDULE_NOW_SUCCESS,
+  SCHEDULE_REQUEST,
+  SCHEDULE_SUCCESS,
   SEARCH_SUBJECT_FAILURE,
   SEARCH_SUBJECT_REQUEST,
   SEARCH_SUBJECT_SUCCESS,
@@ -21,8 +27,10 @@ import {
 
 const initialState = {
   loading: false,
+  schedule: [],
   schedules: [],
   subjects: [],
+  notices: [],
   now: '',
   next: '',
 };
@@ -35,18 +43,27 @@ export default function (state = initialState, action) {
     case SCHEDULE_NEXT_REQUEST:
     case SEARCH_SUBJECT_REQUEST:
     case SCHEDULE_ADD_REQUEST:
+    case NOTICE_REQUEST:
+    case SCHEDULE_REQUEST:
       return {
         ...state,
         loading: true,
       };
 
+    case SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        schedule: action.payload,
+      };
     case SCHEDULE_LIST_SUCCESS:
       return {
         ...state,
         loading: false,
-        schedules: action.payload[0],
+        schedules: action.payload,
       };
     case SCHEDULE_DELETE_SUCCESS:
+      window.location.reload();
       return {
         ...state,
         loading: false,
@@ -76,7 +93,15 @@ export default function (state = initialState, action) {
         ...state,
         loading: false,
       };
+    case NOTICE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        notices: action.payload,
+      };
 
+    case NOTICE_FAILURE:
+    case SCHEDULE_FAILURE:
     case SCHEDULE_ADD_FAILURE:
     case SCHEDULE_LIST_FAILURE:
     case SCHEDULE_DELETE_FAILURE:

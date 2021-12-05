@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   loadOfficeAction,
+  officeAddAction,
   officeDeleteAction,
   officeEditAction,
   officeEditStateAction,
@@ -19,10 +20,14 @@ import {
 
 function ManageOffice() {
   const [isModalVisible, setisModalVisible] = useState(false);
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+
   const [modalValue, setModalValue] = useState({
     id: '',
     notice: '',
     state: '',
+    name: '',
+    location: '',
   });
 
   const showModal = (labId, notice, state) => {
@@ -35,6 +40,10 @@ function ManageOffice() {
     });
   };
 
+  const showAddModal = () => {
+    setIsAddModalVisible(true);
+  };
+
   const handleOk = () => {
     setisModalVisible(false);
   };
@@ -42,14 +51,24 @@ function ManageOffice() {
     setisModalVisible(false);
   };
 
-  const { userId } = useSelector((state) => state.auth);
+  const handleAddOk = () => {
+    setIsAddModalVisible(false);
+  };
+  const handleAddCancel = () => {
+    setIsAddModalVisible(false);
+  };
+
+  const { user, userId } = useSelector((state) => state.auth);
   const { office } = useSelector((state) => state.office);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadOfficeAction(userId));
-  }, [dispatch, userId]);
+    const data = {
+      professorName: user.username,
+    };
+    dispatch(loadOfficeAction(data));
+  }, [dispatch, user]);
 
   const onChange = (e) => {
     setModalValue({
@@ -64,8 +83,6 @@ function ManageOffice() {
 
       const { id, notice } = modalValue;
       const data = { id: id, notice };
-
-      console.log(data);
 
       dispatch(officeEditAction(data));
     },
@@ -85,20 +102,42 @@ function ManageOffice() {
   );
 
   const onDeleteClick = useCallback(
-    (id) => {
-      dispatch(officeDeleteAction(id));
+    (e) => {
+      var result = window.confirm('글을 삭제하시겠습니까?');
+
+      if (result) {
+        dispatch(officeDeleteAction(e));
+
+        window.location.reload();
+      }
     },
     [dispatch],
+  );
+
+  const onAddOffice = useCallback(
+    (e) => {
+      const { name, location } = modalValue;
+
+      const data = {
+        name,
+        location,
+        memberId: userId,
+      };
+
+      dispatch(officeAddAction(data));
+    },
+    [dispatch, modalValue],
   );
 
   return (
     <ManageContainer>
       <Title>
         <h2>사무실 / 연구실 관리</h2>
+        <Button onClick={showAddModal}>추가하기</Button>
       </Title>
       <Row>
-        {Array.isArray(office.data)
-          ? office.data.map((off) => (
+        {Array.isArray(office)
+          ? office.map((off) => (
               <ColBox key={off.labId} span={8} style={{ marginBottom: '16px' }}>
                 <Card
                   title={off.name}
@@ -151,6 +190,31 @@ function ManageOffice() {
           />
           <Button onClick={onEditStateSubmit}>수정하기</Button>
         </ModalContainer>
+      </Modal>
+      <Modal
+        visible={isAddModalVisible}
+        onOk={handleAddOk}
+        onCancel={handleAddCancel}
+        footer=""
+        width={800}
+      >
+        <div id="modal-container">
+          <Input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="연구실명을 입력해주세요."
+            onChange={onChange}
+          />
+          <Input
+            type="text"
+            id="location"
+            name="location"
+            placeholder="위치를 입력해주세요."
+            onChange={onChange}
+          />
+          <Button onClick={onAddOffice}>추가하기</Button>
+        </div>
       </Modal>
     </ManageContainer>
   );

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ScheduleContainer, Wrap } from './style';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  scheduleAction,
   scheduleDeleteAction,
   scheduleListAction,
 } from 'redux/actions/schedule_actions';
@@ -11,21 +12,24 @@ import { Link } from 'react-router-dom';
 const { Option } = Select;
 
 function Schedule() {
-  const [data, setData] = useState('');
+  const [data, setData] = useState([]);
   const [week, setWeek] = useState(['일', '월', '화', '수', '목', '금', '토']);
   const [selectWeek, setSelectWeek] = useState('');
 
   const { isAuthenticated, user } = useSelector((state) => state.auth);
-  const { schedules } = useSelector((state) => state.schedule);
+  const { schedule, schedules } = useSelector((state) => state.schedule);
 
   const dispatch = useDispatch();
 
   const handleChange = (value) => {
     setSelectWeek(value);
+    setData([]);
   };
 
   const onDeleteSchedule = useCallback(
-    (scheduleId) => {
+    (id) => {
+      const scheduleId = id;
+
       dispatch(scheduleDeleteAction(scheduleId));
     },
     [dispatch],
@@ -33,42 +37,38 @@ function Schedule() {
 
   useEffect(() => {
     let today = new Date();
+    let end = new Date();
 
-    // const data = {
-    //   memberId: user.memberId,
-    //   startDate: today.toISOString().slice(0, 10),
-    //   endDate: today.toISOString().slice(0, 10),
-    // };
+    end.setDate(today.getDate() + 7);
 
     const data = {
-      endDate: '2021-12-04',
-      memberId: 0,
-      startDate: '2021-12-04',
+      memberId: user ? user.memberId : '',
+      startDate: today.toISOString().slice(0, 10),
+      endDate: end.toISOString().slice(0, 10),
     };
 
-    dispatch(scheduleListAction(data));
-  }, [dispatch]);
+    dispatch(scheduleAction(data));
+    dispatch(scheduleListAction(data.memberId));
+  }, [dispatch, user]);
 
-  const information = Array.isArray(schedules)
-    ? schedules.map(
-        (
-          date,
-          reservationName,
-          facility,
-          time,
-          reservationStatus,
-          reservationId,
-        ) =>
-          week[new Date(schedules.data).getDay()] === selectWeek ? (
-            <Col span={6} style={{ marginBottom: '16px' }} key={reservationId}>
+  const info = Array.isArray(schedule)
+    ? schedule.map((data) => {
+        data.map((dt) =>
+          week[new Date(dt.date).getDay()] === selectWeek ? (
+            <Col
+              span={6}
+              style={{ marginBottom: '16px' }}
+              key={dt.reservationId}
+            >
+              {console.log(dt)}
               <Card
-                title={reservationName}
+                title={dt.reservationName}
                 extra={
                   <div
-                    // onClick={() => showModal(building)}
+                    onClick={() => onDeleteSchedule(dt.reservationId)}
                     style={{ color: '#1990ff', cursor: 'pointer' }}
                   >
-                    More
+                    삭제
                   </div>
                 }
                 style={{
@@ -76,21 +76,21 @@ function Schedule() {
                   height: '200px',
                 }}
               >
-                <div>날짜 : {date}</div>
-                <div>시간 : {time}</div>
-                <div>장소 : {facility}</div>
-                <div>상태 : {reservationStatus}</div>
+                <div>날짜 : {dt.date}</div>
+                <div>시간 : {dt.time}</div>
+                <div>장소 : {dt.facility}</div>
+                <div>상태 : {dt.reservationStatus}</div>
               </Card>
             </Col>
           ) : (
             ''
           ),
-      )
+        );
+      })
     : '';
 
   return (
     <ScheduleContainer>
-      {console.log(schedules)}
       {isAuthenticated ? (
         <div
           style={{
@@ -121,11 +121,41 @@ function Schedule() {
 
       <div style={{ width: '90%', marginLeft: '5%' }}>
         <Row>
-          {isAuthenticated ? (
-            information
-          ) : (
-            <Wrap>로그인이 필요한 서비스입니다.</Wrap>
-          )}
+          {isAuthenticated ? info : <Wrap>로그인이 필요한 서비스입니다.</Wrap>}
+        </Row>
+        <Row>
+          {isAuthenticated
+            ? Array.isArray(schedules)
+              ? schedules.map((schedule) => (
+                  <Col
+                    span={6}
+                    style={{ marginBottom: '16px' }}
+                    key={schedule.scheduleId}
+                  >
+                    <Card
+                      title={schedule.subjectName}
+                      extra={
+                        <div
+                          onClick={() => onDeleteSchedule(schedule.scheduleId)}
+                          style={{ color: '#1990ff', cursor: 'pointer' }}
+                        >
+                          삭제
+                        </div>
+                      }
+                      style={{
+                        width: 300,
+                        height: '200px',
+                      }}
+                    >
+                      <div>교과명 : {schedule.subjectName}</div>
+                      <div>위치 : {schedule.room}</div>
+                      <div>교수 : {schedule.professor}</div>
+                      <div>시간 : {schedule.lectureDate}</div>
+                    </Card>
+                  </Col>
+                ))
+              : ''
+            : ''}
         </Row>
       </div>
       {isAuthenticated ? '' : <Wrap>로그인이 필요한 서비스입니다.</Wrap>}

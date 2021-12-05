@@ -15,9 +15,8 @@ export const Wrap = styled.div`
   border-radius: 4px;
   background-color: white;
   border-bottom: 5px solid #1990ff;
+  margin-left: 32%;
 
-  display: flex;
-  justify-content: center;
-
+  text-align: center;
   padding: 3%;
 `;

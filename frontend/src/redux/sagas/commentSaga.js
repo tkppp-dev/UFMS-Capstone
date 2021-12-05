@@ -69,7 +69,13 @@ function* watchcommentUpload() {
 
 // Edit
 const commentEditAPI = (payload) => {
-  return axios.put(`/inquiry/comment/${payload.commentId}`, payload);
+  console.log(payload.comment);
+
+  const data = {
+    comment: payload.comment,
+  };
+
+  return axios.put(`/inquiry/comment/${payload.commentId}`, data);
 };
 
 function* commentEditPlace(action) {

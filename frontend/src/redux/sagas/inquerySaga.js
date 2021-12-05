@@ -120,13 +120,15 @@ function* watchinqueryEdit() {
 }
 
 // Delete
-const inqueryDeleteAPI = (id) => {
-  return axios.delete(`/inquiry/${id}`);
+const inqueryDeleteAPI = (payload) => {
+  return axios.delete(`/inquiry/${payload}`);
 };
 
 function* inqueryDelete(action) {
   try {
     const result = yield call(inqueryDeleteAPI, action.payload);
+
+    console.log('here');
 
     yield put({
       type: INQUERY_DELETE_SUCCESS,

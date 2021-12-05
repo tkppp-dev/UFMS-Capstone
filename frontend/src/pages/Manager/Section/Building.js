@@ -4,6 +4,7 @@ import { ManagerContainer, Wrap } from '../style';
 import { Button, Input, Form, Select, Table } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import {
+  addBuildingAction,
   addFacilityAction,
   deleteFacilityAction,
 } from 'redux/actions/manager_actions';
@@ -85,17 +86,17 @@ function Manager() {
     (e) => {
       e.preventDefault();
 
-      const { building, name, capacity, category, cost, floor } = value;
+      const { building, capacity, category, cost, floor } = value;
       const data = {
         building,
-        name,
+        name: building,
         capacity,
         category,
         cost,
         floor,
       };
 
-      dispatch(addFacilityAction(data));
+      dispatch(addBuildingAction(data));
     },
     [value],
   );
@@ -120,9 +121,10 @@ function Manager() {
         category: editcategory,
         cost: editcost,
         floor: editfloor,
+        id: classes.id,
       };
 
-      // dispatch(editFacilityAction(data));
+      // dispatch(editBuildingAction(data));
     },
     [editData, dispatch],
   );
@@ -218,25 +220,16 @@ function Manager() {
         width={800}
       >
         <div id="modal-container">
-          <h1>시설물 추가</h1>
+          <h1>건물 추가</h1>
           <hr />
           <Form style={{ marginTop: '16px' }} onFinish={onSubmit}>
-            <Form.Item label="빌딩명">
+            <Form.Item label="건물명">
               <Input
                 id="building"
                 name="building"
                 type="text"
                 onChange={onChange}
-                placeholder="빌딩명을 입력해주세요"
-              />
-            </Form.Item>
-            <Form.Item label="시설명">
-              <Input
-                id="name"
-                name="name"
-                type="text"
-                onChange={onChange}
-                placeholder="시설명을 입력해주세요"
+                placeholder="건물명을 입력해주세요"
               />
             </Form.Item>
             <Form.Item label="수용인원">
@@ -290,16 +283,16 @@ function Manager() {
         width={800}
       >
         <div id="modal-container">
-          <h1>시설물 추가</h1>
+          <h1>건물 변경</h1>
           <hr />
           <Form style={{ marginTop: '16px' }} onFinish={onEditSubmit}>
-            <Form.Item label="빌딩명">
+            <Form.Item label="건물명">
               <Input
                 id="editbuilding"
                 name="editbuilding"
                 type="text"
                 onChange={onEditChange}
-                placeholder="빌딩명을 입력해주세요"
+                placeholder="건물명을 입력해주세요"
               />
             </Form.Item>
             <Form.Item label="시설명">
@@ -352,7 +345,7 @@ function Manager() {
               style={{ width: '100%' }}
               onClick={onEditSubmit}
             >
-              추가하기
+              수정하기
             </Button>
           </Form>
         </div>

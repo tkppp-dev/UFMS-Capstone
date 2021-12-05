@@ -15,7 +15,7 @@ export const Wrap = styled.div`
 export const Profile = styled.div`
   background-color: white;
   width: 48%;
-  height: 420px;
+  min-height: 420px;
   padding: 32px;
   border-bottom: 3px solid #1990ff;
 

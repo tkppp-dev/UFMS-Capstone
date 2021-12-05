@@ -1,74 +1,48 @@
 import { Button, Input, Table } from 'antd';
 import Form from 'antd/lib/form/Form';
+import { ScaContainer } from 'pages/ScheduleAdd/style';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { loadOfficeAction } from 'redux/actions/office_actions';
 import {
   addScheduleAction,
   searchSubjectAction,
 } from 'redux/actions/schedule_actions';
-import { ScaContainer } from './style';
 
-function ScheduleAdd() {
+function AllOffice() {
   const [value, setValues] = useState({
     subject: '',
     subjectId: 0,
+    professorName: '',
   });
 
   const { user, userId } = useSelector((state) => state.auth);
-  const { subjects } = useSelector((state) => state.schedule);
+  const { office } = useSelector((state) => state.office);
 
   const dispatch = useDispatch();
 
   const columns = [
     {
-      title: '과목명',
-      dataIndex: 'subjectName',
+      title: '연구실 명',
+      dataIndex: 'name',
       align: 'center',
-    },
-    {
-      title: '분반',
-      align: 'center',
-      dataIndex: 'classroom',
-    },
-    {
-      title: '이수구분',
-      align: 'center',
-      dataIndex: 'completionType',
-    },
-    {
-      title: '날짜/시간',
-      align: 'center',
-      dataIndex: 'lectureDate',
-    },
-    {
-      title: '교수',
-      align: 'center',
-      dataIndex: 'professor',
     },
     {
       title: '위치',
       align: 'center',
-      dataIndex: 'room',
+      dataIndex: 'location',
     },
     {
-      title: '학기',
+      title: '공지사항',
       align: 'center',
-      dataIndex: 'semester',
+      dataIndex: 'notice',
+    },
+    {
+      title: '상태',
+      align: 'center',
+      dataIndex: 'state',
     },
   ];
-
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      setValues({
-        subjectId: selectedRowKeys[0],
-      });
-    },
-    getCheckboxProps: (record) => ({
-      disabled: record.name === 'Disabled User',
-      // Column configuration not to be checked
-      name: record.name,
-    }),
-  };
 
   const onChange = (e) => {
     setValues({
@@ -81,11 +55,10 @@ function ScheduleAdd() {
       e.preventDefault();
 
       const data = {
-        searchData: value.subject,
-        type: user.privileges === 'PROFESSOR' ? 'professor' : 'subject',
+        professorName: value.professorName,
       };
 
-      dispatch(searchSubjectAction(data));
+      dispatch(loadOfficeAction(data));
     },
     [dispatch, value],
   );
@@ -99,8 +72,6 @@ function ScheduleAdd() {
         subjectId: value.subjectId,
       };
 
-      console.log(data);
-
       dispatch(addScheduleAction(data));
     },
     [dispatch, value, userId],
@@ -108,14 +79,15 @@ function ScheduleAdd() {
 
   return (
     <ScaContainer>
-      <h1>스케줄 추가하기</h1>
+      {console.log(office)}
+      <h1>연구실 확인</h1>
       <hr />
       <div style={{ marginTop: '16px', marginBottom: '32px' }}>
         <Form style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Input
-            id="subject"
-            name="subject"
-            placeholder="검색할 과목을 입력하세요"
+            id="professorName"
+            name="professorName"
+            placeholder="검색할 교수명을 입력하세요"
             onChange={onChange}
             style={{ marginRight: '8px' }}
           />
@@ -125,14 +97,9 @@ function ScheduleAdd() {
         </Form>
       </div>
       <Table
-        rowSelection={{
-          type: 'radio',
-          ...rowSelection,
-        }}
-        rowKey={'id'}
         pagination={{ position: ['none', 'none'] }}
         columns={columns}
-        dataSource={Array.isArray(subjects) ? subjects : []}
+        dataSource={Array.isArray(office) ? office : []}
       />
       <Button
         type="primary"
@@ -148,4 +115,4 @@ function ScheduleAdd() {
   );
 }
 
-export default ScheduleAdd;
+export default AllOffice;

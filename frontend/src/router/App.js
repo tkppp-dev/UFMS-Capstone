@@ -18,13 +18,14 @@ import Manager from 'pages/Manager';
 import ManageOffice from 'pages/ManageOffice';
 import AddOffice from 'pages/AddOffice';
 import Rental from 'pages/Rental';
+import ScheduleAdd from 'pages/ScheduleAdd';
+import Building from 'pages/Manager/Section/Building';
+import Rent from 'pages/Manager/Section/Rent';
+import AllOffice from 'pages/AllOffice';
 
 // components
 import Navbar from 'components/Navbar';
 import Footer from 'components/Footer/index';
-import ScheduleAdd from 'pages/ScheduleAdd';
-import Building from 'pages/Manager/Section/Building';
-import Rent from 'pages/Manager/Section/Rent';
 
 function App() {
   let Navigation =
@@ -49,6 +50,8 @@ function App() {
 
         <Route path="/manage/office" exact component={ManageOffice} />
         <Route path="/manage/office/add" exact component={AddOffice} />
+
+        <Route path="/office/all" exact component={AllOffice} />
 
         <Route path="/rental" exact component={Rental} />
 

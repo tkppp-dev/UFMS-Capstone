@@ -1,15 +1,22 @@
 import {
+  NOTICE_REQUEST,
   SCHEDULE_ADD_REQUEST,
   SCHEDULE_DELETE_REQUEST,
   SCHEDULE_LIST_REQUEST,
   SCHEDULE_NEXT_REQUEST,
   SCHEDULE_NOW_REQUEST,
+  SCHEDULE_REQUEST,
   SEARCH_SUBJECT_REQUEST,
 } from 'redux/types/schedule_types';
 
 // 스케줄 리스트
-export const scheduleListAction = (data) => ({
+export const scheduleListAction = (id) => ({
   type: SCHEDULE_LIST_REQUEST,
+  payload: id,
+});
+
+export const scheduleAction = (data) => ({
+  type: SCHEDULE_REQUEST,
   payload: data,
 });
 
@@ -41,4 +48,10 @@ export const scheduleNextAction = (id) => ({
 export const searchSubjectAction = (data) => ({
   type: SEARCH_SUBJECT_REQUEST,
   payload: data,
+});
+
+// 공지
+export const noticeAction = (id) => ({
+  type: NOTICE_REQUEST,
+  payload: id,
 });

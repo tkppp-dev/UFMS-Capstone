@@ -9,6 +9,7 @@ import reservationReducer from './reservationReducer';
 import officeReducer from './officeReducer';
 import rentalReducer from './rentalReducer';
 import scheduleReducer from './scheduleReducer';
+import managerReducer from './managerReducer';
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -21,6 +22,7 @@ const createRootReducer = (history) =>
     office: officeReducer,
     rental: rentalReducer,
     schedule: scheduleReducer,
+    manager: managerReducer,
   });
 
 export default createRootReducer;

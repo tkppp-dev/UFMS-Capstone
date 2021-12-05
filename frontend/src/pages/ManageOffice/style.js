@@ -10,6 +10,8 @@ export const ManageContainer = styled.div`
 export const Title = styled.div`
   border-bottom: 1px solid #dbdbdb;
   margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 export const ColBox = styled(Col)`

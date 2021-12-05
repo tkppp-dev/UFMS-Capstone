@@ -44,7 +44,7 @@ const commentReducer = (state = initialState, action) => {
       };
     case UPLOAD_COMMENT_SUCCESS:
     case EDIT_COMMENT_SUCCESS:
-      // window.location.reload();
+      window.location.reload();
 
       return {
         ...state,

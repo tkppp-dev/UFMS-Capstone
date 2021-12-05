@@ -40,8 +40,13 @@ function Navbar() {
               스케줄 관리
             </Link>
           </div>
+          <div>
+            <Link className="ant-dropdown-link" to="/office/all">
+              연구실 확인
+            </Link>
+          </div>
         </MenuContainer>
-        <SearchInput />
+        <div style={{ width: '30%' }}></div>
         <LoginModal buttonType="link" />
         {isAuthenticated ? (
           <Link to={`/user/mypage/${userId}`}>
