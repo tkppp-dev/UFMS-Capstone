@@ -46,12 +46,14 @@ public class FTPUploader2 {
     }
 
 
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 29/59 * * * *")
     @Transactional
     public void ESL_FTP() throws Exception {
         String facility = "센B206";
-        LocalDate date = LocalDate.of(2021, 12, 16);
-        LocalDateTime localDateTime= LocalDateTime.of(date,LocalTime.of(12,30)).plusMinutes(7);
+//        LocalDate date = LocalDate.of(2021, 12, 16);
+        LocalDate date = LocalDate.now();
+//        LocalDateTime localDateTime= LocalDateTime.of(date,LocalTime.of(12,30)).plusMinutes(7);
+        LocalDateTime localDateTime= LocalDateTime.now().plusMinutes(4);
 
         FacilityDateRequestDto requestDto = new FacilityDateRequestDto(facility, date);
 
@@ -59,9 +61,8 @@ public class FTPUploader2 {
         Facility facility1 = facilityRepository.findByName(requestDto.getFacility());
         LocalDateTime startDatetime = LocalDateTime.of(requestDto.getDate(), LocalTime.of(0, 0, 0));
         LocalDateTime endDatetime = LocalDateTime.of(requestDto.getDate(), LocalTime.of(23, 59, 59));
-        System.out.println(facility1.getId()+"sssssssssssssssssssss");
         List<Reservation> reservations = reservationRepository
-                .findAllByFacilityAndReservationStatusAndStartTimeBetween(facility1, ReservationStatus.COMPLETE, startDatetime, endDatetime);
+                .findAllByFacilityAndStartTimeBetween(facility1,  startDatetime, endDatetime);
 
         ReservationComparator reservationComparator = new ReservationComparator();
         Collections.sort(reservations,reservationComparator);
@@ -88,7 +89,7 @@ public class FTPUploader2 {
         while( iterator.hasNext()){
             Reservation r=  iterator.next();
             System.out.println(r.toString());
-            if(r.getStartTime().isBefore(localDateTime) && localDateTime.isBefore(r.getEndTime())  ) {
+            if(r.getStartTime().isBefore(localDateTime) && localDateTime.isBefore(r.getEndTime()) &&r.getReservationStatus()!=ReservationStatus.CANCEL ) {
                 reservationsArr[0]=r;
                 flag=true;
                 break;
@@ -131,7 +132,6 @@ public class FTPUploader2 {
         String name2="";
         String status2="";
 
-
         if(reservationsArr[0].getStartTime()!=null) {
             startTime = reservationsArr[0].getStartTime().getHour() + ":" + String.format("%02d", reservationsArr[0].getStartTime().getMinute());
             endTime = reservationsArr[0].getEndTime().getHour() + ":" + String.format("%02d", reservationsArr[0].getEndTime().getMinute());
@@ -139,6 +139,8 @@ public class FTPUploader2 {
             username=reservationsArr[0].getMember().getUsername();
             name=reservationsArr[0].getReservationName();
             status="사용 중";
+            reservationsArr[0].setReservationStatus(ReservationStatus.ING);
+
 
         }
         if(reservationsArr[1].getStartTime()!=null) {
@@ -149,6 +151,8 @@ public class FTPUploader2 {
             username2 = reservationsArr[1].getMember().getUsername();
             name2=reservationsArr[1].getReservationName();
             status2="대기 중";
+            reservationsArr[1].setReservationStatus(ReservationStatus.WAIT);
+
         }
 //        String professor=reservations.
 
@@ -212,8 +216,11 @@ public class FTPUploader2 {
 
         System.out.println("===========당일 수업 목록 ============");
 
-        for( Reservation rr: reservations)
-            System.out.println(rr.toString()+"ch");
+        for( Reservation rr: reservations) {
+            System.out.println(rr.toString() + "ch");
+            if(localDateTime.isAfter(rr.getEndTime()))
+                rr.setReservationStatus(ReservationStatus.END);
+        }
         System.out.println("===========ESL 표시 될 항목 ============");
 
         System.out.println(reservationsArr[0]);
@@ -222,17 +229,57 @@ public class FTPUploader2 {
 
     }
 
+    @Scheduled(cron = "0 28/58 * * * *")
+    @Transactional
+    public void ESL_ALL() throws Exception {
 
+        LocalDate date = LocalDate.now();
+//        date = LocalDate.of(2021, 12, 17);
+
+//        LocalDateTime localDateTime= LocalDateTime.of(date,LocalTime.of(12,30)).plusMinutes(7);
+        LocalDateTime localDateTime= LocalDateTime.now().plusMinutes(4);
+
+
+
+        LocalDateTime startDatetime = LocalDateTime.of(date, LocalTime.of(0, 0, 0));
+        LocalDateTime endDatetime = LocalDateTime.of(date, LocalTime.of(23, 59, 59));
+        List<Reservation> reservations = reservationRepository
+                .findAllByStartTimeBetween(  startDatetime, endDatetime);
+
+        ReservationComparator reservationComparator = new ReservationComparator();
+        Collections.sort(reservations,reservationComparator);
+
+        Iterator<Reservation> iterator = reservations.iterator();
+        boolean flag=false;
+
+        while( iterator.hasNext()){
+            Reservation r=  iterator.next();
+            if(r.getReservationStatus()==ReservationStatus.CANCEL)continue;
+            if(r.getStartTime().isBefore(localDateTime) && localDateTime.isBefore(r.getEndTime())  ) {
+                r.setReservationStatus(ReservationStatus.ING);
+
+            }
+            else if(localDateTime.isAfter(r.getEndTime()))
+                r.setReservationStatus(ReservationStatus.END);
+            else if(localDateTime.isBefore(r.getEndTime()))
+                r.setReservationStatus(ReservationStatus.WAIT);
+
+            System.out.println(r.toString());
+
+        }
+
+
+    }
 
     class ReservationComparator implements Comparator<Reservation>{
         @Override
         public int compare(Reservation r1, Reservation r2){
-                if (r1.getStartTime().isBefore(r2.getStartTime()))
-                    return -1;
-                else if (r2.getStartTime().isBefore(r1.getStartTime())){
-                    return 1;
-                }
-                else return 0;
+            if (r1.getStartTime().isBefore(r2.getStartTime()))
+                return -1;
+            else if (r2.getStartTime().isBefore(r1.getStartTime())){
+                return 1;
+            }
+            else return 0;
 
         }
     }
