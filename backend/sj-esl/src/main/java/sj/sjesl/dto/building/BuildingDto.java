@@ -12,7 +12,7 @@ public class BuildingDto {
 
 
     @Data
-    public static class Request {
+    public static class RequestBuilding {
         private String name;
 
         private String img;
@@ -26,7 +26,7 @@ public class BuildingDto {
     }
 
     @Data
-    public static class DeleteId {
+    public static class BuildingDeleteId {
         private Long buildingId;
     }
 

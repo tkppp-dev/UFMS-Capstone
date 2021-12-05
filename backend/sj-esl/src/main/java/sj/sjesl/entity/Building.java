@@ -39,7 +39,7 @@ public class Building {
         this.lowestFloor = lowestFloor;
     }
 
-    public Building(BuildingDto.Request dto) {
+    public Building(BuildingDto.RequestBuilding dto) {
         this.name = dto.getName();
         this.img = dto.getImg();
         this.description = dto.getDescription();
@@ -47,7 +47,7 @@ public class Building {
         this.lowestFloor = dto.getLowestFloor();
     }
 
-    public void update(BuildingDto.Request dto){
+    public void update(BuildingDto.RequestBuilding dto){
         this.name = dto.getName();
         this.img = dto.getImg();
         this.description = dto.getDescription();
