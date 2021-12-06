@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 import styled from 'styled-components/native';
 import {
   Alert,
@@ -7,6 +13,7 @@ import {
   View,
   TouchableOpacity,
   FlatList,
+  RefreshControl,
 } from 'react-native';
 import { Portal, Provider } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
@@ -60,6 +67,7 @@ const StyledText = styled.Text`
 
 const ProfessorMyPage = function ({ navigation }) {
   const { state, dispatch } = useContext(Context);
+  const [refreshing, setRefreshing] = useState(false);
   const [previlege, setPrevilege] = useState();
   const [officeList, setOfficeList] = useState([]);
   const [selectedLab, setSelectedLab] = useState(null);
@@ -73,6 +81,13 @@ const ProfessorMyPage = function ({ navigation }) {
       headerTitleAlign: 'center',
       title: '마이페이지',
     });
+  });
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
   });
 
   const getOfficeList = async function () {
@@ -172,7 +187,11 @@ const ProfessorMyPage = function ({ navigation }) {
 
   return (
     <Provider>
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <Container>
           <ContentContainer>
             <ContentTopColorRow />
