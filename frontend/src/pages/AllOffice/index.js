@@ -4,10 +4,6 @@ import { ScaContainer } from 'pages/ScheduleAdd/style';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadOfficeAction } from 'redux/actions/office_actions';
-import {
-  addScheduleAction,
-  searchSubjectAction,
-} from 'redux/actions/schedule_actions';
 
 function AllOffice() {
   const [value, setValues] = useState({
@@ -16,7 +12,6 @@ function AllOffice() {
     professorName: '',
   });
 
-  const { user, userId } = useSelector((state) => state.auth);
   const { office } = useSelector((state) => state.office);
 
   const dispatch = useDispatch();
@@ -63,23 +58,8 @@ function AllOffice() {
     [dispatch, value],
   );
 
-  const onSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-
-      const data = {
-        memberId: userId,
-        subjectId: value.subjectId,
-      };
-
-      dispatch(addScheduleAction(data));
-    },
-    [dispatch, value, userId],
-  );
-
   return (
     <ScaContainer>
-      {console.log(office)}
       <h1>연구실 확인</h1>
       <hr />
       <div style={{ marginTop: '16px', marginBottom: '32px' }}>
@@ -97,20 +77,9 @@ function AllOffice() {
         </Form>
       </div>
       <Table
-        pagination={{ position: ['none', 'none'] }}
         columns={columns}
         dataSource={Array.isArray(office) ? office : []}
       />
-      <Button
-        type="primary"
-        style={{
-          float: 'right',
-          marginTop: '16px',
-        }}
-        onClick={onSubmit}
-      >
-        추가하기
-      </Button>
     </ScaContainer>
   );
 }

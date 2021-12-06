@@ -1,44 +1,37 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ManagerContainer, Wrap } from '../style';
-import { Button, Input, Form, Select, Table } from 'antd';
+import { Button, Input, Form, Table } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import {
   addBuildingAction,
-  addFacilityAction,
   deleteFacilityAction,
+  editBuildingAction,
 } from 'redux/actions/manager_actions';
-import {
-  buildingListAction,
-  buildingListDataAction,
-} from 'redux/actions/reservation_actions';
+import { buildingListDataAction } from 'redux/actions/reservation_actions';
 import { Link } from 'react-router-dom';
-
-const { Option } = Select;
 
 function Manager() {
   const [value, setForm] = useState({
-    building: '',
     name: '',
-    capacity: 0,
-    category: '',
-    cost: 0,
-    floor: '',
+    description: '',
+    highestFloor: 0,
+    lowestFloor: 0,
+    img: '',
   });
 
   const [editData, setEdit] = useState({
-    editbuilding: '',
     editname: '',
-    editcapacity: 0,
-    editcategory: '',
-    editcost: 0,
-    editfloor: '',
+    editdescription: '',
+    edithighestFloor: 0,
+    editlowestFloor: 0,
+    editimg: '',
   });
 
   const [classData, setClassData] = useState('');
 
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const { buildingData, classes } = useSelector((state) => state.reservation);
+  const { buildingData } = useSelector((state) => state.reservation);
 
   const [isModalVisible, setisModalVisible] = useState(false);
   const [isEditModalVisible, setisEditModalVisible] = useState(false);
@@ -86,14 +79,13 @@ function Manager() {
     (e) => {
       e.preventDefault();
 
-      const { building, capacity, category, cost, floor } = value;
+      const { name, description, highestFloor, lowestFloor, img } = value;
       const data = {
-        building,
-        name: building,
-        capacity,
-        category,
-        cost,
-        floor,
+        name,
+        description,
+        highestFloor,
+        lowestFloor,
+        img,
       };
 
       dispatch(addBuildingAction(data));
@@ -106,27 +98,25 @@ function Manager() {
       e.preventDefault();
 
       const {
-        editbuilding,
         editname,
-        editcapacity,
-        editcategory,
-        editcost,
-        editfloor,
+        editdescription,
+        edithighestFloor,
+        editlowestFloor,
+        editimg,
       } = editData;
 
       const data = {
-        building: editbuilding,
+        id: classData.id,
         name: editname,
-        capacity: editcapacity,
-        category: editcategory,
-        cost: editcost,
-        floor: editfloor,
-        id: classes.id,
+        description: editdescription,
+        highestFloor: edithighestFloor,
+        lowestFloor: editlowestFloor,
+        img: editimg,
       };
 
-      // dispatch(editBuildingAction(data));
+      dispatch(editBuildingAction(data));
     },
-    [editData, dispatch],
+    [editData, dispatch, classData],
   );
 
   useEffect(() => {
@@ -135,7 +125,17 @@ function Manager() {
 
   const onDeleteClick = useCallback(
     (e) => {
-      dispatch(deleteFacilityAction(e));
+      var result = window.confirm('글을 삭제하시겠습니까?');
+
+      if (result) {
+        const data = {
+          buildingId: e,
+        };
+
+        console.log(data);
+
+        dispatch(deleteFacilityAction(data));
+      }
     },
     [dispatch],
   );
@@ -161,7 +161,13 @@ function Manager() {
       dataIndex: 'description',
       align: 'center',
       width: '73%',
-      render: (description) => <div>{description.slice(0, 80)}...</div>,
+      render: (description) => (
+        <div>
+          {description.length > 80
+            ? description.slice(0, 80) + '...'
+            : description}
+        </div>
+      ),
     },
     {
       title: 'Action',
@@ -169,7 +175,7 @@ function Manager() {
       render: (record) => (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button onClick={() => showEditModal(record)}>수정</Button>
-          <Button type="danger" onClick={() => onDeleteClick(record)}>
+          <Button type="danger" onClick={() => onDeleteClick(record.id)}>
             삭제
           </Button>
         </div>
@@ -179,6 +185,7 @@ function Manager() {
 
   return (
     <ManagerContainer>
+      {console.log(buildingData)}
       {isAuthenticated ? (
         <div
           style={{
@@ -191,11 +198,7 @@ function Manager() {
             건물 추가
           </Button>
 
-          <Table
-            columns={columns}
-            dataSource={buildingData}
-            pagination={{ position: ['none', 'none'] }}
-          />
+          <Table columns={columns} dataSource={buildingData} />
           <div
             style={{ float: 'right', marginTop: '16px', marginBottom: '32px' }}
           >
@@ -225,47 +228,47 @@ function Manager() {
           <Form style={{ marginTop: '16px' }} onFinish={onSubmit}>
             <Form.Item label="건물명">
               <Input
-                id="building"
-                name="building"
+                id="name"
+                name="name"
                 type="text"
                 onChange={onChange}
                 placeholder="건물명을 입력해주세요"
               />
             </Form.Item>
-            <Form.Item label="수용인원">
+            <Form.Item label="설명">
               <Input
-                id="capacity"
-                name="capacity"
-                type="number"
-                onChange={onChange}
-                placeholder="수용인원을 입력해주세요 (Ex. 40)"
-              />
-            </Form.Item>
-            <Form.Item label="카테고리">
-              <Input
-                id="category"
-                name="category"
+                id="description"
+                name="description"
                 type="text"
                 onChange={onChange}
-                placeholder="카테고리를 입력해주세요"
+                placeholder="설명을 입력해주세요"
               />
             </Form.Item>
-            <Form.Item label="비용">
+            <Form.Item label="최고층">
               <Input
-                id="cost"
-                name="cost"
-                type="number"
-                onChange={onChange}
-                placeholder="비용을 입력해주세요 (Ex. 30000)"
-              />
-            </Form.Item>
-            <Form.Item label="층">
-              <Input
-                id="floor"
-                name="floor"
+                id="highestFloor"
+                name="highestFloor"
                 type="text"
                 onChange={onChange}
-                placeholder="해당 시설의 층을 입력해주세요"
+                placeholder="최고층을 입력해주세요(Ex. 3)"
+              />
+            </Form.Item>
+            <Form.Item label="최저층">
+              <Input
+                id="lowestFloor"
+                name="lowestFloor"
+                type="text"
+                onChange={onChange}
+                placeholder="최저층을 입력해주세요(Ex. 1)"
+              />
+            </Form.Item>
+            <Form.Item label="이미지를">
+              <Input
+                id="img"
+                name="img"
+                type="text"
+                onChange={onChange}
+                placeholder="이미지를 입력해주세요"
               />
             </Form.Item>
             <Button type="primary" style={{ width: '100%' }} onClick={onSubmit}>
@@ -283,61 +286,52 @@ function Manager() {
         width={800}
       >
         <div id="modal-container">
-          <h1>건물 변경</h1>
+          <h1>건물 정보 수정</h1>
           <hr />
           <Form style={{ marginTop: '16px' }} onFinish={onEditSubmit}>
             <Form.Item label="건물명">
-              <Input
-                id="editbuilding"
-                name="editbuilding"
-                type="text"
-                onChange={onEditChange}
-                placeholder="건물명을 입력해주세요"
-              />
-            </Form.Item>
-            <Form.Item label="시설명">
               <Input
                 id="editname"
                 name="editname"
                 type="text"
                 onChange={onEditChange}
-                placeholder="시설명을 입력해주세요"
+                placeholder="건물명을 입력해주세요"
               />
             </Form.Item>
-            <Form.Item label="수용인원">
+            <Form.Item label="설명">
               <Input
-                id="editcapacity"
-                name="editcapacity"
-                type="number"
-                onChange={onEditChange}
-                placeholder="수용인원을 입력해주세요 (Ex. 40)"
-              />
-            </Form.Item>
-            <Form.Item label="카테고리">
-              <Input
-                id="editcategory"
-                name="editcategory"
+                id="editdescription"
+                name="editdescription"
                 type="text"
                 onChange={onEditChange}
-                placeholder="카테고리를 입력해주세요"
+                placeholder="설명을 입력해주세요"
               />
             </Form.Item>
-            <Form.Item label="비용">
+            <Form.Item label="최고층">
               <Input
-                id="editcost"
-                name="editcost"
-                type="number"
-                onChange={onEditChange}
-                placeholder="비용을 입력해주세요 (Ex. 30000)"
-              />
-            </Form.Item>
-            <Form.Item label="층">
-              <Input
-                id="editfloor"
-                name="editfloor"
+                id="edithighestFloor"
+                name="edithighestFloor"
                 type="text"
                 onChange={onEditChange}
-                placeholder="해당 시설의 층을 입력해주세요"
+                placeholder="최고층을 입력해주세요(Ex. 3)"
+              />
+            </Form.Item>
+            <Form.Item label="최저층">
+              <Input
+                id="editlowestFloor"
+                name="editlowestFloor"
+                type="text"
+                onChange={onEditChange}
+                placeholder="최저층을 입력해주세요(Ex. 1)"
+              />
+            </Form.Item>
+            <Form.Item label="이미지를">
+              <Input
+                id="editimg"
+                name="editimg"
+                type="text"
+                onChange={onEditChange}
+                placeholder="이미지를 입력해주세요"
               />
             </Form.Item>
             <Button

@@ -8,22 +8,37 @@ import {
 } from 'redux/actions/schedule_actions';
 import { Button, Card, Col, Row, Select } from 'antd';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const { Option } = Select;
 
+function getListData(value, selectWeek) {
+  let listData = [];
+  let week = ['일', '월', '화', '수', '목', '금', '토'];
+
+  value.map((data) => {
+    data.map((dt) =>
+      week[new Date(dt.date).getDay()] === selectWeek
+        ? listData.push(dt)
+        : console.log(''),
+    );
+  });
+
+  return listData;
+}
+
 function Schedule() {
-  const [data, setData] = useState([]);
-  const [week, setWeek] = useState(['일', '월', '화', '수', '목', '금', '토']);
   const [selectWeek, setSelectWeek] = useState('');
 
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { schedule, schedules } = useSelector((state) => state.schedule);
 
+  const list = getListData(schedule, selectWeek);
+
   const dispatch = useDispatch();
 
   const handleChange = (value) => {
     setSelectWeek(value);
-    setData([]);
   };
 
   const onDeleteSchedule = useCallback(
@@ -51,78 +66,58 @@ function Schedule() {
     dispatch(scheduleListAction(data.memberId));
   }, [dispatch, user]);
 
-  const info = Array.isArray(schedule)
-    ? schedule.map((data) => {
-        data.map((dt) =>
-          week[new Date(dt.date).getDay()] === selectWeek ? (
-            <Col
-              span={6}
-              style={{ marginBottom: '16px' }}
-              key={dt.reservationId}
-            >
-              {console.log(dt)}
-              <Card
-                title={dt.reservationName}
-                extra={
-                  <div
-                    onClick={() => onDeleteSchedule(dt.reservationId)}
-                    style={{ color: '#1990ff', cursor: 'pointer' }}
-                  >
-                    삭제
-                  </div>
-                }
-                style={{
-                  width: 300,
-                  height: '200px',
-                }}
+  const onDeleteReservation = useCallback((e) => {
+    axios.delete(`/reservation/${Number(e)}`).then((res) => {
+      alert('예약이 삭제되었습니다.');
+      window.location.reload();
+    });
+  }, []);
+  const info = Array.isArray(list)
+    ? list.map((data) => (
+        <Col span={6} style={{ marginBottom: '16px' }} key={data.reservationId}>
+          <Card
+            title={data.reservationName}
+            extra={
+              <div
+                onClick={() => onDeleteReservation(data.reservationId)}
+                style={{ color: '#FF4D4E', cursor: 'pointer' }}
               >
-                <div>날짜 : {dt.date}</div>
-                <div>시간 : {dt.time}</div>
-                <div>장소 : {dt.facility}</div>
-                <div>상태 : {dt.reservationStatus}</div>
-              </Card>
-            </Col>
-          ) : (
-            ''
-          ),
-        );
-      })
+                삭제
+              </div>
+            }
+            style={{
+              width: 300,
+              height: '200px',
+            }}
+          >
+            <div>날짜 : {data.date}</div>
+            <div>시간 : {data.time}</div>
+            <div>장소 : {data.facility}</div>
+            <div>상태 : {data.reservationStatus}</div>
+          </Card>
+        </Col>
+      ))
     : '';
 
   return (
     <ScheduleContainer>
-      {isAuthenticated ? (
-        <div
-          style={{
-            marginTop: '32px',
-            marginBottom: '32px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginLeft: '5%',
-            marginRight: '5%',
-          }}
-        >
-          <Select defaultValue="월" onChange={handleChange}>
-            <Option value="월">월요일</Option>
-            <Option value="화">화요일</Option>
-            <Option value="수">수요일</Option>
-            <Option value="목">목요일</Option>
-            <Option value="금">금요일</Option>
-            <Option value="토">토요일</Option>
-            <Option value="일">일요일</Option>
-          </Select>
-          <Button type="primary">
-            <Link to="/schedule/add">스케줄 추가</Link>
-          </Button>
-        </div>
-      ) : (
-        ''
-      )}
+      <div
+        style={{
+          width: '90%',
+          marginLeft: '5%',
+          marginTop: '32px',
+          borderBottom: '1px solid #dbdbdb',
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <h1>강의 스케줄</h1>
+        <Button type="primary">
+          <Link to="/schedule/add">강의 스케줄 추가</Link>
+        </Button>
+      </div>
 
-      <div style={{ width: '90%', marginLeft: '5%' }}>
-        <Row>
-          {isAuthenticated ? info : <Wrap>로그인이 필요한 서비스입니다.</Wrap>}
-        </Row>
+      <div style={{ width: '90%', marginLeft: '5%', marginTop: '32px' }}>
         <Row>
           {isAuthenticated
             ? Array.isArray(schedules)
@@ -137,7 +132,7 @@ function Schedule() {
                       extra={
                         <div
                           onClick={() => onDeleteSchedule(schedule.scheduleId)}
-                          style={{ color: '#1990ff', cursor: 'pointer' }}
+                          style={{ color: '#FF4D4E', cursor: 'pointer' }}
                         >
                           삭제
                         </div>
@@ -156,6 +151,46 @@ function Schedule() {
                 ))
               : ''
             : ''}
+        </Row>
+
+        <div
+          style={{
+            marginTop: '64px',
+            borderBottom: '1px solid #dbdbdb',
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
+          <h1>강의실 예약 내역</h1>
+          {isAuthenticated ? (
+            <div>
+              <Select defaultValue="X" onChange={handleChange}>
+                <Option value="X">요일을 선택하세요</Option>
+                <Option value="월">월요일</Option>
+                <Option value="화">화요일</Option>
+                <Option value="수">수요일</Option>
+                <Option value="목">목요일</Option>
+                <Option value="금">금요일</Option>
+                <Option value="토">토요일</Option>
+                <Option value="일">일요일</Option>
+              </Select>
+            </div>
+          ) : (
+            ''
+          )}
+        </div>
+
+        <Row style={{ marginTop: '32px', marginBottom: '64px' }}>
+          {isAuthenticated ? info : <Wrap>로그인이 필요한 서비스입니다.</Wrap>}
+          {Array.isArray(list) ? (
+            list.length <= 0 ? (
+              <div>예약 내역이 존재하지 않습니다.</div>
+            ) : (
+              ''
+            )
+          ) : (
+            ''
+          )}
         </Row>
       </div>
       {isAuthenticated ? '' : <Wrap>로그인이 필요한 서비스입니다.</Wrap>}

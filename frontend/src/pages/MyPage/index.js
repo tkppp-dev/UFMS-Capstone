@@ -30,16 +30,14 @@ function MyPage() {
 
   return (
     <MyPageContainer>
-      {/* {user.privileges === 'ADMIN' ? (
+      {user.privileges === 'ADMIN' ? (
         <Button type="primary" style={{ marginLeft: '5%', marginTop: '32px' }}>
           <Link to="/manager">관리자 페이지로 이동</Link>
         </Button>
       ) : (
         ''
-      )} */}
-      <Button type="primary" style={{ marginLeft: '5%', marginTop: '32px' }}>
-        <Link to="/manager">관리자 페이지로 이동</Link>
-      </Button>
+      )}
+
       <Wrap>
         <Profile>
           <div>
@@ -48,10 +46,11 @@ function MyPage() {
               <b>이름</b> : {user.username}
             </div>
           </div>
-          {/* {user.privileges === 'PROFESSOR' ? (
-            <div>
-              {Array.isArray(office.data)
-                ? office.data.map((off) => (
+          {user.privileges === 'PROFESSOR' ? (
+            <div style={{ borderBottom: '1px solid #dbdbdb' }}>
+              <h2>나의 사무실 / 연구실 관리</h2>
+              {Array.isArray(office)
+                ? office.map((off) => (
                     <div style={{ marginBottom: '16px' }} key={off.id}>
                       <div>
                         <h3>{off.name}</h3>
@@ -81,42 +80,16 @@ function MyPage() {
               </div>
             </div>
           ) : (
-            <div>
-              <h2>나의 사무실 / 연구실 관리</h2>교수자만 사용 가능합니다.
-            </div>
-          )} */}
-          <div style={{ borderBottom: '1px solid #dbdbdb' }}>
-            <h2>나의 사무실 / 연구실 관리</h2>
-            {Array.isArray(office)
-              ? office.map((off) => (
-                  <div style={{ marginBottom: '16px' }} key={off.id}>
-                    <div>
-                      <h3>{off.name}</h3>
-                    </div>
-                    <div>
-                      <b>위치</b> {off.location}
-                    </div>
-                    <div>
-                      <b>상태</b> {off.state}
-                    </div>
-                    <div>
-                      <b>공지사항</b> {off.notice}
-                    </div>
-                  </div>
-                ))
-              : ''}
             <div
               style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                marginBottom: '32px',
+                borderBottom: '1px solid #dbdbdb',
+                paddingBottom: '32px',
               }}
             >
-              <Button style={{ marginTop: '16px' }} type="primary">
-                <Link to="/manage/office">관리하기</Link>
-              </Button>
+              <h2>나의 사무실 / 연구실 관리</h2>
+              <div style={{ marginTop: '16px' }}>교수자만 사용 가능합니다.</div>
             </div>
-          </div>
+          )}
 
           <div style={{ marginTop: '16px' }}>
             <h2>알림</h2>

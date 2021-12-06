@@ -111,7 +111,6 @@ function Rent() {
         <Table
           columns={columns}
           dataSource={Array.isArray(rentList) ? rentList : ''}
-          pagination={{ position: ['none', 'bottomCenter'] }}
         />
         <div
           style={{ float: 'right', marginTop: '16px', marginBottom: '32px' }}

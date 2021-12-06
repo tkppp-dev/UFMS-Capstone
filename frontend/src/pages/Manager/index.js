@@ -261,11 +261,7 @@ function Manager() {
               )}
             </Select>
           </div>
-          <Table
-            columns={columns}
-            dataSource={classes}
-            pagination={{ position: ['none', 'none'] }}
-          />
+          <Table columns={columns} dataSource={classes} />
           <div
             style={{ float: 'right', marginTop: '16px', marginBottom: '32px' }}
           >
