@@ -41,7 +41,7 @@ const DayUsage = function ({ item }) {
     <Container>
       <Card style={{ marginVertical: 5 }}>
         <Card.Content>
-          <Title style={{ marginBottom: 8 }}>{item.hirer}</Title>
+          <Title style={{ marginBottom: 8 }}>{item.eventName}</Title>
           <RowContainer>
             <RowTitle>대관주체</RowTitle>
             <RowBody>{item.groupName}</RowBody>
@@ -121,7 +121,7 @@ const RentalUsage = function ({ navigation, route }) {
   const getRentalUsage = async function () {
     try {
       const res = await axios.get(endPoint + `rental/check/${facility}`);
-      console.log(res.data)
+
       if (res.status === 200) {
         const temp = {};
         res.data.forEach((item) => {

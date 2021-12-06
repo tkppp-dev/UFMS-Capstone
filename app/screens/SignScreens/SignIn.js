@@ -108,6 +108,7 @@ const SignInScreen = function ({ navigation }) {
           email,
           password,
         });
+        console.log(res.data)
         if (res.data.state === 200) {
           dispatch({ type: 'LOGIN', response: res.data.data });
           navigation.dispatch(CommonActions.navigate('Home'));
@@ -147,12 +148,6 @@ const SignInScreen = function ({ navigation }) {
       <LoginButton width={width} onPress={_onPressLogin}>
         <StyledText color="white">로그인</StyledText>
       </LoginButton>
-      <SocialLoginButton width={width}>
-        <Image source={images.google} style={{ width: 45, height: 45 }} />
-        <StyledText style={{ flex: 1, textAlign: 'center' }} color="white">
-          구글 아이디로 로그인
-        </StyledText>
-      </SocialLoginButton>
       <SignUpButton onPress={_onPressSignUp}>
         <StyledText color="#007AFF" fontSize="16">
           회원가입

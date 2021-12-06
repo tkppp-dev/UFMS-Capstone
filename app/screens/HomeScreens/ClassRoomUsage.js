@@ -25,19 +25,20 @@ const CalendarHeader = styled.Text`
 `;
 
 const EmptyItemRenderData = function (items) {
-  const [isEmtpy, setIsEmpty] = useState(true)
+  const [isEmtpy, setIsEmpty] = useState(true);
 
   useEffect(() => {
-    if(Object.keys(items).length > 0){
-      setIsEmpty(false)
+    if (Object.keys(items.items).length > 0) {
+      setIsEmpty(false);
+    } else {
+      setIsEmpty(true);
     }
-    else{
-      setIsEmpty(true)
-    }
-  }, [items])
+  });
+
+  useEffect(() => {}, [items]);
 
   return (
-    <>  
+    <>
       {isEmtpy ? (
         <View
           style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}

@@ -55,7 +55,6 @@ const ClassRoom = function ({ navigation }) {
       >
         <Container>
           {buildings.map((item) => {
-            const img = `app/assets/building-images/${buildingImg[item.name]}`;
             return (
               <BuildingTitle
                 key={item.id}

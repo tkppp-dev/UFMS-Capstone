@@ -3,8 +3,9 @@ import styled from 'styled-components/native';
 import { Alert, Dimensions, ScrollView, View } from 'react-native';
 import TextInputWithLabel from '../../src/components/TextInputWithLabel';
 import CustomButton from '../../src/components/CustomButton';
-import axios from 'axios';
 import { Context } from '../../src/context';
+import axios from 'axios';
+import { endPoint } from '../../src/endPoint';
 
 const Container = styled.View`
   flex: 1;
@@ -19,7 +20,7 @@ const SignUp = function ({ navigation }) {
   const [checkingPassword, setCheckingPassword] = useState('');
   const [passwordCheckNotice, setPasswordCheckNotice] = useState('');
   const [name, setName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('01014549304');
   const [isPhoneAuthCompleted, setIsPhoneAuthCompleted] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const { state, dispatch } = useContext(Context);
@@ -67,14 +68,14 @@ const SignUp = function ({ navigation }) {
         email,
         password,
         username: name,
-        mobile: phoneNumber,
+        mobile: '01028475392',
       });
-
+      console.log(res.data)
       if (res.data.state === 200) {
         dispatch({ type: 'LOGIN', response: res.data.data });
         navigation.navigate('Home');
       } else {
-        throw new Error();
+        throw new Error(res.data.message);
       }
     } catch (err) {
       Alert.alert('회원가입에 실패했습니다');
@@ -119,7 +120,6 @@ const SignUp = function ({ navigation }) {
         <View style={{ width: width - 100, marginTop: 15 }}>
           <CustomButton
             label="회원가입 완료"
-            disabled={disabled}
             onPress={_onPressSumbitButton}
           />
         </View>

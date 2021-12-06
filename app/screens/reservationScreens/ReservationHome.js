@@ -1,4 +1,4 @@
-import React, { useContext, useLayoutEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import { Dimensions } from 'react-native';
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
@@ -7,14 +7,17 @@ import { InquiryProvider } from '../../src/context/inquiry';
 import ClassRentHome from './ClassRentHome';
 import RentHome from './RentHome';
 import RentInquiry from './ReservationInquiry';
+import axios from 'axios';
+import { endPoint } from '../../src/endPoint';
 
 const TabBarLabel = styled.Text`
   margin: 8px 0;
 `;
 
-const routeSetting = function (user) {
+const routeSetting = function (previlege) {
   const routes = [];
-  if (user.userType !== '외부인') {
+
+  if (previlege !== 'GUEST') {
     routes.push({ key: 'classRent', title: '강의실 예약' });
   }
   routes.push({ key: 'rent', title: '대관' });
@@ -27,7 +30,8 @@ const ReservationHome = function ({ navigation }) {
   const layout = Dimensions.get('window');
   const { state } = useContext(Context);
   const [index, setIndex] = useState(0);
-  const [routes] = useState(routeSetting(state.user));
+  const [previlege, setPrevilege] = useState('');
+  const [routes, setRoutes] = useState([]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -35,6 +39,26 @@ const ReservationHome = function ({ navigation }) {
       headerTitleAlign: 'center',
     });
   });
+
+  useEffect(() => {
+    const getPrevilege = async function () {
+      try {
+        const res = await axios.get(
+          endPoint + `api/auth/user/${state.user.id}`
+        );
+        setPrevilege(res.data.data.privileges);
+      } catch (err) {
+        console.error(err);
+        Alert.alert('정보 로드에 실패했습니다');
+      }
+    };
+    getPrevilege();
+    setRoutes(routeSetting(previlege))
+  }, []);
+
+  useEffect(() =>{
+    setRoutes(routeSetting(previlege))
+  }, [previlege])
 
   const renderScene = ({ route }) => {
     switch (route.key) {
@@ -58,7 +82,9 @@ const ReservationHome = function ({ navigation }) {
       {...props}
       indicatorStyle={{ backgroundColor: '#007AFF' }}
       style={{ backgroundColor: 'white' }}
-      renderLabel={({ route }) => <TabBarLabel>{route.title}</TabBarLabel>}
+      renderLabel={({ route }) => {
+        return <TabBarLabel>{route.title}</TabBarLabel>;
+      }}
     />
   );
 

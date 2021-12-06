@@ -1,9 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
-//import PropTypes from 'prop-types';
-//import IconButton from './IconButton';
-//import { images } from '../images'
-
+import { Image } from 'react-native';
+import Logo from '../../assets/sejong-logo.jpg';
 
 const Container = styled.View`
   flex-direction: row;
@@ -14,8 +12,8 @@ const Container = styled.View`
   background-color: white;
   border-style: solid;
   border-bottom-width: 1px;
-  border-bottom-color: #D6DDE4;
-`
+  border-bottom-color: #d6dde4;
+`;
 
 const LogoText = styled.Text`
   margin-left: 10px;
@@ -25,7 +23,7 @@ const LogoText = styled.Text`
 const Header = function () {
   return (
     <Container>
-      <LogoText>LOGO</LogoText>
+      <Image style={{ resizeMode: 'contain', height: 40, marginLeft: 5 }} source={Logo} />
     </Container>
   );
 };

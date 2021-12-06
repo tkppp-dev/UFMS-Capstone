@@ -4,6 +4,7 @@ import { Alert, Dimensions, Image, ScrollView, Text, View } from 'react-native';
 import InformationItem from '../../src/components/InformationItem';
 import axios from 'axios';
 import { endPoint } from '../../src/endPoint';
+import { rentalImg } from '../../src/images';
 
 const Container = styled.View`
   width: 100%;
@@ -107,7 +108,7 @@ const RentNotice = function ({ navigation, route }) {
             width: window.width * 0.9,
             height: window.height * 0.25,
           }}
-          source={require('../../assets/dummy-image.jpeg')}
+          source={rentalImg[facilityDetail.name]}
         />
         <Content>
           <Text style={{ fontSize: 24, fontWeight: 'bold' }}>

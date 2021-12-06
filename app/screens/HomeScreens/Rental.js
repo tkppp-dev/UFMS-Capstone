@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import { Alert, Dimensions, Image, Text, ScrollView } from 'react-native';
 import axios from 'axios';
 import { endPoint } from '../../src/endPoint';
-import { buildingImg } from '../../src/images'
+import { rentalImg } from '../../src/images'
 
 const Container = styled.View`
   flex: 1;
@@ -71,7 +71,7 @@ const Rental = function ({ navigation }) {
             >
               <Image
                 style={{ width: 70, height: 70, marginLeft: 5 }}
-                source={buildingImg[item.name]}
+                source={rentalImg[item.name]}
               />
               <Text style={{ marginLeft: 10, fontSize: 20 }}>{item.name}</Text>
             </BuildingTitle>

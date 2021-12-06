@@ -17,6 +17,13 @@ import Chung from '../assets/building-images/chungmu-gwan.png';
 import Hak from '../assets/building-images/student-hall.png';
 import Library from '../assets/building-images/library.png';
 import Dummy from '../assets/building-images/dummy-image.jpeg';
+import Aegi from '../assets/rental-images/aejiheon.jpeg';
+import Daeyang from '../assets/rental-images/daeyang-hall.jpeg';
+import Exhi from '../assets/rental-images/exhibition.png';
+import Play from '../assets/rental-images/playground.jpeg';
+import Hall1 from '../assets/rental-images/small-hall1.jpeg';
+import Hall2 from '../assets/rental-images/small-hall2.jpeg';
+import Theater from '../assets/rental-images/theater-kwang.jpeg';
 
 export const images = {
   menu_black: BlackMenu,
@@ -41,4 +48,16 @@ export const buildingImg = {
   학생회관: Hak,
   학술정보원: Library,
   창: Dummy,
+};
+
+export const rentalImg = {
+  '광개토관 소극장(광1503)': Theater,
+  '광개토관 전시실': Exhi,
+  '애지헌 교회': Aegi,
+  운동장: Play,
+  '대양홀(대106)': Daeyang,
+  '학생회관 소극장A': Hall2,
+  '학생회관 소극장B': Hall2,
+  '학생회관 대공연장': Hall1,
+  더미: Dummy,
 };

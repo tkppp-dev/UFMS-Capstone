@@ -4,23 +4,11 @@ import HomeStackNavigator from './HomeStackNavigator';
 import MyStackNavigator from './MyStackNavigator';
 import SignStackNavigator from './SignStackNavigator';
 import RentStackNavigator from './RentStackNavigator';
+import NotificationHome from '../screens/NotificationScreens/NotificationHome';
 import { Context } from '../src/context/index';
 import { Icon } from 'react-native-elements';
-import HomeTabView from '../screens/HomeScreens/HomeTabView'
 
 const Tab = createBottomTabNavigator();
-/**
-  <Tab.Screen
-            name="Notification"
-            component={MyStackNavigator}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <Icon type="antdesign" name="bells" color={color} size={25} />
-              ),
-              tabBarBadge: 4,
-            }}
-          />
- */
 
 const TabNavigation = function () {
   const { state } = useContext(Context);
@@ -58,6 +46,15 @@ const TabNavigation = function () {
                   size={28}
                   containerStyle={{ marginVertical: 5 }}
                 />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Notification"
+            component={NotificationHome}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Icon type="antdesign" name="bells" color={color} size={25} />
               ),
             }}
           />

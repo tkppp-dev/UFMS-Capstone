@@ -220,7 +220,7 @@ const RentApplication = function ({ navigation, route }) {
         memberId: state.user.id,
         facility: route.params.facility,
         purpose,
-        hirer: rentalPerson,
+        eventName: rentalPerson,
         group,
         rentalDays: period,
         additionalMobile: phoneNumber,

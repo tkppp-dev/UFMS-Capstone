@@ -74,7 +74,7 @@ const ProfessorMyPage = function ({ navigation }) {
       title: '마이페이지',
     });
   });
-  
+
   const getOfficeList = async function () {
     try {
       const res = await axios.post(endPoint + `schedule/lab/professor`, {
@@ -89,15 +89,17 @@ const ProfessorMyPage = function ({ navigation }) {
           key: index,
         });
       });
-      temp[0].isFirst = true;
-      temp[temp.length - 1].isEnd = true;
-      await setOfficeList(temp);
+      if (temp.length > 0) {
+        temp[0].isFirst = true;
+        temp[temp.length - 1].isEnd = true;
+        await setOfficeList(temp);
+      }
     } catch (err) {
       console.error(err);
       Alert.alert('정보 로드에 실패했습니다');
     }
   };
-  
+
   const getPrevilege = async function () {
     try {
       const res = await axios.get(endPoint + `api/auth/user/${state.user.id}`);
@@ -107,12 +109,12 @@ const ProfessorMyPage = function ({ navigation }) {
       Alert.alert('정보 로드에 실패했습니다');
     }
   };
-  
+
   useEffect(() => {
     getPrevilege();
     getOfficeList();
   }, []);
-  
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       console.log('Refreshed!');
@@ -193,58 +195,68 @@ const ProfessorMyPage = function ({ navigation }) {
               </View>
             </Content>
           </ContentContainer>
-          <ContentContainer>
-            <ContentTopColorRow />
-            <TouchableOpacity onPress={() => navigation.navigate('Schedule')}>
-              <Content style={{ flexDirection: 'row' }}>
-                <StyledText style={{ flex: 1 }} fontSize="20" fontWeight="bold">
-                  전체 스케줄 조회
-                </StyledText>
-                <Icon type="material" name="navigate-next" />
-              </Content>
-            </TouchableOpacity>
-          </ContentContainer>
-          <ContentContainer>
-            <ContentTopColorRow />
-            <ScheduleSummary userId={state.user.id} />
-          </ContentContainer>
-          <ContentContainer>
-            <ContentTopColorRow />
-            <Content>
-              <TouchableOpacity onPress={() => navigation.navigate('Lab Management')}>
-                <ContentTitle style={{ flexDirection: 'row' }}>
+          {previlege !== 'GUEST' ? (
+            <ContentContainer>
+              <ContentTopColorRow />
+              <TouchableOpacity onPress={() => navigation.navigate('Schedule')}>
+                <Content style={{ flexDirection: 'row' }}>
                   <StyledText
                     style={{ flex: 1 }}
                     fontSize="20"
                     fontWeight="bold"
                   >
-                    나의 사무실 / 연구실 관리
+                    전체 스케줄 조회
                   </StyledText>
                   <Icon type="material" name="navigate-next" />
-                </ContentTitle>
+                </Content>
               </TouchableOpacity>
-              <FlatList
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                pagingEnabled={true}
-                keyExtractor={(item, index) => index.toString()}
-                data={officeList}
-                renderItem={({ item, index }) => (
-                  <OfficeInformation
-                    key={item.key}
-                    item={item}
-                    setSelectedLab={setSelectedLab}
-                    showOfficeStatusModal={() =>
-                      setOfficeStatusModalVisible(true)
-                    }
-                    showOfficeNoticeModal={() =>
-                      setOfficeNoticeModalVisible(true)
-                    }
-                  />
-                )}
-              />
-            </Content>
+            </ContentContainer>
+          ) : null}
+          <ContentContainer>
+            <ContentTopColorRow />
+            <ScheduleSummary userId={state.user.id} />
           </ContentContainer>
+          {previlege === 'PROFESSOR' ? (
+            <ContentContainer>
+              <ContentTopColorRow />
+              <Content>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Lab Management')}
+                >
+                  <ContentTitle style={{ flexDirection: 'row' }}>
+                    <StyledText
+                      style={{ flex: 1 }}
+                      fontSize="20"
+                      fontWeight="bold"
+                    >
+                      나의 사무실 / 연구실 관리
+                    </StyledText>
+                    <Icon type="material" name="navigate-next" />
+                  </ContentTitle>
+                </TouchableOpacity>
+                <FlatList
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  pagingEnabled={true}
+                  keyExtractor={(item, index) => index.toString()}
+                  data={officeList}
+                  renderItem={({ item, index }) => (
+                    <OfficeInformation
+                      key={item.key}
+                      item={item}
+                      setSelectedLab={setSelectedLab}
+                      showOfficeStatusModal={() =>
+                        setOfficeStatusModalVisible(true)
+                      }
+                      showOfficeNoticeModal={() =>
+                        setOfficeNoticeModalVisible(true)
+                      }
+                    />
+                  )}
+                />
+              </Content>
+            </ContentContainer>
+          ) : null}
           {previlege === 'STUDENT' ? (
             <ContentContainer>
               <ContentTopColorRow />
@@ -266,7 +278,9 @@ const ProfessorMyPage = function ({ navigation }) {
           ) : null}
           <ContentContainer>
             <ContentTopColorRow />
-            <TouchableOpacity onPress={() => navigation.navigate('Rental Management')}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Rental Management')}
+            >
               <Content style={{ flexDirection: 'row' }}>
                 <StyledText style={{ flex: 1 }} fontSize="20" fontWeight="bold">
                   대관 예약 관리
