@@ -15,10 +15,13 @@ import InqueryDetail from 'pages/InqueryDetail';
 import InqueryEdit from 'pages/InqueryEdit';
 import Schedule from 'pages/Schedule';
 import Manager from 'pages/Manager';
-import PlaceAdd from 'pages/PlaceAdd';
-import PlaceEdit from 'pages/PlaceEdit';
 import ManageOffice from 'pages/ManageOffice';
 import AddOffice from 'pages/AddOffice';
+import Rental from 'pages/Rental';
+import ScheduleAdd from 'pages/ScheduleAdd';
+import Building from 'pages/Manager/Section/Building';
+import Rent from 'pages/Manager/Section/Rent';
+import AllOffice from 'pages/AllOffice';
 
 // components
 import Navbar from 'components/Navbar';
@@ -36,12 +39,21 @@ function App() {
       <Switch>
         <Route path="/" exact component={Main} />
 
+        <Route
+          path="/place/:facilityname/:capacity"
+          exact
+          component={PlaceDetail}
+        />
+
         <Route path="/user/signup" exact component={SignUp} />
         <Route path="/user/mypage/:id" exact component={MyPage} />
 
         <Route path="/manage/office" exact component={ManageOffice} />
         <Route path="/manage/office/add" exact component={AddOffice} />
-        <Route path="/place/:id" exact component={PlaceDetail} />
+
+        <Route path="/office/all" exact component={AllOffice} />
+
+        <Route path="/rental" exact component={Rental} />
 
         <Route path="/inquery" exact component={Inquery} />
         <Route path="/inquery/write" exact component={InqueryWrite} />
@@ -49,9 +61,11 @@ function App() {
         <Route path="/inquery/detail/:id" exact component={InqueryDetail} />
 
         <Route path="/schedule" exact component={Schedule} />
+        <Route path="/schedule/add" exact component={ScheduleAdd} />
+
         <Route path="/manager" exact component={Manager} />
-        <Route path="/manager/place/add" exact component={PlaceAdd} />
-        <Route path="/manager/place/edit/:id" exact component={PlaceEdit} />
+        <Route path="/manager/building" exact component={Building} />
+        <Route path="/manager/rent" exact component={Rent} />
       </Switch>
       {FooterContainer}
     </Layout>

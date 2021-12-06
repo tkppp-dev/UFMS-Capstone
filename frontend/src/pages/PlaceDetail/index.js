@@ -1,28 +1,24 @@
-import React, { useCallback, useLayoutEffect, useState } from 'react';
-import { DetailContainer, Wrap } from './style';
-import { Button, DatePicker, Input, Select } from 'antd';
+import React, { useCallback, useState } from 'react';
+import { ContentInput, DetailContainer, ModalContent, Wrap } from './style';
+import { Button, DatePicker, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { detailLoadingAction } from 'redux/actions/place_actions';
 import Modal from 'antd/lib/modal/Modal';
 import {
   reservationAction,
   reservationTimeAction,
 } from 'redux/actions/reservation_actions';
 
-const { Option } = Select;
-
 function PlaceDetail(req) {
   const [date, setDate] = useState('');
   const [form, setValues] = useState({
-    name: '',
-    subject: '',
-    purpose: '',
-    phone: '',
-    email: '',
-    duration: '',
+    notice: '',
+    startTime: '',
+    time: '',
+    reservationName: '',
   });
-  const { placedetail } = useSelector((state) => state.place);
-  // const { timeSet } = useSelector((state) => state.reservation);
+
+  const { user, userId } = useSelector((state) => state.auth);
+  const { timeSet } = useSelector((state) => state.reservation);
 
   const onChange = (e) => {
     setValues({
@@ -31,13 +27,9 @@ function PlaceDetail(req) {
     });
   };
 
-  // const { contents, title } = placedetail;
   const dispatch = useDispatch();
-  const placeID = req.match.params.id;
-
-  useLayoutEffect(() => {
-    dispatch(detailLoadingAction(placeID));
-  }, [dispatch, placeID]);
+  const facilityname = req.match.params.facilityname;
+  const capacity = req.match.params.capacity;
 
   const [isModalVisible, setisModalVisible] = useState(false);
 
@@ -52,58 +44,69 @@ function PlaceDetail(req) {
     setisModalVisible(false);
   };
 
-  const onChangeDuration = (value) => {
-    setValues({ duration: value });
-  };
+  const onChangeDate = useCallback(
+    (date, dateString) => {
+      setDate(dateString);
 
-  const onChangeDate = (date, dateString) => {
-    setDate(dateString);
+      const data = {
+        date: dateString,
+        facility: facilityname,
+      };
 
-    const data = {
-      date: dateString,
-      // facility: placedetail.name,
-    };
+      dispatch(reservationTimeAction(data));
+    },
+    [dispatch, facilityname],
+  );
 
-    dispatch(reservationTimeAction(data));
+  const onChangeTime = (e) => {
+    let timezoneOffset1 = new Date(date + ' ' + e).getTimezoneOffset() * 60000;
+    let timezoneDate1 = new Date(new Date(date + ' ' + e) - timezoneOffset1);
+
+    let timezoneOffset2 = new Date(date + ' ' + e).getTimezoneOffset() * 60000;
+    let timezoneDate2 = new Date(new Date(date + ' ' + e) - timezoneOffset2);
+
+    setValues({
+      startTime: timezoneDate1,
+      time: timezoneDate2,
+    });
   };
 
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
 
-      const { name, subject, purpose, phone, email, duration } = form;
+      const { notice, startTime, time, reservationName } = form;
 
-      const data = { name, subject, purpose, phone, email, duration };
+      time.setHours(time.getHours() + 1);
+      time.setMinutes(time.getMinutes() + 30);
+
+      const data = {
+        startTime: startTime.toISOString(),
+        endTime: time.toISOString(),
+        facility: facilityname,
+        memberId: userId,
+        notice,
+        reservationName,
+      };
 
       dispatch(reservationAction(data));
     },
-    [form, dispatch],
+    [form, dispatch, facilityname],
   );
 
   return (
     <DetailContainer>
       <Wrap>
-        {/* <h1>{title}</h1> */}
-        <h1>대양 AI 센터 - B201호</h1>
+        <h1>{facilityname}</h1>
         <div>
-          <h3>Description</h3>
-
-          {/* <div>{contents}</div> */}
-          <div>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently with desktop publishing software like Aldus
-            PageMaker including versions of Lorem Ipsum.
+          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <h3>수용 인원 : </h3>
+            <h3 style={{ marginLeft: '4px' }}>{capacity}명</h3>
           </div>
 
           <div style={{ marginTop: '16px' }}>
             <Button type="primary" onClick={showModal}>
-              대관 예약
+              예약하기
             </Button>
           </div>
         </div>
@@ -115,8 +118,8 @@ function PlaceDetail(req) {
           width={800}
         >
           <div id="modal-container">
-            <h2 style={{ textAlign: 'center' }}>대관 예약</h2>
-            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <h2 style={{ textAlign: 'center' }}>강의실 예약</h2>
+            <ModalContent>
               <div>
                 <label for="date">날짜를 선택하세요 : </label>
                 <DatePicker
@@ -125,71 +128,57 @@ function PlaceDetail(req) {
                   style={{ marginBottom: '16px' }}
                 />
               </div>
-              <div style={{ marginLeft: '32px' }}>
-                <label for="duration">희망하는 기간을 작성해주세요 : </label>
-                <Select defaultValue="1" onChange={onChangeDuration}>
-                  <Option value="1">1일</Option>
-                  <Option value="2">2일</Option>
-                  <Option value="3">3일</Option>
-                </Select>
+              <div>
+                {Array.isArray(timeSet) ? (
+                  <div>
+                    <label for="selectbox">시간을 선택하세요 : </label>
+                    <Select
+                      id="selectbox"
+                      style={{ width: '150px' }}
+                      onChange={onChangeTime}
+                    >
+                      {Array.isArray(timeSet)
+                        ? timeSet.map((time) =>
+                            time.예약가능 ? (
+                              <Select.Option value={time.시간대}>
+                                {time.시간대}
+                              </Select.Option>
+                            ) : (
+                              ''
+                            ),
+                          )
+                        : ''}
+                    </Select>
+                  </div>
+                ) : (
+                  ''
+                )}
               </div>
-            </div>
+            </ModalContent>
 
-            {/* {Array.isArray(timeSet)
-              ? timeSet.map((id, date) => <div key={id}>{date}</div>)
-              : ''} */}
             <form onSubmit={onSubmit}>
-              <label for="name">대관자 : </label>
-              <Input
-                type="name"
-                name="name"
-                id="name"
-                placeholder="대관자를 입력하세요"
-                onChange={onChange}
-                style={{ width: '100%', height: '32px', marginBottom: '16px' }}
-              />
-              <label for="subject">대관 주체 : </label>
-              <Input
+              <label for="reservationName">예약명 : </label>
+              <ContentInput
                 type="text"
-                name="subject"
-                id="subject"
-                placeholder="대관 주체를 입력하세요"
+                name="reservationName"
+                id="reservationName"
+                placeholder="예약명을 입력하세요"
                 onChange={onChange}
-                style={{ width: '100%', height: '32px', marginBottom: '16px' }}
               />
-              <label for="purpose">대관 목적 : </label>
-              <Input
+              <label for="notice">공지사항 : </label>
+              <ContentInput
                 type="text"
-                name="purpose"
-                id="purpose"
-                placeholder="대관 목적을 입력하세요"
+                name="notice"
+                id="notice"
+                placeholder="공지사항을 입력하세요"
                 onChange={onChange}
-                style={{ width: '100%', height: '32px', marginBottom: '16px' }}
-              />
-              <label for="phone">연락처 : </label>
-              <Input
-                type="text"
-                name="phone"
-                id="phone"
-                placeholder="연락처를 입력하세요"
-                onChange={onChange}
-                style={{ width: '100%', height: '32px', marginBottom: '16px' }}
-              />
-              <label for="email">이메일 : </label>
-              <Input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="이메일을 입력하세요"
-                onChange={onChange}
-                style={{ width: '100%', height: '32px', marginBottom: '16px' }}
               />
               <Button
                 type="primary"
                 style={{ width: '100%' }}
                 onClick={onSubmit}
               >
-                대관 신청
+                예약 신청
               </Button>
             </form>
           </div>

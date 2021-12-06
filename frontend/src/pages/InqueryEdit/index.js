@@ -47,38 +47,29 @@ function InqueryEdit(req) {
   ];
 
   const { inqueryDetail } = useSelector((state) => state.inquery);
-  const inqueryId = req.match.params.id;
-
-  const [form, setForm] = useState({
-    title: `${inqueryDetail.title}`,
-    content: `${inqueryDetail.content}`,
-  });
+  const id = req.match.params.id;
 
   const dispatch = useDispatch();
 
+  const [title, setTitle] = useState(inqueryDetail.title);
+  const [content, setContent] = useState(inqueryDetail.content);
+
   const onChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    setTitle(e.target.value);
+  };
+
+  const onChangeQuill = (value) => {
+    setContent(value);
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    const { title, content } = form;
-
-    let data = { title, content, inqueryId };
+    let data = { title, content: content.replace(/(<([^>]+)>)/gi, ''), id };
 
     dispatch(inqueryEditAction(data));
-  };
 
-  const [value, setValue] = useState(
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-  );
-
-  const onChangeContents = (e) => {
-    setValue(e);
+    req.history.push('/inquery');
   };
 
   return (
@@ -86,19 +77,16 @@ function InqueryEdit(req) {
       <Title>문의 글 수정하기</Title>
       <Form onFinish={onSubmit}>
         <TitleInput
-          name="title"
-          id="title"
+          value={title}
+          onChange={onChange}
           placeholder="제목을 입력하세요"
-          value="New York No. 1 Lake Park, New York No. 1 Lake Park New York No."
         />
         <ContentsInput
-          name="content"
-          id="content"
           theme="snow"
           modules={modules}
           formats={formats}
-          value={value}
-          onChange={onChangeContents}
+          value={content}
+          onChange={onChangeQuill}
           placeholder="내용을 입력하세요"
         />
         <SubmitButton type="primary" onClick={onSubmit}>

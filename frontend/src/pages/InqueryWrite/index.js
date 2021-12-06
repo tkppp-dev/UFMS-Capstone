@@ -45,36 +45,36 @@ const formats = [
   'background',
 ];
 
-function InqueryWrite() {
-  const [form, setForm] = useState({
-    title: '',
-    content: '',
-  });
+function InqueryWrite(req) {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
 
-  const { userName } = useSelector((state) => state.auth);
+  const { userId } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
   const onChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    setTitle(e.target.value);
+  };
+
+  const onChangeQuill = (value) => {
+    setContent(value);
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
 
-    const { title, content } = form;
-    let author = userName;
+    const memberId = userId;
 
     let data = {
       title,
-      content,
-      author,
+      content: content.replace(/(<([^>]+)>)/gi, ''),
+      memberId,
     };
 
     dispatch(inqueryWriteAction(data));
+
+    req.history.push('/inquery');
   };
 
   return (
@@ -83,18 +83,15 @@ function InqueryWrite() {
       <Form onFinish={onSubmit}>
         <TitleInput
           placeholder="제목을 입력하세요"
-          name="title"
-          id="title"
+          value={title}
           onChange={onChange}
         />
         <ContentsInput
-          name="content"
-          id="content"
           theme="snow"
           modules={modules}
           formats={formats}
-          value={form.content}
-          onChange={onChange}
+          value={content}
+          onChange={onChangeQuill}
           placeholder="내용을 입력하세요"
         />
         <SubmitButton type="primary" onClick={onSubmit}>

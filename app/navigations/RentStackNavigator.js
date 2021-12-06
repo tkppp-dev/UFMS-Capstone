@@ -18,10 +18,9 @@ const RentStackNavigator = function () {
       initialRouteName="Rent Home"
       screenOptions={{
         headerStyle: {
-          height: 50
+          height: 50,
         },
-        headerTitleStyle: {
-        }
+        headerTitleStyle: {},
       }}
     >
       <RentStack.Screen name="Rent Home" component={ReservationHome} />

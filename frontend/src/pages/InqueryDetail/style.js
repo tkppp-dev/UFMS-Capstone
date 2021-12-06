@@ -54,9 +54,19 @@ export const CommentContainer = styled.div`
   }
 `;
 
+export const CommentForm = styled.form`
+  display: flex;
+  justify-content: space-between;
+
+  & button {
+    width: 10%;
+    height: 46px;
+  }
+`;
+
 export const CommentInput = styled.input`
   padding: 12px;
-  width: 100%;
+  width: 89%;
   border: 1px solid #dbdbdb;
   margin-bottom: 16px;
 `;
@@ -70,8 +80,5 @@ export const CommentButtonContainer = styled.span`
 
   & > span:nth-child(1) {
     margin-right: 8px;
-  }
-  & > span:nth-child(2) {
-    color: red;
   }
 `;

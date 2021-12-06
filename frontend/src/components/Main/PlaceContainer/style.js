@@ -10,11 +10,6 @@ export const OfficeContainer = styled.div`
   margin-top: -5%;
 `;
 
-export const CardRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
 export const CardItem = styled(Card)`
   height: 213px;
   border-bottom: 2px solid #1990ff;

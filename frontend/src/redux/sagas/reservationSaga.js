@@ -1,12 +1,18 @@
 import axios from 'axios';
 import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import {
+  BUILDING_DATA_FAILURE,
+  BUILDING_DATA_REQUEST,
+  BUILDING_DATA_SUCCESS,
   BUILDING_LIST_FAILURE,
   BUILDING_LIST_REQUEST,
   BUILDING_LIST_SUCCESS,
   FLOOR_LIST_FAILURE,
   FLOOR_LIST_REQUEST,
   FLOOR_LIST_SUCCESS,
+  FLOOR_NUM_LIST_FAILURE,
+  FLOOR_NUM_LIST_REQUEST,
+  FLOOR_NUM_LIST_SUCCESS,
   RESERVATION_FAILURE,
   RESERVATION_REQUEST,
   RESERVATION_SUCCESS,
@@ -38,6 +44,56 @@ function* buildingList() {
 
 function* watchbuildingList() {
   yield takeEvery(BUILDING_LIST_REQUEST, buildingList);
+}
+
+// 예약 가능한 빌딩 리스트
+const buildingDataAPI = () => {
+  return axios.get('/building');
+};
+
+function* buildingData() {
+  try {
+    const result = yield call(buildingDataAPI);
+
+    yield put({
+      type: BUILDING_DATA_SUCCESS,
+      payload: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: BUILDING_DATA_FAILURE,
+      payload: e,
+    });
+  }
+}
+
+function* watchbuildingData() {
+  yield takeEvery(BUILDING_DATA_REQUEST, buildingData);
+}
+
+// 해당 빌딩 층 리스트
+const floorNumListAPI = (data) => {
+  return axios.get(`/reservation/building/floor/${data}`);
+};
+
+function* floorNumList(action) {
+  try {
+    const result = yield call(floorNumListAPI, action.payload);
+
+    yield put({
+      type: FLOOR_NUM_LIST_SUCCESS,
+      payload: result.data,
+    });
+  } catch (e) {
+    yield put({
+      type: FLOOR_NUM_LIST_FAILURE,
+      payload: e,
+    });
+  }
+}
+
+function* watchfloorNumList() {
+  yield takeEvery(FLOOR_NUM_LIST_REQUEST, floorNumList);
 }
 
 // 건물 층의 강의실 리스트
@@ -92,12 +148,16 @@ function* watchtimeList() {
 
 // 예약
 const reservationAPI = (payload) => {
+  console.log(payload);
+
   return axios.post('/reservation', payload);
 };
 
 function* reservation(action) {
   try {
     const result = yield call(reservationAPI, action.payload);
+
+    console.log(result.data);
 
     yield put({
       type: RESERVATION_SUCCESS,
@@ -119,7 +179,9 @@ export default function* reservationSaga() {
   yield all([
     fork(watchbuildingList),
     fork(watchfloorList),
+    fork(watchfloorNumList),
     fork(watchtimeList),
     fork(watchreservation),
+    fork(watchbuildingData),
   ]);
 }

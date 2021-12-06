@@ -40,6 +40,7 @@ const authReducer = (state = initialState, action) => {
     case REGISTER_SUCCESS:
       localStorage.setItem('accessToken', action.payload.data.accessToken);
       localStorage.setItem('refreshToken', action.payload.data.refreshToken);
+      localStorage.setItem('userId', action.payload.data.id);
 
       return {
         ...state,
@@ -55,6 +56,7 @@ const authReducer = (state = initialState, action) => {
     case REGISTER_FAILURE:
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+      localStorage.removeItem('userId');
 
       return {
         ...state,
@@ -69,6 +71,7 @@ const authReducer = (state = initialState, action) => {
     case LOGOUT_SUCCESS:
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+      localStorage.removeItem('userId');
 
       return {
         token: null,
@@ -93,11 +96,15 @@ const authReducer = (state = initialState, action) => {
         ...state,
         isAuthenticated: true,
         isLoading: false,
-        user: action.payload,
-        userId: action.payload.id,
-        userName: action.payload.username,
+        user: action.payload.data,
+        userId: action.payload.data.id,
+        userName: action.payload.data.username,
       };
     case USER_LOADING_FAILURE:
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('userId');
+
       return {
         ...state,
         user: null,

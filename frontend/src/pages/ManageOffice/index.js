@@ -1,16 +1,16 @@
-import { Card, Col, Input, Row } from 'antd';
+import { Card, Input, Row } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import { Button } from 'antd/lib/radio';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import {
   loadOfficeAction,
+  officeAddAction,
   officeDeleteAction,
   officeEditAction,
+  officeEditStateAction,
 } from 'redux/actions/office_actions';
 import {
-  AddButton,
   ButtonContainer,
   ColBox,
   ManageContainer,
@@ -20,16 +20,28 @@ import {
 
 function ManageOffice() {
   const [isModalVisible, setisModalVisible] = useState(false);
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+
   const [modalValue, setModalValue] = useState({
     id: '',
     notice: '',
-    startTime: '',
-    endTime: '',
+    state: '',
+    name: '',
+    location: '',
   });
 
-  const showModal = (data) => {
+  const showModal = (labId, notice, state) => {
     setisModalVisible(true);
-    setModalValue(data);
+
+    setModalValue({
+      id: labId,
+      notice,
+      state,
+    });
+  };
+
+  const showAddModal = () => {
+    setIsAddModalVisible(true);
   };
 
   const handleOk = () => {
@@ -39,14 +51,24 @@ function ManageOffice() {
     setisModalVisible(false);
   };
 
-  const { userId } = useSelector((state) => state.auth);
+  const handleAddOk = () => {
+    setIsAddModalVisible(false);
+  };
+  const handleAddCancel = () => {
+    setIsAddModalVisible(false);
+  };
+
+  const { user, userId } = useSelector((state) => state.auth);
   const { office } = useSelector((state) => state.office);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadOfficeAction(userId));
-  }, [dispatch, userId]);
+    const data = {
+      professorName: user.username,
+    };
+    dispatch(loadOfficeAction(data));
+  }, [dispatch, user]);
 
   const onChange = (e) => {
     setModalValue({
@@ -59,109 +81,88 @@ function ManageOffice() {
     (e) => {
       e.preventDefault();
 
-      const { id, notice, startTime, endTime } = modalValue;
-      const data = { id, notice, startTime, endTime };
+      const { id, notice } = modalValue;
+      const data = { id: id, notice };
 
       dispatch(officeEditAction(data));
     },
     [modalValue, dispatch],
   );
 
+  const onEditStateSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      const { id, state } = modalValue;
+      const data = { id, state };
+
+      dispatch(officeEditStateAction(data));
+    },
+    [modalValue, dispatch],
+  );
+
   const onDeleteClick = useCallback(
-    (id) => {
-      dispatch(officeDeleteAction(id));
+    (e) => {
+      var result = window.confirm('글을 삭제하시겠습니까?');
+
+      if (result) {
+        dispatch(officeDeleteAction(e));
+
+        window.location.reload();
+      }
     },
     [dispatch],
+  );
+
+  const onAddOffice = useCallback(
+    (e) => {
+      const { name, location } = modalValue;
+
+      const data = {
+        name,
+        location,
+        memberId: userId,
+      };
+
+      dispatch(officeAddAction(data));
+    },
+    [dispatch, modalValue],
   );
 
   return (
     <ManageContainer>
       <Title>
         <h2>사무실 / 연구실 관리</h2>
+        <Button onClick={showAddModal}>추가하기</Button>
       </Title>
       <Row>
-        {/* {Array.isArray(office) ? office.map((id, location, startTime, endTime, notice) => (
-            <ColBox key={id} span={8} style={{ marginBottom: '16px' }}>
-              <Card
-              title={location}
-              extra={
-                <ButtonContainer>
-                    <div
-                    onClick={() => showModal(id, startTime, endTime, notice)}
-                    >
-                    Edit
-                    </div>
-                    <div onClick={() => onDeleteClick(id)}>Delete</div>
-                </ButtonContainer>
-              }
-              style={{
-                width: 300,
-              }}
-            >
-                <div>사용 시간 : {startTime} ~ {endTime}</div>
-              <div>공지사항 : {notice}</div>
-            </Card></ColBox>
-          )): "" } */}
-        <ColBox span={8}>
-          <Card
-            title="율무관 501호"
-            extra={
-              <ButtonContainer>
-                <div onClick={showModal}>Edit</div>
-                <div onClick={onDeleteClick}>Delete</div>
-              </ButtonContainer>
-            }
-          >
-            <div>사용 시간 : 13:30 ~ 15:00</div>
-            <div>공지사항 : 없음</div>
-          </Card>
-        </ColBox>
-        <ColBox span={8}>
-          <Card
-            title="율무관 501호"
-            extra={
-              <ButtonContainer>
-                <div onClick={showModal}>Edit</div>
-                <div onClick={onDeleteClick}>Delete</div>
-              </ButtonContainer>
-            }
-          >
-            <div>사용 시간 : 13:30 ~ 15:00</div>
-            <div>공지사항 : 없음</div>
-          </Card>
-        </ColBox>
-        <ColBox span={8}>
-          <Card
-            title="율무관 501호"
-            extra={
-              <ButtonContainer>
-                <div onClick={showModal}>Edit</div>
-                <div onClick={onDeleteClick}>Delete</div>
-              </ButtonContainer>
-            }
-          >
-            <div>사용 시간 : 13:30 ~ 15:00</div>
-            <div>공지사항 : 없음</div>
-          </Card>
-        </ColBox>
-        <ColBox span={8}>
-          <Card
-            title="율무관 501호"
-            extra={
-              <ButtonContainer>
-                <div onClick={showModal}>Edit</div>
-                <div onClick={onDeleteClick}>Delete</div>
-              </ButtonContainer>
-            }
-          >
-            <div>사용 시간 : 13:30 ~ 15:00</div>
-            <div>공지사항 : 없음</div>
-          </Card>
-        </ColBox>
+        {Array.isArray(office)
+          ? office.map((off) => (
+              <ColBox key={off.labId} span={8} style={{ marginBottom: '16px' }}>
+                <Card
+                  title={off.name}
+                  extra={
+                    <ButtonContainer>
+                      <div
+                        onClick={() =>
+                          showModal(off.labId, off.notice, off.state)
+                        }
+                      >
+                        Edit
+                      </div>
+                      <div onClick={() => onDeleteClick(off.labId)}>Delete</div>
+                    </ButtonContainer>
+                  }
+                  style={{
+                    width: 300,
+                  }}
+                >
+                  <div>공지사항 : {off.notice}</div>
+                </Card>
+              </ColBox>
+            ))
+          : ''}
       </Row>
-      <AddButton type="primary">
-        <Link to="/manage/office/add">추가하기</Link>
-      </AddButton>
       <Modal
         visible={isModalVisible}
         onOk={handleOk}
@@ -175,13 +176,45 @@ function ManageOffice() {
             name="notice"
             type="text"
             placeholder="수정할 공지사항을 작성하세요"
+            style={{ width: '88%', marginBottom: '16px' }}
+            onChange={onChange}
+          />
+          <Button onClick={onEditSubmit}>수정하기</Button>
+          <Input
+            id="state"
+            name="state"
+            type="text"
+            placeholder="수정할 상태를 작성하세요"
             style={{ width: '88%' }}
             onChange={onChange}
           />
-          <Button onClick={onEditSubmit} type="primary">
-            수정하기
-          </Button>
+          <Button onClick={onEditStateSubmit}>수정하기</Button>
         </ModalContainer>
+      </Modal>
+      <Modal
+        visible={isAddModalVisible}
+        onOk={handleAddOk}
+        onCancel={handleAddCancel}
+        footer=""
+        width={800}
+      >
+        <div id="modal-container">
+          <Input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="연구실명을 입력해주세요."
+            onChange={onChange}
+          />
+          <Input
+            type="text"
+            id="location"
+            name="location"
+            placeholder="위치를 입력해주세요."
+            onChange={onChange}
+          />
+          <Button onClick={onAddOffice}>추가하기</Button>
+        </div>
       </Modal>
     </ManageContainer>
   );

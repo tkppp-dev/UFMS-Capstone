@@ -20,6 +20,7 @@ public class CorsConfig {
         config.setAllowedOriginPatterns(Collections.singletonList("*"));
         config.addAllowedHeader("*");   // 모든 heaader에 응답을 허용하겠다.
         config.addAllowedMethod("*");   // 모든 post, get , put, delete, patch 요청을 허용하겠다.
+        source.registerCorsConfiguration("/**",config);
 
         source.registerCorsConfiguration("/**",config);
         return new CorsFilter(source);

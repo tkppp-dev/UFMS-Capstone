@@ -1,112 +1,199 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ScheduleContainer, Wrap } from './style';
-
-import Paper from '@material-ui/core/Paper';
-import { ViewState, EditingState } from '@devexpress/dx-react-scheduler';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  Scheduler,
-  Appointments,
-  AppointmentForm,
-  AppointmentTooltip,
-  WeekView,
-  EditRecurrenceMenu,
-  AllDayPanel,
-  ConfirmationDialog,
-} from '@devexpress/dx-react-scheduler-material-ui';
-import appointments from './demodata/today-appointments';
+  scheduleAction,
+  scheduleDeleteAction,
+  scheduleListAction,
+} from 'redux/actions/schedule_actions';
+import { Button, Card, Col, Row, Select } from 'antd';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
-function Schedule() {
-  const [scheduleData, setScheduleData] = useState({
-    data: appointments,
-    currentDate: new Date(),
-    addedAppointment: {},
-    appointmentChanges: {},
-    editingAppointment: undefined,
+const { Option } = Select;
+
+function getListData(value, selectWeek) {
+  let listData = [];
+  let week = ['일', '월', '화', '수', '목', '금', '토'];
+
+  value.map((data) => {
+    data.map((dt) =>
+      week[new Date(dt.date).getDay()] === selectWeek
+        ? listData.push(dt)
+        : console.log(''),
+    );
   });
 
-  const changeAddedAppointment = (addedAppointment) => {
-    setScheduleData({ addedAppointment });
+  return listData;
+}
+
+function Schedule() {
+  const [selectWeek, setSelectWeek] = useState('');
+
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { schedule, schedules } = useSelector((state) => state.schedule);
+
+  const list = getListData(schedule, selectWeek);
+
+  const dispatch = useDispatch();
+
+  const handleChange = (value) => {
+    setSelectWeek(value);
   };
 
-  const changeAppointmentChanges = (appointmentChanges) => {
-    setScheduleData({ appointmentChanges });
-  };
+  const onDeleteSchedule = useCallback(
+    (id) => {
+      const scheduleId = id;
 
-  const changeEditingAppointment = (editingAppointment) => {
-    setScheduleData({ editingAppointment });
-  };
+      dispatch(scheduleDeleteAction(scheduleId));
+    },
+    [dispatch],
+  );
 
-  const commitChanges = ({ added, changed, deleted }) => {
-    const { data } = scheduleData;
+  useEffect(() => {
+    let today = new Date();
+    let end = new Date();
 
-    if (added) {
-      const startingAddedId =
-        data.length > 0 ? data[data.length - 1].id + 1 : 0;
+    end.setDate(today.getDate() + 7);
 
-      setScheduleData({
-        data: [...data, { id: startingAddedId, ...added }],
-      });
-    }
-    if (changed) {
-      setScheduleData({
-        data: data.map((appointment) =>
-          changed[appointment.id]
-            ? { ...appointment, ...changed[appointment.id] }
-            : appointment,
-        ),
-      });
-    }
-    if (deleted !== undefined) {
-      setScheduleData({
-        data: data.filter((appointment) => appointment.id !== deleted),
-      });
-    }
-  };
+    const data = {
+      memberId: user ? user.memberId : '',
+      startDate: today.toISOString().slice(0, 10),
+      endDate: end.toISOString().slice(0, 10),
+    };
+
+    dispatch(scheduleAction(data));
+    dispatch(scheduleListAction(data.memberId));
+  }, [dispatch, user]);
+
+  const onDeleteReservation = useCallback((e) => {
+    axios.delete(`/reservation/${Number(e)}`).then((res) => {
+      alert('예약이 삭제되었습니다.');
+      window.location.reload();
+    });
+  }, []);
+  const info = Array.isArray(list)
+    ? list.map((data) => (
+        <Col span={6} style={{ marginBottom: '16px' }} key={data.reservationId}>
+          <Card
+            title={data.reservationName}
+            extra={
+              <div
+                onClick={() => onDeleteReservation(data.reservationId)}
+                style={{ color: '#FF4D4E', cursor: 'pointer' }}
+              >
+                삭제
+              </div>
+            }
+            style={{
+              width: 300,
+              height: '200px',
+            }}
+          >
+            <div>날짜 : {data.date}</div>
+            <div>시간 : {data.time}</div>
+            <div>장소 : {data.facility}</div>
+            <div>상태 : {data.reservationStatus}</div>
+          </Card>
+        </Col>
+      ))
+    : '';
 
   return (
     <ScheduleContainer>
-      {true ? (
+      <div
+        style={{
+          width: '90%',
+          marginLeft: '5%',
+          marginTop: '32px',
+          borderBottom: '1px solid #dbdbdb',
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <h1>강의 스케줄</h1>
+        <Button type="primary">
+          <Link to="/schedule/add">강의 스케줄 추가</Link>
+        </Button>
+      </div>
+
+      <div style={{ width: '90%', marginLeft: '5%', marginTop: '32px' }}>
+        <Row>
+          {isAuthenticated
+            ? Array.isArray(schedules)
+              ? schedules.map((schedule) => (
+                  <Col
+                    span={6}
+                    style={{ marginBottom: '16px' }}
+                    key={schedule.scheduleId}
+                  >
+                    <Card
+                      title={schedule.subjectName}
+                      extra={
+                        <div
+                          onClick={() => onDeleteSchedule(schedule.scheduleId)}
+                          style={{ color: '#FF4D4E', cursor: 'pointer' }}
+                        >
+                          삭제
+                        </div>
+                      }
+                      style={{
+                        width: 300,
+                        height: '200px',
+                      }}
+                    >
+                      <div>교과명 : {schedule.subjectName}</div>
+                      <div>위치 : {schedule.room}</div>
+                      <div>교수 : {schedule.professor}</div>
+                      <div>시간 : {schedule.lectureDate}</div>
+                    </Card>
+                  </Col>
+                ))
+              : ''
+            : ''}
+        </Row>
+
         <div
           style={{
-            width: '100%',
-            height: '100%',
-            borderTop: '1px solid #dbdbdb',
-            padding: '32px 64px',
+            marginTop: '64px',
+            borderBottom: '1px solid #dbdbdb',
+            display: 'flex',
+            justifyContent: 'space-between',
           }}
         >
-          <div
-            style={{ width: '100%', height: '100%', backgroundColor: 'white' }}
-          >
-            <Paper style={{ width: '100%', height: '100%' }}>
-              <Scheduler data={scheduleData.data}>
-                <ViewState currentDate={scheduleData.currentDate} />
-                <EditingState
-                  onCommitChanges={commitChanges.bind(commitChanges)}
-                  addedAppointment={scheduleData.addedAppointment}
-                  onAddedAppointmentChange={changeAddedAppointment.bind()}
-                  appointmentChanges={scheduleData.appointmentChanges}
-                  onAppointmentChangesChange={changeAppointmentChanges.bind()}
-                  editingAppointment={scheduleData.editingAppointment}
-                  onEditingAppointmentChange={changeEditingAppointment.bind()}
-                />
-                <WeekView startDayHour={9} endDayHour={17} />
-                <AllDayPanel />
-
-                <EditRecurrenceMenu />
-                <ConfirmationDialog />
-
-                <Appointments />
-                <AppointmentTooltip showOpenButton showDeleteButton />
-                <AppointmentForm />
-              </Scheduler>
-            </Paper>
-          </div>
+          <h1>강의실 예약 내역</h1>
+          {isAuthenticated ? (
+            <div>
+              <Select defaultValue="X" onChange={handleChange}>
+                <Option value="X">요일을 선택하세요</Option>
+                <Option value="월">월요일</Option>
+                <Option value="화">화요일</Option>
+                <Option value="수">수요일</Option>
+                <Option value="목">목요일</Option>
+                <Option value="금">금요일</Option>
+                <Option value="토">토요일</Option>
+                <Option value="일">일요일</Option>
+              </Select>
+            </div>
+          ) : (
+            ''
+          )}
         </div>
-      ) : (
-        <Wrap>
-          <div>로그인이 필요한 서비스입니다.</div>
-        </Wrap>
-      )}
+
+        <Row style={{ marginTop: '32px', marginBottom: '64px' }}>
+          {isAuthenticated ? info : <Wrap>로그인이 필요한 서비스입니다.</Wrap>}
+          {Array.isArray(list) ? (
+            list.length <= 0 ? (
+              <div>예약 내역이 존재하지 않습니다.</div>
+            ) : (
+              ''
+            )
+          ) : (
+            ''
+          )}
+        </Row>
+      </div>
+      {isAuthenticated ? '' : <Wrap>로그인이 필요한 서비스입니다.</Wrap>}
     </ScheduleContainer>
   );
 }

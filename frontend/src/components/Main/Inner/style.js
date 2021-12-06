@@ -45,7 +45,7 @@ export const AsideBox = styled.div`
   border-left: 1px solid #eaedf4;
   padding: 32px;
   text-align: center;
-  padding-top: 140px;
+  padding-top: 110px;
 
   & > div {
     margin-bottom: 16px;
