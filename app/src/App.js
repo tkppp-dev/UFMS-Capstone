@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import TabNavigation from '../navigations/Tab';
 import { Provider } from './context/index';
-import { SafeAreaView } from 'react-native';
+import { Image, SafeAreaView, View } from 'react-native';
 import { StatusBar } from 'react-native';
 
 function App() {
