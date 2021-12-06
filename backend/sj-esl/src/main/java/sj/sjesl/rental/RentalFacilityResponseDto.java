@@ -25,7 +25,7 @@ public class RentalFacilityResponseDto {
         this.building = facility.getBuilding();
         this.floor = facility.getFloor();
         this.capacity = facility.getCapacity();
-        this.cost = facility.getCapacity();
+        this.cost = facility.getCost();
         this.purpose = facility.getPurpose();
         this.area = facility.getArea();
         this.time = facility.getTime();
