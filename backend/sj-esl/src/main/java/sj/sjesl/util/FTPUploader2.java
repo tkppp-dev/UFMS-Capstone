@@ -46,7 +46,7 @@ public class FTPUploader2 {
     }
 
 
-    @Scheduled(cron = "0 29/59 * * * *")
+    @Scheduled(cron = "0 29,59 * * * *")
     @Transactional
     public void ESL_FTP() throws Exception {
         String facility = "센B206";
@@ -229,7 +229,7 @@ public class FTPUploader2 {
 
     }
 
-    @Scheduled(cron = "0 28/58 * * * *")
+    @Scheduled(cron = "0 28,58 * * * *")
     @Transactional
     public void ESL_ALL() throws Exception {
 

@@ -35,7 +35,15 @@ public class ScheduleService {
     public ScheduleResponseDto getNow(Long id) {
         Member member = memberRepository.findByMemberId(id);
         LocalDateTime now = LocalDateTime.now();
-        Reservation reservation = reservationRepository.findNow(member, now);
+        Reservation reservation=null;
+        List<Long> scheduleIds = scheduleRepository.findAllByMember(member).stream().map(Schedule::getSubject_id).collect(Collectors.toList());
+
+        if(member.getPrivileges()==MemberPrivileges.PROFESSOR) {
+           reservation = reservationRepository.findNow(member, now);
+        }
+        else{
+            reservation= reservationRepository.findNowStudent(member, now, scheduleIds);
+        }
 
         if (reservation == null)
             return null;
@@ -49,9 +57,17 @@ public class ScheduleService {
         Member member = memberRepository.findByMemberId(id);
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime endDateTime = LocalDateTime.of(now.toLocalDate(), LocalTime.of(23, 59, 59));
-        Reservation reservation = reservationRepository
-                .findTopByMemberAndReservationStatusIsNotAndStartTimeBetweenOrderByStartTime(member, ReservationStatus.CANCEL, now, endDateTime);
+        List<Long> scheduleIds = scheduleRepository.findAllByMember(member).stream().map(Schedule::getSubject_id).collect(Collectors.toList());
+        Reservation reservation=null;
+        if(member.getPrivileges()==MemberPrivileges.PROFESSOR) {
+            reservation = reservationRepository
+                    .findTopByMemberAndReservationStatusIsNotAndStartTimeBetweenOrderByStartTime(member, ReservationStatus.CANCEL, now, endDateTime);
+        }
+        else{
+            reservation = reservationRepository.findNextSchedule(scheduleIds, now, endDateTime,member).get(0);
 
+
+        }
         if (reservation == null)
             return null;
         else
