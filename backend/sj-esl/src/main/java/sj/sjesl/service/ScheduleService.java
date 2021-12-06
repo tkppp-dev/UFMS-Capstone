@@ -56,6 +56,7 @@ public class ScheduleService {
     public ScheduleResponseDto getNext(Long id) {
         Member member = memberRepository.findByMemberId(id);
         LocalDateTime now = LocalDateTime.now();
+        System.out.println(now);
         LocalDateTime endDateTime = LocalDateTime.of(now.toLocalDate(), LocalTime.of(23, 59, 59));
         List<Long> scheduleIds = scheduleRepository.findAllByMember(member).stream().map(Schedule::getSubject_id).collect(Collectors.toList());
         Reservation reservation=null;
@@ -64,7 +65,9 @@ public class ScheduleService {
                     .findTopByMemberAndReservationStatusIsNotAndStartTimeBetweenOrderByStartTime(member, ReservationStatus.CANCEL, now, endDateTime);
         }
         else{
-            reservation = reservationRepository.findNextSchedule(scheduleIds, now, endDateTime,member).get(0);
+            List<Reservation> nextSchedule = reservationRepository.findNextSchedule(scheduleIds, now, endDateTime, member);
+            if(nextSchedule.size()!=0)
+                reservation=nextSchedule.get(0);
 
 
         }
