@@ -22,11 +22,21 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     @Query("select r from Reservation r where r.subjectId in (?1) and  ?2 <= r.startTime and r.startTime <= ?3  order by r.startTime")
     List<Reservation> findBySubjectIdAndStartTimeBetween(List<Long> subjectId, LocalDateTime startTime, LocalDateTime endTime);
 
+    //다음스케줄
+    @Query("select r from Reservation r where (r.subjectId  in (?1) or r.member = ?4) and  ?2 < r.startTime  and r.startTime <= ?3  and r.reservationStatus <> 'CANCEL'  order by r.startTime")
+    List<Reservation> findNextSchedule(List<Long> subjectId, LocalDateTime startTime, LocalDateTime endTime,Member member);
+
 
     @Query(value = "select p from Reservation  p where p.member = ?1 and p.startTime <= ?2 and p.endTime >= ?2 and p.reservationStatus <> 'CANCEL'")
     Reservation findNow(Member member, LocalDateTime now);
 
+    //현재스케줄 학생
+    @Query(value = "select p from Reservation  p where (p.member = ?1 or p.subjectId in (?3) )and p.startTime <= ?2 and p.endTime >= ?2 and p.reservationStatus <> 'CANCEL'")
+    Reservation findNowStudent(Member member, LocalDateTime now,List<Long> ids);
+
     Reservation findTopByMemberAndReservationStatusIsNotAndStartTimeBetweenOrderByStartTime(Member member, ReservationStatus reservationStatus, LocalDateTime now, LocalDateTime endDateTime);
+
+
 
     @Query("select p from Reservation p where p.facility=?1 and p.reservationStatus=?2 and p.startTime>=?3 and p.startTime<?4 order by p.startTime")
     List<Reservation> findByFacilityAndReservationStatusAndStartDateBetween(Facility facility, ReservationStatus reservationStatus, LocalDateTime today, LocalDateTime end);
