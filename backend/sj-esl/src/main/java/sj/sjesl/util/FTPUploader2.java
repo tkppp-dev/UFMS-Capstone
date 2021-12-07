@@ -167,7 +167,7 @@ public class FTPUploader2 {
         fw.append("room_id,time,subject,prof,status,time2,subect2,prof2,status2\n" +
                 "센B206,"+startTime+","+name+","+username+
                 ","+status+","+startTime2+","+name2+","+username2+","+status2+"\n"+
-                ""+lab.getLocation()+",,"+lab.getNotice()+","+lab.getName()+" "+lab.getMember().getUsername()+","+lab.getState()+",,,,");
+                ""+lab.getLocation()+",,"+lab.getNotice()+","+lab.getName()+"_"+lab.getMember().getUsername()+","+lab.getState()+",,,,");
 
 
 
