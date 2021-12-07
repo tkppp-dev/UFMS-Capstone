@@ -8,7 +8,7 @@ const InquiryDeleteModal = function ({ deleteInquiry }) {
   const { inquiryState, dispatch } = useContext(InquiryContext);
 
   const _onDismiss = function () {
-    dispatch({ type: 'UPDATE_MODAL_DISMISS' });
+    dispatch({ type: 'DELETE_MODAL_DISMISS' });
   };
 
   return (

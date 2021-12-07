@@ -233,7 +233,7 @@ const ProfessorMyPage = function ({ navigation }) {
           ) : null}
           <ContentContainer>
             <ContentTopColorRow />
-            <ScheduleSummary userId={state.user.id} />
+            <ScheduleSummary userId={state.user.id} refreshing={refreshing}/>
           </ContentContainer>
           {previlege === 'PROFESSOR' ? (
             <ContentContainer>

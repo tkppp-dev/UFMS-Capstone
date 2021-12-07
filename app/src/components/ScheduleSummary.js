@@ -33,11 +33,12 @@ const StyledText = styled.Text`
     marginBottom !== undefined ? marginBottom + 'px' : '6px'};
 `;
 
-const ScheduleSummary = function ({ userId }) {
+const ScheduleSummary = function ({ userId, refreshing }) {
   const [currentSchedule, setCurrentSchedule] = useState(null);
   const [nextSchedule, setNextSchedule] = useState(null);
   const [currentScheduleState, setCurrentScheduleState] = useState('');
   const [nextScheduleState, setNextScheduleState] = useState('');
+  const [refresh, setRefresh] = useState(false)
 
   const getCurrentSchedule = async function () {
     try {
@@ -100,6 +101,17 @@ const ScheduleSummary = function ({ userId }) {
   }, []);
 
   useEffect(() => {
+    if(refreshing === true){
+      setRefresh(true)
+    }
+    else{
+      getCurrentSchedule()
+      getNextSchedule()
+      setRefresh(false)
+    }
+  }, [refreshing])
+
+  useEffect(() => {
     if (currentSchedule !== null) {
       setCurrentScheduleState(
         getScheduleState(currentSchedule.reservationStatus)
@@ -133,7 +145,7 @@ const ScheduleSummary = function ({ userId }) {
             />
             <InformationItem title="위치" body={currentSchedule.facility} />
             <View style={{ flexDirection: 'row', marginBottom: 8 }}>
-              <InformationItem title="시간" body="12:00~13:30" row={true} />
+              <InformationItem title="시간" body={currentSchedule.time} row={true} />
               <InformationItem
                 title="상태"
                 body={currentScheduleState}
