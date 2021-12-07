@@ -138,7 +138,10 @@ public class FTPUploader2 {
             startTime=startTime+"~"+endTime;
             username=reservationsArr[0].getMember().getUsername();
             name=reservationsArr[0].getReservationName();
+
             status="사용 중";
+            if(reservationsArr[0].getSubjectId()!=null)
+                status="수업 중";
             reservationsArr[0].setReservationStatus(ReservationStatus.ING);
 
 

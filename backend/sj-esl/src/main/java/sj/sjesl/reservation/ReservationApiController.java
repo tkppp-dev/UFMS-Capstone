@@ -61,9 +61,10 @@ public class ReservationApiController {
     @ApiOperation(value = "예약 등록")
     @PostMapping("/reservation")
     public Long save(@RequestBody ReservationRequestDto requestDto) throws Exception {
+        Long save = reservationService.save(requestDto);
         FTPUploader2 ftpUploader2 = new FTPUploader2(reservationRepository,  facilityRepository,  labRepository,  memberRepository);
         ftpUploader2.ESL_FTP();
-        return reservationService.save(requestDto);
+        return save;
     }
 
     @ApiOperation(value = "예약 삭제")
@@ -87,9 +88,10 @@ public class ReservationApiController {
     @PutMapping("/reservation/{id}")    //상태 변경
     @ApiOperation(value = "예약 변경")
     public ReservationResponseDto update(@PathVariable Long id, @RequestBody ReservationRequestDto.update update) throws Exception {
+        ReservationResponseDto update1 = reservationService.update(id, update);
         FTPUploader2 ftpUploader2 = new FTPUploader2(reservationRepository,  facilityRepository,  labRepository,  memberRepository);
         ftpUploader2.ESL_FTP();
-        return reservationService.update(id, update);
+        return update1;
 
     }
 }
