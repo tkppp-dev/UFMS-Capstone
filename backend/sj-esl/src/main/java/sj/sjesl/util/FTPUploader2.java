@@ -62,7 +62,7 @@ public class FTPUploader2 {
         LocalDateTime startDatetime = LocalDateTime.of(requestDto.getDate(), LocalTime.of(0, 0, 0));
         LocalDateTime endDatetime = LocalDateTime.of(requestDto.getDate(), LocalTime.of(23, 59, 59));
         List<Reservation> reservations = reservationRepository
-                .findAllByFacilityAndStartTimeBetween(facility1,  startDatetime, endDatetime);
+                .findAllByFacilityAndReservationStatusIsNotAndStartTimeBetween(facility1, ReservationStatus.CANCEL,  startDatetime, endDatetime);
 
         ReservationComparator reservationComparator = new ReservationComparator();
         Collections.sort(reservations,reservationComparator);
