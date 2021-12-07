@@ -8,6 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import sj.sjesl.dto.lab.LabRequestDto;
 import sj.sjesl.entity.Building;
+import sj.sjesl.payload.Response;
+import sj.sjesl.repository.FacilityRepository;
+import sj.sjesl.repository.LabRepository;
+import sj.sjesl.repository.MemberRepository;
+import sj.sjesl.repository.ReservationRepository;
+import sj.sjesl.util.FTPUploader2;
 
 import java.util.List;
 
@@ -17,7 +23,11 @@ import java.util.List;
 public class ReservationApiController {
 
     private final ReservationService reservationService;
-
+    private final LabRepository labRepository;
+    private final MemberRepository memberRepository;
+    private final Response response;
+    private final ReservationRepository reservationRepository ;
+    private final FacilityRepository facilityRepository;
     @ApiOperation(value = "예약 가능한 건물 리스트 조회")
     @GetMapping("/reservation/building")     //예약가능한 강의실 건물 이름 리스트 리턴
     public List<String> getBuildingList() {
@@ -50,14 +60,19 @@ public class ReservationApiController {
 
     @ApiOperation(value = "예약 등록")
     @PostMapping("/reservation")
-    public Long save(@RequestBody ReservationRequestDto requestDto){
-        return reservationService.save(requestDto);
+    public Long save(@RequestBody ReservationRequestDto requestDto) throws Exception {
+        Long save = reservationService.save(requestDto);
+        FTPUploader2 ftpUploader2 = new FTPUploader2(reservationRepository,  facilityRepository,  labRepository,  memberRepository);
+        ftpUploader2.ESL_FTP();
+        return save;
     }
 
     @ApiOperation(value = "예약 삭제")
     @DeleteMapping("/reservation/{id}")
-    public Long cancel(@PathVariable Long id) {
+    public Long cancel(@PathVariable Long id) throws Exception {
         reservationService.cancel(id);
+        FTPUploader2 ftpUploader2 = new FTPUploader2(reservationRepository,  facilityRepository,  labRepository,  memberRepository);
+        ftpUploader2.ESL_FTP();
         return id;
     }
 
@@ -72,9 +87,11 @@ public class ReservationApiController {
 
     @PutMapping("/reservation/{id}")    //상태 변경
     @ApiOperation(value = "예약 변경")
-    public ReservationResponseDto update(@PathVariable Long id, @RequestBody ReservationRequestDto.update update)  {
-
-        return reservationService.update(id, update);
+    public ReservationResponseDto update(@PathVariable Long id, @RequestBody ReservationRequestDto.update update) throws Exception {
+        ReservationResponseDto update1 = reservationService.update(id, update);
+        FTPUploader2 ftpUploader2 = new FTPUploader2(reservationRepository,  facilityRepository,  labRepository,  memberRepository);
+        ftpUploader2.ESL_FTP();
+        return update1;
 
     }
 }

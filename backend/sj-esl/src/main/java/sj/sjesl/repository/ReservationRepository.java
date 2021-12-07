@@ -10,7 +10,7 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     List<Reservation> findAllByFacilityAndReservationStatusAndStartTimeBetween(Facility facility,
                                                              ReservationStatus reservationStatus, LocalDateTime startDatetime, LocalDateTime endDatetime);
-    List<Reservation> findAllByFacilityAndStartTimeBetween(Facility facility, LocalDateTime startDatetime, LocalDateTime endDatetime);
+//    List<Reservation> findAllByFacilityAndReservationStatusIsNotStartTimeBetween(Facility facility, LocalDateTime startDatetime, LocalDateTime endDatetime);
 
     List<Reservation> findAllByStartTimeBetween(LocalDateTime startDatetime, LocalDateTime endDatetime);
 

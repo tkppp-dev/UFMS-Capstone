@@ -62,7 +62,7 @@ public class FTPUploader2 {
         LocalDateTime startDatetime = LocalDateTime.of(requestDto.getDate(), LocalTime.of(0, 0, 0));
         LocalDateTime endDatetime = LocalDateTime.of(requestDto.getDate(), LocalTime.of(23, 59, 59));
         List<Reservation> reservations = reservationRepository
-                .findAllByFacilityAndStartTimeBetween(facility1,  startDatetime, endDatetime);
+                .findAllByFacilityAndReservationStatusIsNotAndStartTimeBetween(facility1, ReservationStatus.CANCEL,  startDatetime, endDatetime);
 
         ReservationComparator reservationComparator = new ReservationComparator();
         Collections.sort(reservations,reservationComparator);
@@ -138,7 +138,10 @@ public class FTPUploader2 {
             startTime=startTime+"~"+endTime;
             username=reservationsArr[0].getMember().getUsername();
             name=reservationsArr[0].getReservationName();
+
             status="사용 중";
+            if(reservationsArr[0].getSubjectId()!=null)
+                status="수업 중";
             reservationsArr[0].setReservationStatus(ReservationStatus.ING);
 
 
@@ -167,7 +170,7 @@ public class FTPUploader2 {
         fw.append("room_id,time,subject,prof,status,time2,subect2,prof2,status2\n" +
                 "센B206,"+startTime+","+name+","+username+
                 ","+status+","+startTime2+","+name2+","+username2+","+status2+"\n"+
-                ""+lab.getLocation()+",,"+lab.getNotice()+","+lab.getMember().getUsername()+","+lab.getState()+",,,,");
+                ""+lab.getLocation()+",,"+lab.getNotice()+","+lab.getName()+"_"+lab.getMember().getUsername()+","+lab.getState()+",,,,");
 
 
 
